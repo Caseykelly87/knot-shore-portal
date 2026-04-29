@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Knot Shore Portal
 
-## Getting Started
+Stakeholder portal for the Knot Shore Grocery analytics platform — the front door of a four-repo data engineering project demonstrating end-to-end pipeline ownership.
 
-First, run the development server:
+## The platform
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+knot-shore-grocery-simulation-engine    →  generates synthetic store-day data
+                ↓
+economic-data-etl                       →  ingests, normalizes, runs anomaly detection
+                ↓
+economic-data-api                       →  serves data as JSON (FastAPI)
+                ↓
+knot-shore-portal                       →  this repo (Next.js 14)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This portal renders dashboards over the data the API exposes. No business logic lives in the frontend — totals, rankings, and aggregations all come from the API.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quick start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Three commands and you have a working portal:
 
-## Learn More
+```bash
+git clone https://github.com/Caseykelly87/knot-shore-portal.git
+cd knot-shore-portal
+pnpm install && pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open http://localhost:3000 — the landing page renders with a "Demo Mode" footer badge. The portal serves bundled JSON fixtures committed to this repository; no upstream API setup needed.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Operating modes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Mode | Behavior | When to use |
+|---|---|---|
+| `offline` (default) | Serves fixtures from `fixtures/` | Demo, local exploration, CI |
+| `online` | Proxies to upstream API | Real platform integration |
 
-## Deploy on Vercel
+To switch to online mode, create `.env.local`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+API_MODE=online
+API_BASE_URL=http://localhost:8000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Then start the upstream `economic-data-api` separately and restart `pnpm dev`. The footer badge will turn green and read "Live Data."
+
+## Refreshing demo fixtures
+
+The bundled fixtures in `fixtures/` are JSON snapshots of API responses. They are committed in this repo and need to be refreshed only when the upstream API's response shape or canonical demo data changes.
+
+To refresh:
+
+1. Start the upstream API: `cd economic-data-api && uvicorn app.main:app --port 8000`
+2. From this repo: `pnpm tsx scripts/capture-fixtures.ts`
+3. Verify the captured files in `fixtures/`, commit them.
+
+## Project structure
+
+```
+knot-shore-portal/
+├── app/
+│   ├── api/                   # Portal-side proxy route handlers
+│   │   ├── health/
+│   │   ├── store-metrics/
+│   │   ├── anomalies/
+│   │   └── dashboard-summary/
+│   ├── layout.tsx             # Root layout with footer ModeIndicator
+│   └── page.tsx               # Landing page
+├── components/
+│   ├── ui/                    # shadcn/ui components
+│   └── ModeIndicator.tsx      # Demo Mode / Live Data badge
+├── lib/
+│   ├── api-mode.ts            # Reads API_MODE env var at module load
+│   ├── fixture-loader.ts      # Imports JSON fixtures
+│   └── types.ts               # TypeScript shapes mirroring the API
+├── fixtures/                  # Captured API response snapshots (committed)
+├── scripts/
+│   └── capture-fixtures.ts    # Refresh fixtures from a running upstream API
+└── tests/                     # Vitest + React Testing Library
+```
+
+## Testing
+
+```bash
+pnpm test          # Run once
+pnpm test:watch    # Watch mode
+```
+
+Tests cover the API-mode resolver, fixture loader shape, the proxy route handler in offline mode, and the ModeIndicator's mode-aware rendering. Tests are kept narrow and behavioral — only what would silently break the portal if wrong.
+
+## Tech stack
+
+Next.js 14 (App Router) · TypeScript (strict) · Tailwind v3 · shadcn/ui · Vitest · pnpm
+
+## License
+
+MIT
