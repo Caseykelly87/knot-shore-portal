@@ -1,6 +1,6 @@
 {
-  "status": "healthy",
-  "version": "0.1.0",
-  "db": "n/a (offline mode)",
+  "status": "degraded",
+  "version": "1.0.0",
+  "db": "unavailable",
   "data_source": "fixtures"
 }
