@@ -90,7 +90,7 @@ Tests cover the API-mode resolver, fixture loader shape, the proxy route handler
 
 ## Tech stack
 
-Next.js 14 (App Router) · TypeScript (strict) · Tailwind v3 · shadcn/ui · Vitest · pnpm
+Next.js 14 (App Router) · TypeScript (strict) · Tailwind v3 with shadcn/ui semantic theme tokens · Vitest · pnpm
 
 ## License
 
