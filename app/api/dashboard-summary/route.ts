@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getApiMode, getUpstreamBaseUrl } from "@/lib/api-mode";
 import { loadDashboardSummaryFixture } from "@/lib/fixture-loader";
 import { getRequestLogger } from "@/lib/logger";
+import {
+  portalRequestsTotal,
+  portalRequestDurationSeconds,
+} from "@/lib/metrics";
 
 export async function GET(req: NextRequest) {
   const incoming = req.headers.get("x-request-id");
@@ -29,13 +33,24 @@ export async function GET(req: NextRequest) {
   }
 
   response.headers.set("x-request-id", requestId);
+  const durationMs = Date.now() - start;
+  portalRequestsTotal
+    .labels({
+      route: "/api/dashboard-summary",
+      mode,
+      status_code: String(response.status),
+    })
+    .inc();
+  portalRequestDurationSeconds
+    .labels({ route: "/api/dashboard-summary", mode })
+    .observe(durationMs / 1000);
   log.info(
     {
       event: "route_completed",
       path: "/api/dashboard-summary",
       mode,
       status_code: response.status,
-      duration_ms: Date.now() - start,
+      duration_ms: durationMs,
     },
     "route completed",
   );

@@ -22,9 +22,14 @@
  * etc.) are also collected on the same registry, useful for spotting
  * deployment problems independent of HTTP traffic.
  *
- * Counters and histograms register themselves to the exported registry
- * on construction. The /api/metrics route handler calls registry.metrics()
- * to render the text-format output.
+ * Singleton across bundle copies
+ * ------------------------------
+ * Next.js bundles each /api/* route handler into its own webpack chunk,
+ * and in development mode each chunk gets its own compiled copy of this
+ * module. To make every route share the same Registry instance (so
+ * increments from /api/health are visible to /api/metrics), the
+ * registry and metric objects are cached on globalThis. Subsequent
+ * imports reuse the cached instances rather than creating new ones.
  */
 
 import {
@@ -34,26 +39,56 @@ import {
   collectDefaultMetrics,
 } from "prom-client";
 
-export const registry = new Registry();
+type PortalMetrics = {
+  registry: Registry;
+  portalRequestsTotal: Counter<"route" | "mode" | "status_code">;
+  portalRequestDurationSeconds: Histogram<"route" | "mode">;
+  portalUpstreamUnreachableTotal: Counter<string>;
+};
 
-collectDefaultMetrics({ register: registry });
+const globalForMetrics = globalThis as unknown as {
+  __portalMetrics?: PortalMetrics;
+};
 
-export const portalRequestsTotal = new Counter({
-  name: "portal_requests_total",
-  help: "Total /api/* requests handled by the portal, labeled by route, mode, and status code.",
-  labelNames: ["route", "mode", "status_code"] as const,
-  registers: [registry],
-});
+function buildMetrics(): PortalMetrics {
+  const registry = new Registry();
+  collectDefaultMetrics({ register: registry });
 
-export const portalRequestDurationSeconds = new Histogram({
-  name: "portal_request_duration_seconds",
-  help: "Latency of /api/* requests in seconds, labeled by route and mode.",
-  labelNames: ["route", "mode"] as const,
-  registers: [registry],
-});
+  const portalRequestsTotal = new Counter({
+    name: "portal_requests_total",
+    help: "Total /api/* requests handled by the portal, labeled by route, mode, and status code.",
+    labelNames: ["route", "mode", "status_code"] as const,
+    registers: [registry],
+  });
 
-export const portalUpstreamUnreachableTotal = new Counter({
-  name: "portal_upstream_unreachable_total",
-  help: "Total times the portal failed to reach the upstream api in online mode.",
-  registers: [registry],
-});
+  const portalRequestDurationSeconds = new Histogram({
+    name: "portal_request_duration_seconds",
+    help: "Latency of /api/* requests in seconds, labeled by route and mode.",
+    labelNames: ["route", "mode"] as const,
+    registers: [registry],
+  });
+
+  const portalUpstreamUnreachableTotal = new Counter({
+    name: "portal_upstream_unreachable_total",
+    help: "Total times the portal failed to reach the upstream api in online mode.",
+    registers: [registry],
+  });
+
+  return {
+    registry,
+    portalRequestsTotal,
+    portalRequestDurationSeconds,
+    portalUpstreamUnreachableTotal,
+  };
+}
+
+const metrics: PortalMetrics =
+  globalForMetrics.__portalMetrics ?? buildMetrics();
+if (!globalForMetrics.__portalMetrics) {
+  globalForMetrics.__portalMetrics = metrics;
+}
+
+export const registry = metrics.registry;
+export const portalRequestsTotal = metrics.portalRequestsTotal;
+export const portalRequestDurationSeconds = metrics.portalRequestDurationSeconds;
+export const portalUpstreamUnreachableTotal = metrics.portalUpstreamUnreachableTotal;
