@@ -19,6 +19,8 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
+import { logger } from "../lib/logger";
+
 const BASE_URL = process.env.API_BASE_URL ?? "http://localhost:8000";
 const FIXTURES_DIR = resolve(process.cwd(), "fixtures");
 
@@ -38,22 +40,50 @@ const TARGETS: CaptureSpec[] = [
 ];
 
 async function main() {
-  console.log(`Capturing fixtures from ${BASE_URL}`);
+  logger.info({ event: "capture_started", base_url: BASE_URL }, "fixture capture started");
+  let captured = 0;
   for (const t of TARGETS) {
     const fullUrl = `${BASE_URL}${t.url}`;
+    const start = Date.now();
+    logger.info(
+      { event: "capture_endpoint_started", url: fullUrl, filename: t.filename },
+      "capturing endpoint",
+    );
+
     const res = await fetch(fullUrl);
     if (!res.ok && res.status !== 503) {
-      console.error(`Failed: ${fullUrl} (status ${res.status})`);
+      logger.error(
+        {
+          event: "capture_failed",
+          url: fullUrl,
+          status_code: res.status,
+        },
+        "capture failed",
+      );
       process.exit(1);
     }
     const body = await res.json();
     const outPath = resolve(FIXTURES_DIR, t.filename);
     writeFileSync(outPath, JSON.stringify(body, null, 2) + "\n");
-    console.log(`Wrote ${outPath}`);
+    captured += 1;
+    logger.info(
+      {
+        event: "capture_endpoint_completed",
+        url: fullUrl,
+        filename: t.filename,
+        status_code: res.status,
+        duration_ms: Date.now() - start,
+      },
+      "endpoint captured",
+    );
   }
+  logger.info({ event: "capture_completed", count: captured }, "fixture capture completed");
 }
 
 main().catch((err) => {
-  console.error(err);
+  logger.error(
+    { event: "capture_failed", error: err instanceof Error ? err.message : String(err) },
+    "fixture capture failed",
+  );
   process.exit(1);
 });
