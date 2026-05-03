@@ -1,5 +1,6 @@
 import { fetchDashboardData } from "@/lib/dashboard-data";
 import { KPICardsRow } from "@/components/dashboard/KPICardsRow";
+import { SalesTrendChart } from "@/components/dashboard/SalesTrendChart";
 
 export default async function DashboardPage() {
   const data = await fetchDashboardData();
@@ -14,9 +15,10 @@ export default async function DashboardPage() {
       </header>
 
       <KPICardsRow data={data} />
+      <SalesTrendChart data={data.dailyTrend} />
 
       <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-        Trend chart and store details land in the next two commits.
+        Top stores and exception severity card land in the next commit.
       </div>
     </div>
   );
