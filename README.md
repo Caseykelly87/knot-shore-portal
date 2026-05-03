@@ -144,6 +144,65 @@ To capture structured logs for offline analysis:
 LOG_FORMAT=json pnpm dev > portal.log 2>&1
 ```
 
+## Metrics
+
+The portal exposes a `/api/metrics` endpoint in Prometheus text exposition
+format. Any Prometheus-compatible scraper can poll this endpoint to collect
+time-series data on request rates, latencies, and Node.js process health.
+
+```bash
+curl http://localhost:3000/api/metrics
+```
+
+### Application metrics
+
+| Metric | Type | Labels | Description |
+|---|---|---|---|
+| `portal_requests_total` | Counter | `route`, `mode`, `status_code` | Increments per `/api/*` request the portal handles. `mode` is `offline` or `online`. |
+| `portal_request_duration_seconds` | Histogram | `route`, `mode` | Latency distribution per route and mode. Default prom-client histogram buckets. |
+| `portal_upstream_unreachable_total` | Counter | _none_ | Increments only when `/api/health` in online mode can't reach the upstream API. |
+
+The `route` label is the original Next.js path (`/api/store-metrics`,
+`/api/health`, etc.), so operators see the path that hit the portal —
+not a rewritten upstream path. `status_code` is a string (`"200"`,
+`"503"`); prom-client requires labels to be strings.
+
+The metric calls live in each route handler immediately before the
+existing `route_completed` pino log call, sharing the same duration
+calculation. Logs and metrics observe the same operational facts at the
+same call site — pino gives per-call detail with `request_id`,
+prom-client gives aggregate rates that scrapers can plot over time.
+
+### Default Node.js metrics
+
+The endpoint also exposes default Node.js process metrics via
+prom-client's `collectDefaultMetrics`: heap memory, GC duration, event
+loop lag, file descriptor count, CPU time, and others. Useful for
+spotting deployment problems independent of HTTP traffic (e.g., a memory
+leak that doesn't yet show up as elevated request latency).
+
+### Example output
+
+```
+# HELP portal_requests_total Total /api/* requests handled by the portal, labeled by route, mode, and status code.
+# TYPE portal_requests_total counter
+portal_requests_total{route="/api/store-metrics",mode="offline",status_code="200"} 5
+portal_requests_total{route="/api/health",mode="offline",status_code="200"} 1
+
+# HELP portal_request_duration_seconds Latency of /api/* requests in seconds, labeled by route and mode.
+# TYPE portal_request_duration_seconds histogram
+portal_request_duration_seconds_bucket{route="/api/store-metrics",mode="offline",le="0.005"} 5
+portal_request_duration_seconds_bucket{route="/api/store-metrics",mode="offline",le="+Inf"} 5
+portal_request_duration_seconds_count{route="/api/store-metrics",mode="offline"} 5
+```
+
+### Authentication
+
+The `/api/metrics` endpoint is unauthenticated. Production deployments
+should restrict access via firewall rules, an authenticating reverse
+proxy, or a service mesh — Prometheus convention is metrics endpoints
+sit inside trusted networks.
+
 ## Project structure
 
 ```

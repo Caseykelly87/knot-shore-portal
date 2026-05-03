@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getApiMode, getUpstreamBaseUrl } from "@/lib/api-mode";
 import { loadHealthFixture } from "@/lib/fixture-loader";
 import { getRequestLogger } from "@/lib/logger";
+import {
+  portalRequestsTotal,
+  portalRequestDurationSeconds,
+  portalUpstreamUnreachableTotal,
+} from "@/lib/metrics";
 
 export async function GET(req: NextRequest) {
   const incoming = req.headers.get("x-request-id");
@@ -32,6 +37,7 @@ export async function GET(req: NextRequest) {
         },
         "upstream unreachable",
       );
+      portalUpstreamUnreachableTotal.inc();
       response = NextResponse.json(
         { status: "upstream_unreachable", data_source: "live" },
         { status: 503 },
@@ -40,13 +46,24 @@ export async function GET(req: NextRequest) {
   }
 
   response.headers.set("x-request-id", requestId);
+  const durationMs = Date.now() - start;
+  portalRequestsTotal
+    .labels({
+      route: "/api/health",
+      mode,
+      status_code: String(response.status),
+    })
+    .inc();
+  portalRequestDurationSeconds
+    .labels({ route: "/api/health", mode })
+    .observe(durationMs / 1000);
   log.info(
     {
       event: "route_completed",
       path: "/api/health",
       mode,
       status_code: response.status,
-      duration_ms: Date.now() - start,
+      duration_ms: durationMs,
     },
     "route completed",
   );
