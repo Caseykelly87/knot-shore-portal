@@ -39,32 +39,31 @@ function shouldUsePretty(): boolean {
 }
 
 function buildOptions(): LoggerOptions {
-  const options: LoggerOptions = {
+  return {
     level: getApiLogLevel(),
     timestamp: pino.stdTimeFunctions.isoTime,
     base: {
       service: "knot-shore-portal",
     },
   };
-
-  if (shouldUsePretty()) {
-    options.transport = {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        translateTime: "SYS:standard",
-        ignore: "pid,hostname,service",
-      },
-    };
-  }
-
-  return options;
 }
 
 function buildLogger(): Logger {
   const options = buildOptions();
-  if (options.transport) {
-    return pino(options);
+  if (shouldUsePretty()) {
+    // pino-pretty as a sync stream rather than a worker-thread transport;
+    // worker transports require module resolution that webpack rewrites in
+    // bundled environments. The sync stream needs no out-of-process worker.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const pretty = require("pino-pretty");
+    const stream = pretty({
+      colorize: true,
+      translateTime: "SYS:standard",
+      ignore: "pid,hostname,service",
+      destination: process.stdout,
+      sync: true,
+    });
+    return pino(options, stream);
   }
   return pino(options, process.stdout);
 }
