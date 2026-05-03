@@ -1,4 +1,9 @@
-export default function DashboardPage() {
+import { fetchDashboardData } from "@/lib/dashboard-data";
+import { KPICardsRow } from "@/components/dashboard/KPICardsRow";
+
+export default async function DashboardPage() {
+  const data = await fetchDashboardData();
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-8 space-y-8">
       <header className="space-y-2">
@@ -8,8 +13,10 @@ export default function DashboardPage() {
         </p>
       </header>
 
+      <KPICardsRow data={data} />
+
       <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-        Dashboard content lands in subsequent commits.
+        Trend chart and store details land in the next two commits.
       </div>
     </div>
   );
