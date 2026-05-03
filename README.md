@@ -18,7 +18,12 @@ This portal renders dashboards over the data the API exposes. No business logic 
 
 ## Quick start
 
-Three commands and you have a working portal:
+The portal supports two demo paths. Both are first-class operational modes.
+
+### 30-second demo (offline)
+
+For a fast local exploration without any backend setup. The portal serves
+JSON snapshots committed to this repository.
 
 ```bash
 git clone https://github.com/Caseykelly87/knot-shore-portal.git
@@ -26,7 +31,34 @@ cd knot-shore-portal
 pnpm install && pnpm dev
 ```
 
-Open http://localhost:3000 — the landing page renders with a "Demo Mode" footer badge. The portal serves bundled JSON fixtures committed to this repository; no upstream API setup needed.
+Open http://localhost:3000 — the landing page renders with a "Demo Mode"
+footer badge.
+
+### Platform demo (online)
+
+For seeing the full platform in action with end-to-end request correlation.
+The portal proxies live requests to a running upstream API.
+
+In one terminal, run the upstream API (clone and set up
+[`economic-data-api`](https://github.com/Caseykelly87/economic-data-api) if
+you haven't already):
+
+```bash
+cd economic-data-api
+source venv/Scripts/activate     # or venv/bin/activate on macOS/Linux
+uvicorn app.main:app --port 8000
+```
+
+In a second terminal, run the portal in online mode:
+
+```bash
+cd knot-shore-portal
+API_MODE=online API_BASE_URL=http://localhost:8000 pnpm dev
+```
+
+Open http://localhost:3000 — the footer badge now reads "Live Data". A
+single user's request flows through both services with one shared
+`request_id`, visible in both terminals' structured logs.
 
 ## Operating modes
 
@@ -53,6 +85,64 @@ To refresh:
 1. Start the upstream API: `cd economic-data-api && uvicorn app.main:app --port 8000`
 2. From this repo: `pnpm tsx scripts/capture-fixtures.ts`
 3. Verify the captured files in `fixtures/`, commit them.
+
+## Logging
+
+The portal emits structured logs via [pino](https://getpino.io/). Output is
+human-readable colored text when stdout is a tty, single-line JSON otherwise.
+Format and verbosity can be controlled via environment variables:
+
+| Variable | Values | Default |
+|---|---|---|
+| `LOG_LEVEL` | `debug`, `info`, `warn`, `error`, `fatal` | `info` |
+| `LOG_FORMAT` | `pretty`, `json` | auto (pretty if tty, else json) |
+
+### Request correlation
+
+Every request to a `/api/*` route is tagged with a UUID. The route handler:
+
+- Accepts the value of the incoming `X-Request-ID` header if the caller provides
+  one, or generates a fresh UUID via `crypto.randomUUID()`.
+- Constructs a per-request child logger so every log line emitted while
+  handling the request includes a `request_id` field.
+- In online mode, propagates the same ID to the upstream API via
+  `X-Request-ID` header so the API uses the same correlation ID in its logs.
+- Echoes the ID on the portal's response `X-Request-ID` header.
+
+This means a single user's flow can be traced end-to-end by grepping for one
+UUID across the portal's logs and the upstream API's logs.
+
+### Output examples
+
+Pretty mode (default in a terminal):
+
+```
+[2025-12-31 17:34:42.118 +0000] INFO: route completed
+    request_id: "8c3f1a2b-..."
+    event: "route_completed"
+    path: "/api/store-metrics"
+    mode: "offline"
+    status_code: 200
+    duration_ms: 4
+```
+
+JSON mode (default when piped, or when `LOG_FORMAT=json`):
+
+```json
+{"level":"info","time":"2025-12-31T17:34:42.118Z","service":"knot-shore-portal","request_id":"8c3f1a2b-...","event":"route_completed","path":"/api/store-metrics","mode":"offline","status_code":200,"duration_ms":4,"msg":"route completed"}
+```
+
+To run with debug-level logs:
+
+```bash
+LOG_LEVEL=debug pnpm dev
+```
+
+To capture structured logs for offline analysis:
+
+```bash
+LOG_FORMAT=json pnpm dev > portal.log 2>&1
+```
 
 ## Project structure
 
