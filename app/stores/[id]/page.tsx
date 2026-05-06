@@ -3,6 +3,7 @@ import { fetchStoreData, type StoreData } from "@/lib/store-data";
 import { StoreHeader } from "@/components/store-drilldown/StoreHeader";
 import { StoreKPICards } from "@/components/store-drilldown/StoreKPICards";
 import { DepartmentMixChart } from "@/components/store-drilldown/DepartmentMixChart";
+import { YearOverYearChart } from "@/components/store-drilldown/YearOverYearChart";
 
 interface StorePageProps {
   params: { id: string };
@@ -40,10 +41,12 @@ export default async function StorePage({ params }: StorePageProps) {
         avgLaborCostPct={data.avgLaborCostPct}
       />
 
+      <YearOverYearChart data={data.yoyTrend} />
+
       <DepartmentMixChart data={data.departmentMix} />
 
       <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-        Year-over-year trend, top departments, and store-specific anomalies land in the next two commits.
+        Top departments and store-specific anomalies land in the final commit.
       </div>
     </div>
   );

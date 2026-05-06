@@ -163,7 +163,16 @@ export function shapeStoreData(
     throw new Error(`Store ${storeId} not found in dim_stores`);
   }
 
-  const currentYearItems = currentYearMetrics.items.filter((i) => i.store_id === storeId);
+  // Defensive date-scoping: the offline route handlers return the full
+  // fixture (both years) regardless of query params, so the shaper
+  // re-applies the year window itself. Online mode is already scoped
+  // by the upstream api but the redundant filter is cheap.
+  const currentYearItems = currentYearMetrics.items.filter(
+    (i) =>
+      i.store_id === storeId &&
+      i.date >= CURRENT_YEAR_START &&
+      i.date <= CURRENT_YEAR_END,
+  );
   const totalSales = currentYearItems.reduce((sum, r) => sum + r.total_sales, 0);
   const totalTransactions = currentYearItems.reduce((sum, r) => sum + r.transaction_count, 0);
   const laborWithValues = currentYearItems.filter(
@@ -177,7 +186,9 @@ export function shapeStoreData(
   const activeExceptions = storeAnomalyItems.length;
 
   const priorYearByMonthDay = new Map<string, number>();
-  for (const item of priorYearMetrics.items.filter((i) => i.store_id === storeId)) {
+  for (const item of priorYearMetrics.items.filter(
+    (i) => i.store_id === storeId && i.date >= PRIOR_YEAR_START && i.date <= PRIOR_YEAR_END,
+  )) {
     priorYearByMonthDay.set(getMonthDayKey(item.date), item.total_sales);
   }
 
@@ -189,7 +200,12 @@ export function shapeStoreData(
       priorYearSales: priorYearByMonthDay.get(getMonthDayKey(item.date)) ?? null,
     }));
 
-  const deptItems = deptMetrics.items.filter((i) => i.store_id === storeId);
+  const deptItems = deptMetrics.items.filter(
+    (i) =>
+      i.store_id === storeId &&
+      i.date >= CURRENT_YEAR_START &&
+      i.date <= CURRENT_YEAR_END,
+  );
   const deptTotalsMap = new Map<number, number>();
   for (const item of deptItems) {
     deptTotalsMap.set(item.department_id, (deptTotalsMap.get(item.department_id) ?? 0) + item.net_sales);
