@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ModeIndicator } from "@/components/ModeIndicator";
+import { TopNav } from "@/components/TopNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,9 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-background text-foreground antialiased">
+        <TopNav />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-border bg-card">
-          <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between text-sm text-muted-foreground">
+          <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between text-sm text-muted-foreground">
             <span>Knot Shore Portal</span>
             <ModeIndicator />
           </div>
