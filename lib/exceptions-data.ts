@@ -1,15 +1,16 @@
 /**
- * Server-side exceptions data fetcher and client-side filter logic
+ * Exceptions data shape transformer and client-side filter logic
  * for the /exceptions page.
  *
- * fetchExceptionsData fetches all anomalies (paginated via the api's
- * 200-row limit) plus dim_stores, then composes into a sorted view
- * model. Filtering happens client-side via applyFilters; the dataset
- * is small enough (983 rows) that re-filtering on every keystroke is
+ * This module is pure (no server-only imports). The server-only
+ * fetchExceptionsData lives in lib/exceptions-data-server.ts so that
+ * client components can import shapeExceptionsData, applyFilters, and
+ * the type definitions without pulling in next/headers.
+ *
+ * Filtering happens client-side via applyFilters; the dataset is
+ * small enough (983 rows) that re-filtering on every keystroke is
  * imperceptible.
  */
-
-import { headers } from "next/headers";
 
 export interface ExceptionRow {
   date: string;
@@ -41,7 +42,7 @@ export interface ExceptionsFilters {
   ruleId?: string;
 }
 
-interface AnomalyFlagRaw {
+export interface AnomalyFlagRaw {
   date: string;
   store_id: number;
   rule_id: string;
@@ -53,14 +54,14 @@ interface AnomalyFlagRaw {
   severity_level: string;
 }
 
-interface AnomaliesEnvelope {
+export interface AnomaliesEnvelope {
   total: number;
   limit: number;
   offset: number;
   items: AnomalyFlagRaw[];
 }
 
-interface DimStoreRaw {
+export interface DimStoreRaw {
   store_id: number;
   store_name: string;
 }
@@ -154,61 +155,4 @@ export function applyFilters(rows: ExceptionRow[], filters: ExceptionsFilters): 
     if (filters.ruleId && row.ruleId !== filters.ruleId) return false;
     return true;
   });
-}
-
-function getBaseUrl(): string {
-  const h = headers();
-  const host = h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  return `${proto}://${host}`;
-}
-
-export async function fetchExceptionsData(): Promise<ExceptionsData> {
-  const base = getBaseUrl();
-
-  const [anomaliesRes, dimStoresRes] = await Promise.all([
-    fetch(`${base}/api/anomalies?limit=200`, { cache: "no-store" }),
-    fetch(`${base}/api/dim-stores`, { cache: "no-store" }),
-  ]);
-
-  if (!anomaliesRes.ok || !dimStoresRes.ok) {
-    throw new Error(
-      `Exceptions data fetch failed: anomalies=${anomaliesRes.status} dimStores=${dimStoresRes.status}`,
-    );
-  }
-
-  const [page1, dimStores] = await Promise.all([
-    anomaliesRes.json() as Promise<AnomaliesEnvelope>,
-    dimStoresRes.json() as Promise<DimStoreRaw[]>,
-  ]);
-
-  // Offline mode returns the full fixture in one call (route handler ignores
-  // limit/offset). Online mode respects pagination, so we need to fan out
-  // additional fetches for pages 2..N when the first page didn't cover total.
-  let allItems = page1.items;
-
-  if (page1.items.length < page1.total) {
-    const remainingPages: Promise<AnomaliesEnvelope>[] = [];
-    for (let offset = page1.items.length; offset < page1.total; offset += 200) {
-      remainingPages.push(
-        fetch(`${base}/api/anomalies?limit=200&offset=${offset}`, { cache: "no-store" }).then((r) => {
-          if (!r.ok) throw new Error(`Pagination fetch failed at offset=${offset}: ${r.status}`);
-          return r.json();
-        }),
-      );
-    }
-    const additionalPages = await Promise.all(remainingPages);
-    for (const page of additionalPages) {
-      allItems = allItems.concat(page.items);
-    }
-  }
-
-  const fullEnvelope: AnomaliesEnvelope = {
-    total: page1.total,
-    limit: page1.limit,
-    offset: 0,
-    items: allItems,
-  };
-
-  return shapeExceptionsData(fullEnvelope, dimStores);
 }
