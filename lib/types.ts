@@ -66,3 +66,33 @@ export interface Health {
   db: string;
   data_source: string;
 }
+
+export interface DimStore {
+  store_id: number;
+  store_name: string;
+  address: string;
+  city: string;
+  zip: string;
+  county_fips: string;
+  trade_area_profile: string;
+  sqft: number;
+  open_date: string;
+  base_daily_revenue: number;
+}
+
+export interface DepartmentMetricItem {
+  date: string;
+  store_id: number;
+  department_id: number;
+  net_sales: number;
+  transactions: number;
+  units_sold: number;
+  gross_margin_pct: number;
+}
+
+export interface PaginatedDepartmentMetrics {
+  total: number;
+  limit: number;
+  offset: number;
+  items: DepartmentMetricItem[];
+}

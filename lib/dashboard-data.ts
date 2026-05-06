@@ -7,8 +7,10 @@
  * and returns a single shaped object the dashboard page renders.
  *
  * shapeDashboardData() is the pure transform separated for unit
- * testing. It composes data from the three endpoint responses into
- * the dashboard's view model.
+ * testing. It composes data from the four endpoint responses into
+ * the dashboard's view model. The fourth input — dim_stores — supplies
+ * real store names for the top-stores chart; without it the chart
+ * falls back to a synthesized 'Store {N}' label.
  */
 
 import { headers } from "next/headers";
@@ -24,6 +26,7 @@ export interface DashboardData {
   dailyTrend: Array<{ date: string; totalSales: number }>;
   topStores: Array<{ storeId: string; storeName: string; totalSales: number }>;
   exceptionSeverityCounts: { info: number; warning: number; critical: number };
+  storeNames: Record<number, string>;
 }
 
 interface DashboardSummaryRaw {
@@ -48,11 +51,22 @@ interface StoreMetricsRaw {
   items: Array<{ labor_cost_pct?: number | null }>;
 }
 
+interface DimStoreRaw {
+  store_id: number;
+  store_name: string;
+}
+
 export function shapeDashboardData(
   summary: DashboardSummaryRaw,
   anomalies: AnomaliesRaw,
   storeMetrics: StoreMetricsRaw,
+  dimStores: DimStoreRaw[],
 ): DashboardData {
+  const storeNames: Record<number, string> = {};
+  for (const store of dimStores) {
+    storeNames[store.store_id] = store.store_name;
+  }
+
   // Severity counts come from the dashboard-summary endpoint's
   // pre-computed exception_count_by_severity field. The /api/anomalies
   // endpoint paginates and the offline fixture caps items at 200, so
@@ -85,12 +99,16 @@ export function shapeDashboardData(
       date: d.date,
       totalSales: d.total_sales,
     })),
-    topStores: (summary.top_stores_by_revenue ?? []).map((s) => ({
-      storeId: String(s.store_id),
-      storeName: `Store ${s.store_id}`,
-      totalSales: s.total_sales,
-    })),
+    topStores: (summary.top_stores_by_revenue ?? []).map((s) => {
+      const numericId = typeof s.store_id === "number" ? s.store_id : Number(s.store_id);
+      return {
+        storeId: String(s.store_id),
+        storeName: storeNames[numericId] ?? `Store ${s.store_id}`,
+        totalSales: s.total_sales,
+      };
+    }),
     exceptionSeverityCounts,
+    storeNames,
   };
 }
 
@@ -104,26 +122,28 @@ function getBaseUrl(): string {
 export async function fetchDashboardData(): Promise<DashboardData> {
   const base = getBaseUrl();
 
-  const [summaryRes, anomaliesRes, storeMetricsRes] = await Promise.all([
+  const [summaryRes, anomaliesRes, storeMetricsRes, dimStoresRes] = await Promise.all([
     fetch(
       `${base}/api/dashboard-summary?start_date=${DASHBOARD_START_DATE}&end_date=${DASHBOARD_END_DATE}`,
       { cache: "no-store" },
     ),
-    fetch(`${base}/api/anomalies?limit=1000`, { cache: "no-store" }),
-    fetch(`${base}/api/store-metrics?limit=2000`, { cache: "no-store" }),
+    fetch(`${base}/api/anomalies?limit=200`, { cache: "no-store" }),
+    fetch(`${base}/api/store-metrics?limit=200`, { cache: "no-store" }),
+    fetch(`${base}/api/dim-stores`, { cache: "no-store" }),
   ]);
 
-  if (!summaryRes.ok || !anomaliesRes.ok || !storeMetricsRes.ok) {
+  if (!summaryRes.ok || !anomaliesRes.ok || !storeMetricsRes.ok || !dimStoresRes.ok) {
     throw new Error(
-      `Dashboard data fetch failed: summary=${summaryRes.status} anomalies=${anomaliesRes.status} storeMetrics=${storeMetricsRes.status}`,
+      `Dashboard data fetch failed: summary=${summaryRes.status} anomalies=${anomaliesRes.status} storeMetrics=${storeMetricsRes.status} dimStores=${dimStoresRes.status}`,
     );
   }
 
-  const [summary, anomalies, storeMetrics] = await Promise.all([
+  const [summary, anomalies, storeMetrics, dimStores] = await Promise.all([
     summaryRes.json() as Promise<DashboardSummaryRaw>,
     anomaliesRes.json() as Promise<AnomaliesRaw>,
     storeMetricsRes.json() as Promise<StoreMetricsRaw>,
+    dimStoresRes.json() as Promise<DimStoreRaw[]>,
   ]);
 
-  return shapeDashboardData(summary, anomalies, storeMetrics);
+  return shapeDashboardData(summary, anomalies, storeMetrics, dimStores);
 }

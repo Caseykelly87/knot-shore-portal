@@ -45,8 +45,13 @@ describe("shapeDashboardData", () => {
     ],
   };
 
+  const sampleDimStores = [
+    { store_id: 1, store_name: "Knot Shore — Kirkwood" },
+    { store_id: 2, store_name: "Knot Shore — Chesterfield" },
+  ];
+
   it("returns the expected fields with correct values", () => {
-    const shaped = shapeDashboardData(sampleSummary, sampleAnomalies, sampleStoreMetrics);
+    const shaped = shapeDashboardData(sampleSummary, sampleAnomalies, sampleStoreMetrics, sampleDimStores);
     expect(shaped.totalSales).toBe(117973736);
     expect(shaped.totalTransactions).toBe(3582897);
     expect(shaped.activeExceptions).toBe(453);
@@ -56,7 +61,7 @@ describe("shapeDashboardData", () => {
     expect(shaped.topStores).toHaveLength(2);
     expect(shaped.topStores[0]).toEqual({
       storeId: "2",
-      storeName: "Store 2",
+      storeName: "Knot Shore — Chesterfield",
       totalSales: 22070829.99,
     });
     expect(shaped.exceptionSeverityCounts).toEqual({ info: 438, warning: 15, critical: 0 });
@@ -64,7 +69,7 @@ describe("shapeDashboardData", () => {
 
   it("handles a summary with no severity buckets", () => {
     const summaryWithoutBuckets = { ...sampleSummary, exception_count_by_severity: [] };
-    const shaped = shapeDashboardData(summaryWithoutBuckets, sampleAnomalies, sampleStoreMetrics);
+    const shaped = shapeDashboardData(summaryWithoutBuckets, sampleAnomalies, sampleStoreMetrics, sampleDimStores);
     expect(shaped.exceptionSeverityCounts).toEqual({ info: 0, warning: 0, critical: 0 });
   });
 
@@ -73,6 +78,7 @@ describe("shapeDashboardData", () => {
       sampleSummary,
       sampleAnomalies,
       { total: 0, limit: 200, offset: 0, items: [] },
+      sampleDimStores,
     );
     expect(shaped.avgLaborCostPct).toBe(0);
   });
@@ -88,7 +94,21 @@ describe("shapeDashboardData", () => {
         { severity_level: "unknown", count: 7 },
       ],
     };
-    const shaped = shapeDashboardData(summaryWithOdd, sampleAnomalies, sampleStoreMetrics);
+    const shaped = shapeDashboardData(summaryWithOdd, sampleAnomalies, sampleStoreMetrics, sampleDimStores);
     expect(shaped.exceptionSeverityCounts).toEqual({ info: 10, warning: 5, critical: 1 });
+  });
+
+  it("composes storeNames from dim_stores", () => {
+    const shaped = shapeDashboardData(sampleSummary, sampleAnomalies, sampleStoreMetrics, sampleDimStores);
+    expect(shaped.storeNames).toEqual({
+      1: "Knot Shore — Kirkwood",
+      2: "Knot Shore — Chesterfield",
+    });
+  });
+
+  it("falls back to synthesized name when dim_stores is empty", () => {
+    const shaped = shapeDashboardData(sampleSummary, sampleAnomalies, sampleStoreMetrics, []);
+    expect(shaped.storeNames).toEqual({});
+    expect(shaped.topStores[0].storeName).toBe("Store 2");
   });
 });

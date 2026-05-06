@@ -1,0 +1,62 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getApiMode, getUpstreamBaseUrl } from "@/lib/api-mode";
+import { loadDepartmentMetricsFixture } from "@/lib/fixture-loader";
+import { getRequestLogger } from "@/lib/logger";
+import {
+  portalRequestsTotal,
+  portalRequestDurationSeconds,
+} from "@/lib/metrics";
+
+export async function GET(req: NextRequest) {
+  const incoming = req.headers.get("x-request-id");
+  const requestId = incoming ?? crypto.randomUUID();
+  const log = getRequestLogger(requestId);
+
+  const mode = getApiMode();
+  const start = Date.now();
+  log.info(
+    { event: "route_started", path: "/api/department-metrics", mode },
+    "route started",
+  );
+
+  let response: NextResponse;
+  if (mode === "offline") {
+    // Offline mode returns the full fixture; consumers filter client-side
+    // or, more typically, the per-store fetcher reads the same fixture
+    // and slices in memory. The fixture is bundled at build time so the
+    // i/o cost is paid once.
+    response = NextResponse.json(loadDepartmentMetricsFixture());
+  } else {
+    const upstream = `${getUpstreamBaseUrl()}/department-metrics${req.nextUrl.search}`;
+    const res = await fetch(upstream, {
+      cache: "no-store",
+      headers: { "x-request-id": requestId },
+    });
+    const data = await res.json();
+    response = NextResponse.json(data, { status: res.status });
+  }
+
+  response.headers.set("x-request-id", requestId);
+  const durationMs = Date.now() - start;
+  portalRequestsTotal
+    .labels({
+      route: "/api/department-metrics",
+      mode,
+      status_code: String(response.status),
+    })
+    .inc();
+  portalRequestDurationSeconds
+    .labels({ route: "/api/department-metrics", mode })
+    .observe(durationMs / 1000);
+  log.info(
+    {
+      event: "route_completed",
+      path: "/api/department-metrics",
+      mode,
+      status_code: response.status,
+      duration_ms: durationMs,
+    },
+    "route completed",
+  );
+  return response;
+}
