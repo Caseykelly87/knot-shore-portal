@@ -29,11 +29,11 @@
   "exception_count_by_severity": [
     {
       "severity_level": "info",
-      "count": 438
+      "count": 619
     },
     {
       "severity_level": "warning",
-      "count": 15
+      "count": 18
     },
     {
       "severity_level": "critical",
