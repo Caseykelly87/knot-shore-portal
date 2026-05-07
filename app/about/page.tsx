@@ -46,7 +46,7 @@ const PAGES = [
     title: "Portal",
     description:
       "The Next.js application — server-component data flow, URL-synced state, charts, theme system, this page itself.",
-    available: false,
+    available: true,
   },
 ];
 
@@ -88,10 +88,6 @@ export default function AboutPage() {
             <PageCard key={page.href} {...page} />
           ))}
         </div>
-        <p className="text-sm text-muted-foreground">
-          Per-layer pages are added in a subsequent phase. The links resolve once those pages
-          ship.
-        </p>
       </section>
     </article>
   );
