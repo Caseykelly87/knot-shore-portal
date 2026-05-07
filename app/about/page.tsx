@@ -39,7 +39,7 @@ const PAGES = [
     title: "API",
     description:
       "The service layer — endpoint contracts, dual-mode operation, observability stack, schema discipline.",
-    available: false,
+    available: true,
   },
   {
     href: "/about/portal",
