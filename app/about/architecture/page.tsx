@@ -278,10 +278,6 @@ export default function ArchitecturePage() {
             — Next.js architecture, server-component data flow, URL state, charts
           </li>
         </ul>
-        <p className="text-sm text-muted-foreground">
-          (Per-layer pages are added in the next phase. The links resolve once those pages
-          ship.)
-        </p>
         <p>
           The{" "}
           <Link

@@ -25,28 +25,28 @@ const PAGES = [
     title: "Sim engine",
     description:
       "The synthetic data generator — determinism, anomaly injection, paired-year generation, key code structure.",
-    available: false,
+    available: true,
   },
   {
     href: "/about/etl",
     title: "ETL",
     description:
       "The ingestion pipeline — source adapters, transforms, detection rules, the macro pipeline, the canonical fixture flow.",
-    available: false,
+    available: true,
   },
   {
     href: "/about/api",
     title: "API",
     description:
       "The service layer — endpoint contracts, dual-mode operation, observability stack, schema discipline.",
-    available: false,
+    available: true,
   },
   {
     href: "/about/portal",
     title: "Portal",
     description:
       "The Next.js application — server-component data flow, URL-synced state, charts, theme system, this page itself.",
-    available: false,
+    available: true,
   },
 ];
 
@@ -88,10 +88,6 @@ export default function AboutPage() {
             <PageCard key={page.href} {...page} />
           ))}
         </div>
-        <p className="text-sm text-muted-foreground">
-          Per-layer pages are added in a subsequent phase. The links resolve once those pages
-          ship.
-        </p>
       </section>
     </article>
   );

@@ -1,0 +1,296 @@
+import Link from "next/link";
+import { MermaidDiagram } from "@/components/about/MermaidDiagram";
+
+export const metadata = {
+  title: "ETL — Knot Shore Portal",
+  description:
+    "Architecture overview of the ETL: source-adapter separation, canonical fixtures, detection rules.",
+};
+
+const ETL_FLOW_DIAGRAM = `
+graph LR
+  subgraph Source
+    SE[Sim engine output<br/>daily/MM/DD/YYYY/]
+  end
+
+  subgraph Adapter["src/sim_ingest.py"]
+    A1[load_store_summaries]
+    A2[load_department_sales]
+    A3[load_dim_stores]
+    A1 --> SR[Typed records]
+    A2 --> SR
+    A3 --> SR
+  end
+
+  subgraph Transform["src/sim_transform.py"]
+    SR --> T1[build_store_daily_metrics]
+    SR --> T2[build_department_daily_metrics]
+  end
+
+  subgraph CLI["src/sim_cli.py"]
+    T1 --> P1[store_daily_metrics.parquet]
+    T2 --> P2[department_daily_metrics.parquet]
+    A3 --> P3[dim_stores.parquet]
+  end
+
+  subgraph Detect["src/detect_cli.py"]
+    P1 --> D1[Apply rules]
+    D1 --> P4[anomaly_flags.parquet]
+  end
+
+  SE --> A1
+  SE --> A2
+  SE --> A3
+
+  P1 --> CAN[data/processed/canonical/]
+  P2 --> CAN
+  P3 --> CAN
+  P4 --> CAN
+`;
+
+export default function EtlPage() {
+  return (
+    <article className="mx-auto max-w-4xl px-6 py-8 space-y-10">
+      <header className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          <Link href="/about" className="hover:text-foreground transition-colors">
+            About
+          </Link>{" "}
+          / ETL
+        </p>
+        <h1 className="text-4xl font-bold tracking-tight">ETL</h1>
+        <p className="text-lg text-muted-foreground">
+          The ingestion and detection pipeline. Reads sim engine output, validates schemas,
+          applies static-band detection rules, and writes the canonical parquet artifacts that
+          downstream layers consume.
+        </p>
+      </header>
+
+      <section className="space-y-4" id="role">
+        <h2 className="text-2xl font-semibold tracking-tight">Role in the platform</h2>
+        <p>
+          The ETL repo is the platform&apos;s data-shaping layer. It reads CSV files produced by
+          the sim engine, validates that the data is well-formed, transforms it into canonical
+          DataFrames, and writes parquet artifacts that become the API repo&apos;s fixture
+          inputs and the basis for everything downstream.
+        </p>
+        <p>
+          The repo also contains a separate macro-economic pipeline (FRED, BLS, ERS) that loads
+          to Postgres. The two pipelines share configuration, observability infrastructure, and
+          CI but otherwise don&apos;t interact. The grocery side is the platform&apos;s primary
+          concern; the macro side is a related-but-distinct data engineering exercise.
+        </p>
+      </section>
+
+      <section className="space-y-4" id="adapter-transform">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Source-adapter / transform separation
+        </h2>
+        <p>
+          The ETL&apos;s grocery ingestion is organized around a strict separation between
+          source-format-aware code and source-format-agnostic transform code.
+        </p>
+        <p>
+          <code className="bg-muted px-1 rounded">sim_ingest.py</code> owns all knowledge of the
+          sim engine&apos;s output format — CSV column names, type coercion rules, the directory
+          walk pattern, the typed records that are yielded for each row. Its public functions —{" "}
+          <code className="bg-muted px-1 rounded">load_store_summaries</code>,{" "}
+          <code className="bg-muted px-1 rounded">load_department_sales</code>,{" "}
+          <code className="bg-muted px-1 rounded">load_dim_stores</code> — are the boundary at
+          which the platform stops caring about CSV.
+        </p>
+        <p>
+          <code className="bg-muted px-1 rounded">sim_transform.py</code> doesn&apos;t import
+          anything that knows about CSV. Its functions take typed records and produce DataFrames
+          with deterministic sort orders. If the sim engine ever changed its output format — to
+          JSON, to a database, to streaming — only{" "}
+          <code className="bg-muted px-1 rounded">sim_ingest.py</code> would need to change.
+        </p>
+        <p>
+          This separation is the basic discipline of pipeline engineering. It looks like
+          duplication on small examples; it pays back when the source format changes or when a
+          new source needs to feed into the same transforms.
+        </p>
+      </section>
+
+      <section className="space-y-4" id="canonical-flow">
+        <h2 className="text-2xl font-semibold tracking-tight">The canonical fixture flow</h2>
+        <MermaidDiagram source={ETL_FLOW_DIAGRAM} id="etl-flow" />
+        <p>
+          The diagram traces the data&apos;s path through the ETL. The sim engine&apos;s CSV
+          output enters at the left; four parquet artifacts emerge at the right. Those four
+          artifacts together are the <em>canonical</em> — committed to the repo at{" "}
+          <code className="bg-muted px-1 rounded">data/processed/canonical/</code>, byte-
+          identically copied into the API repo&apos;s{" "}
+          <code className="bg-muted px-1 rounded">app/fixtures/</code>, and the source for the
+          portal&apos;s captured JSON snapshots.
+        </p>
+        <p>The canonical artifacts:</p>
+        <ul className="list-disc list-inside text-sm space-y-1">
+          <li>
+            <code className="bg-muted px-1 rounded">store_daily_metrics.parquet</code> — 2,944
+            rows. 8 stores × 368 days (2024 + 2025). Per store-day: total sales, transactions,
+            basket size, labor cost percentage.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">department_daily_metrics.parquet</code> —
+            29,414 rows. ~8 stores × 10 departments × 368 days, less zero-filtered cells. Per
+            store-day-department: net sales, transactions, units, gross margin percentage.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 983 rows. Each
+            row is a flagged store-day with the rule that fired, the actual value, the expected
+            band, and a severity level.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">dim_stores.parquet</code> — 8 rows of store
+            reference data: store name, address, city, ZIP, county FIPS, trade-area profile,
+            sqft, open date.
+          </li>
+        </ul>
+      </section>
+
+      <section className="space-y-4" id="detection">
+        <h2 className="text-2xl font-semibold tracking-tight">Detection rules</h2>
+        <p>
+          Anomaly detection is implemented as a small library of static-band rules in{" "}
+          <code className="bg-muted px-1 rounded">detect_rules.py</code>, with thresholds
+          declared in <code className="bg-muted px-1 rounded">rules.yaml</code>. The CLI{" "}
+          <code className="bg-muted px-1 rounded">detect_cli.py</code> applies the rules to the
+          canonical store-day parquet and writes{" "}
+          <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code>.
+        </p>
+        <p>
+          Five primary rules: revenue band (per-store-day total sales outside expected range),
+          transactions band (transaction count outside expected range), and a year-over-year
+          comparison rule (yoy_comp) that fires when this date&apos;s revenue diverges
+          significantly from the same calendar date one year prior. The yoy_comp rule depends on
+          the canonical containing both years; without paired-year canonical it&apos;s a no-op.
+        </p>
+        <p>
+          The recall and false-positive contracts established during development are recall ≥
+          0.35 and false-positive rate ≤ 0.10 against the sim engine&apos;s ground-truth
+          anomaly_log. The contract is verified by a separate evaluation script —{" "}
+          <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code> — which
+          is the only file in the entire platform allowed to read the ground-truth log. The
+          evaluation report is committed at{" "}
+          <code className="bg-muted px-1 rounded">
+            data/processed/eval/detection_quality_report.md
+          </code>
+          .
+        </p>
+      </section>
+
+      <section className="space-y-4" id="macro">
+        <h2 className="text-2xl font-semibold tracking-tight">The macro pipeline</h2>
+        <p>
+          A separate concern lives in the same repo:{" "}
+          <code className="bg-muted px-1 rounded">main.py</code>,{" "}
+          <code className="bg-muted px-1 rounded">extract.py</code>,{" "}
+          <code className="bg-muted px-1 rounded">transform.py</code>, and{" "}
+          <code className="bg-muted px-1 rounded">load.py</code> form an extract-transform-load
+          pipeline against three macro-economic data sources: FRED (Federal Reserve Economic
+          Data), BLS (Bureau of Labor Statistics), and ERS (USDA Economic Research Service).
+        </p>
+        <p>
+          The macro pipeline reads JSON from the FRED and BLS APIs (httpx with retry/backoff)
+          and CSV from the ERS bulk-download endpoint. It normalizes responses into a canonical{" "}
+          <code className="bg-muted px-1 rounded">(series_id, date, value, metadata)</code>{" "}
+          shape and idempotently upserts to Postgres via SQLAlchemy with parameterized queries.
+        </p>
+        <p>
+          Why same repo: the macro and grocery pipelines share configuration patterns,
+          observability setup, exception types, and CI. Splitting into separate repos would
+          duplicate infrastructure for negligible architectural benefit.
+        </p>
+      </section>
+
+      <section className="space-y-4" id="code-organization">
+        <h2 className="text-2xl font-semibold tracking-tight">Code organization</h2>
+        <p>
+          Source under <code className="bg-muted px-1 rounded">src/</code>. Tests under{" "}
+          <code className="bg-muted px-1 rounded">tests/</code>. Schema definitions and
+          exception classes are shared between the two pipelines. Module responsibilities:
+        </p>
+        <ul className="list-disc list-inside space-y-1 text-sm">
+          <li>
+            <code className="bg-muted px-1 rounded">sim_ingest.py</code> — source adapter for
+            the sim engine&apos;s CSV layout. Walks the date-tree directory structure, validates
+            schemas, yields typed records.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">sim_transform.py</code> — source-format-
+            agnostic transforms that produce canonical DataFrames.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">sim_cli.py</code> — composes adapter and
+            transform; writes the three primary parquet artifacts.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">detect_cli.py</code> +{" "}
+            <code className="bg-muted px-1 rounded">detect_rules.py</code> — applies rules from{" "}
+            <code className="bg-muted px-1 rounded">rules.yaml</code> to the canonical store-day
+            parquet and writes anomaly_flags.parquet.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">schemas.py</code> — column contracts and
+            typed records for both pipelines.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">exceptions.py</code> —{" "}
+            <code className="bg-muted px-1 rounded">SchemaValidationError</code>{" "}
+            (parse/type/referential failures) and{" "}
+            <code className="bg-muted px-1 rounded">ReconciliationError</code> (pipeline-level
+            mismatches: missing files, empty walks, row count mismatches).
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">main.py</code> — macro pipeline orchestrator.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">extract.py</code> — FRED, BLS, ERS clients
+            with httpx retry/backoff.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">transform.py</code> — macro response
+            normalization.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">load.py</code> — idempotent Postgres upsert.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">observability.py</code> — structlog
+            configuration shared between the grocery and macro pipelines.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">scripts/build_canonical_fixtures.py</code> —
+            runs sim_cli + detect_cli against a local sim engine output and produces the
+            committed canonical artifacts.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code> —
+            measures detection recall and FPR against the sim engine&apos;s ground truth. The
+            only file in the platform that reads anomaly_log.csv.
+          </li>
+        </ul>
+      </section>
+
+      <section className="space-y-4" id="testing">
+        <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
+        <p>
+          The ETL has 254 tests. Coverage centers on the boundary contracts: schema validation
+          rejects malformed input with descriptive errors, the source adapter and transform are
+          isolated from each other (transform tests use synthetic typed records, not CSV
+          fixtures), and the canonical fixture builder produces byte-identical output across
+          successive runs.
+        </p>
+        <p>
+          Each pipeline has its own happy-path integration test that exercises the full chain
+          end-to-end against small synthetic fixtures (3 dates × 8 stores). The detection
+          rules have unit tests for each rule&apos;s edge cases, plus the recall/FPR contract
+          enforced by{" "}
+          <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code>.
+        </p>
+      </section>
+    </article>
+  );
+}
