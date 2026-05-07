@@ -32,7 +32,7 @@ const PAGES = [
     title: "ETL",
     description:
       "The ingestion pipeline — source adapters, transforms, detection rules, the macro pipeline, the canonical fixture flow.",
-    available: false,
+    available: true,
   },
   {
     href: "/about/api",
