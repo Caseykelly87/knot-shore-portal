@@ -25,7 +25,7 @@ const PAGES = [
     title: "Sim engine",
     description:
       "The synthetic data generator — determinism, anomaly injection, paired-year generation, key code structure.",
-    available: false,
+    available: true,
   },
   {
     href: "/about/etl",
