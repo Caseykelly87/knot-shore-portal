@@ -16,6 +16,19 @@ knot-shore-portal                       →  this repo (Next.js 14)
 
 This portal renders dashboards over the data the API exposes. No business logic lives in the frontend — totals, rankings, and aggregations all come from the API.
 
+## Where the docs live
+
+The portal hosts the platform's reader-grade documentation at `/about`. After
+`pnpm dev`, visit:
+
+- `/about` — index of all documentation pages
+- `/about/architecture` — platform-wide architectural narrative
+- `/about/decisions` — index of architectural decisions with rationale and tradeoffs
+- `/about/sim-engine`, `/about/etl`, `/about/api`, `/about/portal` — per-layer
+  deep-dives (added in a subsequent phase)
+
+Each page is a static React Server Component — no auth, no API calls, just content.
+
 ## Quick start
 
 The portal supports two demo paths. Both are first-class operational modes.
