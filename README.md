@@ -320,7 +320,7 @@ knot-shore-portal/
 ## Testing
 
 ```bash
-pnpm test          # Run once (51 tests)
+pnpm test          # Run once (54 tests)
 pnpm test:watch    # Watch mode
 ```
 
