@@ -10,7 +10,7 @@ describe("shapeExceptionsData", () => {
       {
         date: "2025-09-15",
         store_id: 3,
-        rule_id: "revenue_low",
+        rule_id: "revenue_band",
         actual_value: 45000.0,
         expected_low: 50000.0,
         expected_high: 75000.0,
@@ -22,9 +22,9 @@ describe("shapeExceptionsData", () => {
         date: "2025-07-20",
         store_id: 5,
         rule_id: "yoy_comp",
-        actual_value: 65000.0,
-        expected_low: 60000.0,
-        expected_high: 80000.0,
+        actual_value: 1.05,
+        expected_low: 0.95,
+        expected_high: 1.15,
         distance_from_band: 0.0,
         severity_score: 0.15,
         severity_level: "info",
@@ -32,7 +32,7 @@ describe("shapeExceptionsData", () => {
       {
         date: "2025-12-01",
         store_id: 1,
-        rule_id: "labor_cost_high",
+        rule_id: "labor_pct_band",
         actual_value: 0.18,
         expected_low: 0.08,
         expected_high: 0.13,
@@ -43,18 +43,18 @@ describe("shapeExceptionsData", () => {
       {
         date: "2025-08-05",
         store_id: 2,
-        rule_id: "revenue_low",
-        actual_value: 48000.0,
-        expected_low: 50000.0,
-        expected_high: 75000.0,
-        distance_from_band: -2000.0,
+        rule_id: "avg_ticket_band",
+        actual_value: 38.0,
+        expected_low: 42.0,
+        expected_high: 55.0,
+        distance_from_band: -4.0,
         severity_score: 0.55,
         severity_level: "warning",
       },
       {
         date: "2025-11-10",
         store_id: 4,
-        rule_id: "transactions_low",
+        rule_id: "transactions_band",
         actual_value: 1200,
         expected_low: 1500,
         expected_high: 2200,
@@ -104,31 +104,44 @@ describe("shapeExceptionsData", () => {
     expect(shaped.rows[4].date).toBe("2025-07-20");
   });
 
-  it("synthesizes description for revenue rules (currency formatting)", () => {
+  it("synthesizes description for revenue_band rules (currency formatting)", () => {
     const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
-    const revenueRow = shaped.rows.find((r) => r.ruleId === "revenue_low" && r.storeId === 3);
+    const revenueRow = shaped.rows.find((r) => r.ruleId === "revenue_band");
     expect(revenueRow?.description).toMatch(/\$45,000.*\$50,000.*\$75,000/);
   });
 
-  it("synthesizes description for labor rules (percent formatting)", () => {
+  it("synthesizes description for avg_ticket_band rules (currency formatting)", () => {
     const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
-    const laborRow = shaped.rows.find((r) => r.ruleId === "labor_cost_high");
-    expect(laborRow?.description).toMatch(/18\.0%.*8\.0%.*13\.0%/);
+    const ticketRow = shaped.rows.find((r) => r.ruleId === "avg_ticket_band");
+    expect(ticketRow?.description).toMatch(/\$38.*\$42.*\$55/);
   });
 
-  it("synthesizes description for transaction rules (count formatting)", () => {
+  it("synthesizes description for labor_pct_band rules (percent formatting)", () => {
     const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
-    const txRow = shaped.rows.find((r) => r.ruleId === "transactions_low");
+    const laborRow = shaped.rows.find((r) => r.ruleId === "labor_pct_band");
+    expect(laborRow?.description).toBe("Actual 18.0% (expected 8.0%–13.0%)");
+  });
+
+  it("synthesizes description for transactions_band rules (count formatting)", () => {
+    const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
+    const txRow = shaped.rows.find((r) => r.ruleId === "transactions_band");
     expect(txRow?.description).toMatch(/1,200.*1,500.*2,200/);
+  });
+
+  it("synthesizes description for yoy_comp rules (ratio formatting)", () => {
+    const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
+    const yoyRow = shaped.rows.find((r) => r.ruleId === "yoy_comp");
+    expect(yoyRow?.description).toBe("Actual 1.05x (expected 0.95x–1.15x)");
   });
 
   it("returns metadata about the dataset", () => {
     const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
     expect(shaped.uniqueSeverities).toEqual(["critical", "info", "warning"]);
     expect(shaped.uniqueRules).toEqual([
-      "labor_cost_high",
-      "revenue_low",
-      "transactions_low",
+      "avg_ticket_band",
+      "labor_pct_band",
+      "revenue_band",
+      "transactions_band",
       "yoy_comp",
     ]);
     expect(shaped.uniqueStores).toEqual([1, 2, 3, 4, 5]);
@@ -152,7 +165,7 @@ describe("applyFilters", () => {
       date: "2025-07-15",
       storeId: 1,
       storeName: "A",
-      ruleId: "revenue_low",
+      ruleId: "revenue_band",
       severity: "warning",
       actualValue: 1000,
       expectedLow: 1500,
@@ -167,9 +180,9 @@ describe("applyFilters", () => {
       storeName: "B",
       ruleId: "yoy_comp",
       severity: "info",
-      actualValue: 2000,
-      expectedLow: 1800,
-      expectedHigh: 2200,
+      actualValue: 1.05,
+      expectedLow: 0.95,
+      expectedHigh: 1.15,
       distanceFromBand: 0,
       severityScore: 0.2,
       description: "x",
@@ -178,7 +191,7 @@ describe("applyFilters", () => {
       date: "2025-12-15",
       storeId: 1,
       storeName: "A",
-      ruleId: "labor_cost_high",
+      ruleId: "labor_pct_band",
       severity: "critical",
       actualValue: 0.18,
       expectedLow: 0.08,
@@ -213,9 +226,9 @@ describe("applyFilters", () => {
   });
 
   it("filters by rule id", () => {
-    const filtered = applyFilters(sampleRows, { ruleId: "revenue_low" });
+    const filtered = applyFilters(sampleRows, { ruleId: "revenue_band" });
     expect(filtered).toHaveLength(1);
-    expect(filtered[0].ruleId).toBe("revenue_low");
+    expect(filtered[0].ruleId).toBe("revenue_band");
   });
 
   it("composes multiple filters with AND semantics", () => {
