@@ -5,6 +5,7 @@ import { getRequestLogger } from "@/lib/logger";
 import {
   portalRequestsTotal,
   portalRequestDurationSeconds,
+  portalUpstreamUnreachableTotal,
 } from "@/lib/metrics";
 
 export async function GET(req: NextRequest) {
@@ -24,12 +25,26 @@ export async function GET(req: NextRequest) {
     response = NextResponse.json(loadAnomaliesFixture());
   } else {
     const upstream = `${getUpstreamBaseUrl()}/anomalies${req.nextUrl.search}`;
-    const res = await fetch(upstream, {
-      cache: "no-store",
-      headers: { "x-request-id": requestId },
-    });
-    const data = await res.json();
-    response = NextResponse.json(data, { status: res.status });
+    try {
+      const res = await fetch(upstream, {
+        cache: "no-store",
+        headers: { "x-request-id": requestId },
+      });
+      const data = await res.json();
+      response = NextResponse.json(data, { status: res.status });
+    } catch (err) {
+      log.error(
+        {
+          event: "upstream_unreachable",
+          path: "/api/anomalies",
+          error: err instanceof Error ? err.message : String(err),
+        },
+        "upstream unreachable",
+      );
+      portalUpstreamUnreachableTotal.inc();
+      response = NextResponse.json(loadAnomaliesFixture());
+      response.headers.set("X-Data-Source", "fallback");
+    }
   }
 
   response.headers.set("x-request-id", requestId);

@@ -72,10 +72,13 @@ const SEVERITY_ORDER: Record<string, number> = {
   info: 2,
 };
 
-// Rule format families. Anything not listed defaults to currency formatting
-// (revenue rules, yoy_comp, anything band-shaped that returns dollar values).
-const PERCENT_RULES = new Set(["labor_cost_high", "labor_cost_low", "margin_low"]);
-const COUNT_RULES = new Set(["transactions_band", "transactions_low", "transactions_high", "basket_low"]);
+// Rule format families. The catalog matches the upstream rule_ids the API
+// emits: revenue_band and avg_ticket_band carry dollar values, labor_pct_band
+// carries a fraction, transactions_band carries an integer count, and
+// yoy_comp carries a year-over-year ratio. Default branch is currency.
+const PERCENT_RULES = new Set(["labor_pct_band"]);
+const COUNT_RULES = new Set(["transactions_band"]);
+const RATIO_RULES = new Set(["yoy_comp"]);
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -93,9 +96,14 @@ function formatCount(value: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
 }
 
+function formatRatio(value: number): string {
+  return `${value.toFixed(2)}x`;
+}
+
 function formatValueForRule(ruleId: string, value: number): string {
   if (PERCENT_RULES.has(ruleId)) return formatPercent(value);
   if (COUNT_RULES.has(ruleId)) return formatCount(value);
+  if (RATIO_RULES.has(ruleId)) return formatRatio(value);
   return formatCurrency(value);
 }
 
