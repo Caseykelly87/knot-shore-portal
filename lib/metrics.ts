@@ -14,8 +14,10 @@
  *   latency in the millisecond-to-second range. Pairs with the existing
  *   route_completed log event's duration_ms field.
  *
- * - portalUpstreamUnreachableTotal: counter that increments only when
- *   the /api/health route in online mode can't reach the upstream API.
+ * - portalUpstreamUnreachableTotal: counter that increments whenever a
+ *   portal route in online mode can't reach the upstream API — the
+ *   /api/health route returns 503 in that case, while the data routes
+ *   degrade to bundled fixtures and set X-Data-Source: fallback.
  *   Pairs with the upstream_unreachable log event.
  *
  * Default Node.js process metrics (memory, GC, event loop lag, fd count,
