@@ -346,6 +346,91 @@ The split is deliberate: pure logic gets dense unit coverage; rendering gets vis
 
 Next.js 14 (App Router) · TypeScript (strict) · Tailwind v3 with shadcn/ui via base-ui-components · Vitest · pnpm · pino · prom-client · recharts (pinned to v2)
 
+## Deployment
+
+The portal has two production deployment targets that share the same Next.js application code:
+
+- **Vercel** — the public demo URL. Builds on Vercel's infrastructure and serves Vercel's runtime. Does not use the `Dockerfile`.
+- **Docker** — a portable container image used by the meta-repo compose stack and any container host that runs the platform end-to-end.
+
+### Public deployment (Vercel)
+
+The Vercel deployment is the URL linked from external surfaces (portfolios, résumés, presentations). Initial setup happens once in the Vercel UI:
+
+1. Sign in to [vercel.com](https://vercel.com).
+2. Click **Add New → Project** and authorize the GitHub integration if prompted.
+3. Select the `knot-shore-portal` repository.
+4. Vercel auto-detects the Next.js framework. The `vercel.json` at the repo root pins the install and build commands.
+5. Under **Environment Variables**, add `API_MODE=offline`. The portal will serve bundled fixtures and needs no other configuration.
+6. Click **Deploy** and wait for the build to finish.
+7. Visit the deployed URL: `[DEPLOYED URL HERE]` — the landing page should render with the "Demo Mode" footer badge.
+
+Switching the deployment from offline to online is a future step: once the upstream `economic-data-api` is deployed, set `API_MODE=online` and `API_BASE_URL=<api-url>` in the Vercel project settings.
+
+### Container deployment (Docker)
+
+The `Dockerfile` produces a target-agnostic image using Next.js's standalone output mode. The final image runs as a non-root user on `node:20-alpine` and has no application dependencies beyond what the runtime bundle imports.
+
+Build:
+
+```bash
+docker build -t knot-shore-portal .
+```
+
+Run in offline mode (default):
+
+```bash
+docker run --rm -p 3000:3000 knot-shore-portal
+```
+
+Open http://localhost:3000.
+
+Run in online mode against a reachable upstream API:
+
+```bash
+docker run --rm -p 3000:3000 \
+  -e API_MODE=online \
+  -e API_BASE_URL=https://api.example.com \
+  knot-shore-portal
+```
+
+The port the container binds to is configurable. To run on port 4000 (for example, to match a Cloud Run convention or to avoid a host port collision):
+
+```bash
+docker run --rm -p 4000:4000 -e PORT=4000 knot-shore-portal
+```
+
+### Smoke test
+
+`scripts/smoke_test_container.sh` builds the image, runs a container in offline mode against bundled fixtures, polls `/api/health` until ready, and exercises four canonical endpoints. The container is cleaned up on exit.
+
+```bash
+./scripts/smoke_test_container.sh
+```
+
+The script requires Docker to be running. It does not require an upstream API.
+
+### Environment variables
+
+| Variable | Required? | Default | Description |
+|---|---|---|---|
+| `API_MODE` | optional | `offline` | `offline` serves bundled fixtures; `online` proxies to the upstream API. |
+| `API_BASE_URL` | required when `API_MODE=online` | `http://localhost:8000` | Upstream `economic-data-api` URL. |
+| `LOG_LEVEL` | optional | `info` | Log verbosity: `trace`, `debug`, `info`, `warn`, `error`, `fatal`. |
+| `LOG_FORMAT` | optional | auto (pretty if tty, else json) | `pretty` for human-readable output; `json` for single-line structured logs. |
+| `PORT` | optional | `3000` | Port the standalone server binds to. Read by the Next.js standalone runtime. |
+| `HOSTNAME` | optional | `0.0.0.0` (set by `Dockerfile`) | Interface the standalone server binds to. |
+
+`NODE_ENV` is set to `production` by both the `Dockerfile` runtime stage and the Vercel build, and is not typically set by operators.
+
+### Notes on other container hosts
+
+The image is platform-neutral. Notes for the most common targets:
+
+- **AWS App Runner / ECS Fargate** — provide the image, set `API_MODE`, expose port 3000 (default) or set `PORT` to match the platform's expected port.
+- **Google Cloud Run** — set `PORT=8080` so the container listens on Cloud Run's expected port. No other changes needed.
+- **Railway / Render / Fly.io** — point the service at the repository or the built image; the platform supplies `PORT` automatically and the standalone server reads it.
+
 ## Adjacent repositories
 
 - [`knot-shore-grocery-simulation-engine`](https://github.com/Caseykelly87/Knot-shore-grocery-simulation-engine) — generates the synthetic data that flows through the platform. Reader-grade narrative at [`/about/sim-engine`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/sim-engine/page.tsx).
