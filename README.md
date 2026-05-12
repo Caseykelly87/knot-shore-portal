@@ -363,7 +363,7 @@ The Vercel deployment is the URL linked from external surfaces (portfolios, rés
 4. Vercel auto-detects the Next.js framework. The `vercel.json` at the repo root pins the install and build commands.
 5. Under **Environment Variables**, add `API_MODE=offline`. The portal will serve bundled fixtures and needs no other configuration.
 6. Click **Deploy** and wait for the build to finish.
-7. Visit the deployed URL: `[DEPLOYED URL HERE]` — the landing page should render with the "Demo Mode" footer badge.
+7. Visit the deployed URL: `https://knot-shore-portal.vercel.app/` — the landing page should render with the "Demo Mode" footer badge.
 
 Switching the deployment from offline to online is a future step: once the upstream `economic-data-api` is deployed, set `API_MODE=online` and `API_BASE_URL=<api-url>` in the Vercel project settings.
 
