@@ -138,7 +138,7 @@ export default function EtlPage() {
             store-day-department: net sales, transactions, units, gross margin percentage.
           </li>
           <li>
-            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 983 rows. Each
+            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 831 rows. Each
             row is a flagged store-day with the rule that fired, the actual value, the expected
             band, and a severity level.
           </li>
