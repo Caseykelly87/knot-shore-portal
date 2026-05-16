@@ -18,7 +18,8 @@
  * expected' summary the rule itself fired on.
  */
 
-import { headers } from "next/headers";
+import { getApiMode } from "@/lib/api-mode";
+import { getBaseUrl } from "@/lib/get-base-url";
 import { getDepartmentName } from "@/lib/dim-departments";
 
 const CURRENT_YEAR_START = "2025-07-01";
@@ -256,13 +257,6 @@ export function shapeStoreData(
   };
 }
 
-function getBaseUrl(): string {
-  const h = headers();
-  const host = h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  return `${proto}://${host}`;
-}
-
 async function fetchPaginated<T extends { total: number; items: unknown[] }>(
   base: string,
   path: string,
@@ -282,8 +276,6 @@ async function fetchPaginated<T extends { total: number; items: unknown[] }>(
     const body = (await res.json()) as T;
     total = body.total;
     items.push(...body.items);
-    // Offline route handlers ignore limit/offset and return the full fixture
-    // in one shot; bail after the first page when items already cover total.
     if (items.length >= total || body.items.length === 0) break;
     offset += PAGE_SIZE;
   }
@@ -291,7 +283,34 @@ async function fetchPaginated<T extends { total: number; items: unknown[] }>(
   return { total, limit: items.length, offset: 0, items } as unknown as T;
 }
 
-export async function fetchStoreData(storeId: number): Promise<StoreData> {
+interface RawStoreInputs {
+  dimStores: DimStoreRaw[];
+  currentYear: StoreMetricsRaw;
+  priorYear: StoreMetricsRaw;
+  deptMetrics: DeptMetricsRaw;
+  anomalies: AnomaliesRaw;
+}
+
+async function loadRawStoreInputs(storeId: number): Promise<RawStoreInputs> {
+  if (getApiMode() === "offline") {
+    const [dimStoresMod, storeMetricsMod, deptMetricsMod, anomaliesMod] = await Promise.all([
+      import("@/fixtures/dim-stores.json"),
+      import("@/fixtures/store-metrics.json"),
+      import("@/fixtures/department-metrics.json"),
+      import("@/fixtures/anomalies.json"),
+    ]);
+    // shapeStoreData filters items by store_id and by date window, so the
+    // unfiltered full fixture is sufficient for both year slices.
+    const allStoreMetrics = storeMetricsMod.default as unknown as StoreMetricsRaw;
+    return {
+      dimStores: dimStoresMod.default as unknown as DimStoreRaw[],
+      currentYear: allStoreMetrics,
+      priorYear: allStoreMetrics,
+      deptMetrics: deptMetricsMod.default as unknown as DeptMetricsRaw,
+      anomalies: anomaliesMod.default as unknown as AnomaliesRaw,
+    };
+  }
+
   const base = getBaseUrl();
 
   const [dimStores, currentYear, priorYear, deptMetrics, anomalies] = await Promise.all([
@@ -314,6 +333,13 @@ export async function fetchStoreData(storeId: number): Promise<StoreData> {
     ),
     fetchPaginated<AnomaliesRaw>(base, `/api/anomalies?store_id=${storeId}`),
   ]);
+
+  return { dimStores, currentYear, priorYear, deptMetrics, anomalies };
+}
+
+export async function fetchStoreData(storeId: number): Promise<StoreData> {
+  const { dimStores, currentYear, priorYear, deptMetrics, anomalies } =
+    await loadRawStoreInputs(storeId);
 
   return shapeStoreData(storeId, dimStores, currentYear, priorYear, deptMetrics, anomalies);
 }

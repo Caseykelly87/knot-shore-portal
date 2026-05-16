@@ -211,9 +211,9 @@ export const DECISIONS: DecisionCategory[] = [
       {
         title: "Client-side filtering after one fetch",
         decision:
-          "The /exceptions page fetches all 983 anomalies on page load (paginated through the API's 200-row cap), then filters client-side as the user adjusts filters.",
+          "The /exceptions page fetches all 831 anomalies on page load (paginated through the API's 200-row cap), then filters client-side as the user adjusts filters.",
         rationale:
-          "983 rows is small enough that client-side filtering is imperceptibly fast. Filter changes don't trigger network round-trips. The data is small enough to keep in memory.",
+          "831 rows is small enough that client-side filtering is imperceptibly fast. Filter changes don't trigger network round-trips. The data is small enough to keep in memory.",
         cost:
           "If the canonical anomaly count grows past ~10,000, client-side filtering becomes a performance issue. Pagination on filter change would be needed.",
         revisitWhen:

@@ -13,7 +13,8 @@
  * falls back to a synthesized 'Store {N}' label.
  */
 
-import { headers } from "next/headers";
+import { getApiMode } from "@/lib/api-mode";
+import { getBaseUrl } from "@/lib/get-base-url";
 
 const DASHBOARD_START_DATE = "2025-07-01";
 const DASHBOARD_END_DATE = "2025-12-31";
@@ -112,14 +113,29 @@ export function shapeDashboardData(
   };
 }
 
-function getBaseUrl(): string {
-  const h = headers();
-  const host = h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  return `${proto}://${host}`;
+interface RawDashboardInputs {
+  summary: DashboardSummaryRaw;
+  anomalies: AnomaliesRaw;
+  storeMetrics: StoreMetricsRaw;
+  dimStores: DimStoreRaw[];
 }
 
-export async function fetchDashboardData(): Promise<DashboardData> {
+async function loadRawDashboardInputs(): Promise<RawDashboardInputs> {
+  if (getApiMode() === "offline") {
+    const [summaryMod, anomaliesMod, storeMetricsMod, dimStoresMod] = await Promise.all([
+      import("@/fixtures/dashboard-summary.json"),
+      import("@/fixtures/anomalies.json"),
+      import("@/fixtures/store-metrics.json"),
+      import("@/fixtures/dim-stores.json"),
+    ]);
+    return {
+      summary: summaryMod.default as unknown as DashboardSummaryRaw,
+      anomalies: anomaliesMod.default as unknown as AnomaliesRaw,
+      storeMetrics: storeMetricsMod.default as unknown as StoreMetricsRaw,
+      dimStores: dimStoresMod.default as unknown as DimStoreRaw[],
+    };
+  }
+
   const base = getBaseUrl();
 
   const [summaryRes, anomaliesRes, storeMetricsRes, dimStoresRes] = await Promise.all([
@@ -145,5 +161,10 @@ export async function fetchDashboardData(): Promise<DashboardData> {
     dimStoresRes.json() as Promise<DimStoreRaw[]>,
   ]);
 
+  return { summary, anomalies, storeMetrics, dimStores };
+}
+
+export async function fetchDashboardData(): Promise<DashboardData> {
+  const { summary, anomalies, storeMetrics, dimStores } = await loadRawDashboardInputs();
   return shapeDashboardData(summary, anomalies, storeMetrics, dimStores);
 }
