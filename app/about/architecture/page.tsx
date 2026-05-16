@@ -208,9 +208,9 @@ export default function ArchitecturePage() {
           The platform also maintains integrity canaries — single values that should hold across
           arbitrary changes. The dashboard&apos;s{" "}
           <code className="bg-muted px-1 rounded">total_sales</code> for the 2025 demo window is{" "}
-          <code className="bg-muted px-1 rounded">$117,973,736</code>. Store 1&apos;s drilldown
-          total is <code className="bg-muted px-1 rounded">$19,037,444</code>. The full canonical
-          contains 983 anomaly flags. If these change unexpectedly, something has drifted — the
+          <code className="bg-muted px-1 rounded">$115,253,718</code>. Store 1&apos;s drilldown
+          total is <code className="bg-muted px-1 rounded">$18,598,268</code>. The full canonical
+          contains 831 anomaly flags. If these change unexpectedly, something has drifted — the
           canaries are how the platform knows.
         </p>
       </section>

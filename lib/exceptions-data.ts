@@ -8,7 +8,7 @@
  * the type definitions without pulling in next/headers.
  *
  * Filtering happens client-side via applyFilters; the dataset is
- * small enough (983 rows) that re-filtering on every keystroke is
+ * small enough (831 rows) that re-filtering on every keystroke is
  * imperceptible.
  */
 
