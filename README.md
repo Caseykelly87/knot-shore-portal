@@ -1,5 +1,7 @@
 # Knot Shore Portal
 
+[![CI](https://github.com/Caseykelly87/knot-shore-portal/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Caseykelly87/knot-shore-portal/actions/workflows/test.yml)
+
 Next.js 14 application that renders stakeholder dashboards for the Knot Shore Grocery analytics platform. The portal consumes JSON from the upstream `economic-data-api` and turns it into three primary user-facing pages — a daily dashboard, a per-store drilldown, and an exception triage interface — plus an architectural documentation hub at `/about`.
 
 The portal supports two operational modes: offline (default, serves bundled JSON fixtures) and online (proxies to a running upstream API). Both modes are first-class production paths; neither is a degraded fallback. A clone-and-run demo against fixtures looks the same as a live deployment against an API.
@@ -363,7 +365,7 @@ The Vercel deployment is the URL linked from external surfaces (portfolios, rés
 4. Vercel auto-detects the Next.js framework. The `vercel.json` at the repo root pins the install and build commands.
 5. Under **Environment Variables**, add `API_MODE=offline`. The portal will serve bundled fixtures and needs no other configuration.
 6. Click **Deploy** and wait for the build to finish.
-7. Visit the deployed URL: `[DEPLOYED URL HERE]` — the landing page should render with the "Demo Mode" footer badge.
+7. Visit the deployed URL: `https://knot-shore-portal.vercel.app/` — the landing page should render with the "Demo Mode" footer badge.
 
 Switching the deployment from offline to online is a future step: once the upstream `economic-data-api` is deployed, set `API_MODE=online` and `API_BASE_URL=<api-url>` in the Vercel project settings.
 
