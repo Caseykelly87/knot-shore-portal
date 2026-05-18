@@ -182,9 +182,15 @@ export default function EtlPage() {
       <section className="space-y-4" id="reproducibility">
         <h2 className="text-2xl font-semibold tracking-tight">Byte-identical regeneration</h2>
         <p>
-          The canonical regeneration workflow, run twice from a clean clone, produces
-          byte-identical parquet files. Same SHA-256, same row count, same column ordering,
-          same page boundaries. The four canonical artifacts can be compared with{" "}
+          The{" "}
+          <Link
+            href="/about/operations#a-workflow-for-canonical-regeneration"
+            className="underline hover:text-foreground"
+          >
+            canonical regeneration workflow
+          </Link>
+          , run twice from a clean clone, produces byte-identical parquet files. Same SHA-256,
+          same row count, same column ordering, same page boundaries. The four canonical artifacts can be compared with{" "}
           <code className="bg-muted px-1 rounded">cmp</code> after a fresh run and the
           comparison returns no differences. This is the property that lets the same four
           files live byte-identically in the API repo&apos;s{" "}
