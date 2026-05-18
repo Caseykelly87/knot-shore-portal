@@ -58,11 +58,22 @@ export default function EtlPage() {
           </Link>{" "}
           / ETL
         </p>
-        <h1 className="text-4xl font-bold tracking-tight">ETL</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">ETL</h1>
         <p className="text-lg text-muted-foreground">
           The ingestion and detection pipeline. Reads sim engine output, validates schemas,
           applies static-band detection rules, and writes the canonical parquet artifacts that
           downstream layers consume.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          For the reasoning behind the choices this layer relies on, see the{" "}
+          <Link href="/about/decisions" className="underline hover:text-foreground">
+            Decisions
+          </Link>{" "}
+          page; for the bugs and surprises that shaped it, see{" "}
+          <Link href="/about/lessons" className="underline hover:text-foreground">
+            Lessons
+          </Link>
+          .
         </p>
       </header>
 
@@ -75,10 +86,28 @@ export default function EtlPage() {
           inputs and the basis for everything downstream.
         </p>
         <p>
-          The repo also contains a separate macro-economic pipeline (FRED, BLS, ERS) that loads
-          to Postgres. The two pipelines share configuration, observability infrastructure, and
-          CI but otherwise don&apos;t interact. The grocery side is the platform&apos;s primary
-          concern; the macro side is a related-but-distinct data engineering exercise.
+          The repo houses two pipelines that share infrastructure but stay logically separate.
+          The <strong>grocery pipeline</strong> ingests the sim engine&apos;s CSV output,
+          shapes it into canonical parquets, and runs the static-band detection rules. The{" "}
+          <strong>macro pipeline</strong> extracts series from FRED, BLS, and ERS and upserts
+          them into Postgres. The two share configuration patterns, the structlog configurator,
+          exception types, and CI; they don&apos;t share data models or deployment cadence. A
+          regeneration of the grocery canonical doesn&apos;t touch the macro tables; a fresh
+          macro extract doesn&apos;t touch the canonical parquets. Same repo, separate runtimes
+          — chosen because the infrastructure overlap was real and splitting them would have
+          duplicated that infrastructure for negligible architectural benefit.
+        </p>
+        <p>
+          The grocery side is what feeds the dashboards in this portal. The canonical window is
+          184 days ending 2025-12-31 (start date 2025-07-01, working backward inclusive — a
+          detail that was wrong in the README for several iterations; see{" "}
+          <Link
+            href="/about/lessons#the-off-by-one-in-the-canonical-backfill-default"
+            className="underline hover:text-foreground"
+          >
+            The off-by-one in the canonical backfill default
+          </Link>
+          ).
         </p>
       </section>
 
@@ -150,33 +179,116 @@ export default function EtlPage() {
         </ul>
       </section>
 
+      <section className="space-y-4" id="reproducibility">
+        <h2 className="text-2xl font-semibold tracking-tight">Byte-identical regeneration</h2>
+        <p>
+          The canonical regeneration workflow, run twice from a clean clone, produces
+          byte-identical parquet files. Same SHA-256, same row count, same column ordering,
+          same page boundaries. The four canonical artifacts can be compared with{" "}
+          <code className="bg-muted px-1 rounded">cmp</code> after a fresh run and the
+          comparison returns no differences. This is the property that lets the same four
+          files live byte-identically in the API repo&apos;s{" "}
+          <code className="bg-muted px-1 rounded">app/fixtures/</code> directory — copy them
+          across, verify with <code className="bg-muted px-1 rounded">cmp</code>, and trust
+          that &quot;the canonical&quot; means the same thing in both repos.
+        </p>
+        <p>This requires three properties to hold together:</p>
+        <ul className="list-disc list-inside text-sm space-y-2">
+          <li>
+            <strong>Deterministic seeding upstream.</strong> The sim engine&apos;s per-date
+            seeding produces byte-identical CSV output for the same{" "}
+            <code className="bg-muted px-1 rounded">(global_seed, date)</code>. Without that,
+            nothing downstream can be deterministic.
+          </li>
+          <li>
+            <strong>Deterministic transformation.</strong> The ETL transforms operate on typed
+            in-memory records with explicit sort orders. No time-dependent operations, no
+            system-clock reads, no hash-set-based deduplication (which would have
+            insertion-order-dependent results). When a transform needs a sort, it sorts on an
+            explicit key.
+          </li>
+          <li>
+            <strong>Deterministic serialization.</strong> Parquet writes pin column order,
+            compression codec, and row-group size. The same DataFrame written twice produces
+            the same byte sequence — which is what makes &quot;byte-identical&quot; verifiable
+            rather than aspirational.
+          </li>
+        </ul>
+        <p>
+          The discipline pays back at the cross-repo boundary. The four parquets exist
+          byte-identically in the ETL repo&apos;s{" "}
+          <code className="bg-muted px-1 rounded">data/processed/canonical/</code> and the API
+          repo&apos;s <code className="bg-muted px-1 rounded">app/fixtures/</code>; an
+          unintentional drift would show up as a binary diff in a PR. See{" "}
+          <Link
+            href="/about/decisions#byte-identical-fixtures-across-repos"
+            className="underline hover:text-foreground"
+          >
+            Byte-identical fixtures across repos
+          </Link>{" "}
+          for the full rationale and the honest note on the highest-value automation that was
+          skipped.
+        </p>
+      </section>
+
       <section className="space-y-4" id="detection">
         <h2 className="text-2xl font-semibold tracking-tight">Detection rules</h2>
         <p>
-          Anomaly detection is implemented as a small library of static-band rules in{" "}
-          <code className="bg-muted px-1 rounded">detect_rules.py</code>, with thresholds
-          declared in <code className="bg-muted px-1 rounded">rules.yaml</code>. The CLI{" "}
+          Anomaly detection is heuristic, by design — five static-band rules in{" "}
+          <code className="bg-muted px-1 rounded">detect_rules.py</code> with thresholds
+          declared in <code className="bg-muted px-1 rounded">rules.yaml</code>. Not ML. Not a
+          fitted model. The CLI{" "}
           <code className="bg-muted px-1 rounded">detect_cli.py</code> applies the rules to the
           canonical store-day parquet and writes{" "}
           <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code>.
         </p>
         <p>
-          Five primary rules: revenue band (per-store-day total sales outside expected range),
-          transactions band (transaction count outside expected range), and a year-over-year
-          comparison rule (yoy_comp) that fires when this date&apos;s revenue diverges
-          significantly from the same calendar date one year prior. The yoy_comp rule depends on
-          the canonical containing both years; without paired-year canonical it&apos;s a no-op.
+          The five rules: revenue band (±25% of profile center), labor-cost-pct band (±5
+          percentage points), avg-ticket band (±20%), transactions band (±25%), and yoy_comp
+          (year-over-year revenue ratio outside [0.85, 1.25]). Each store carries a{" "}
+          <code className="bg-muted px-1 rounded">trade_area_profile</code> — suburban-family,
+          urban-dense, value-market — and bands are configured per profile. The yoy_comp rule
+          fires only where a T-365 baseline exists; otherwise it&apos;s silently skipped. The
+          rule that fires, the actual value, the expected band edges, and the severity score
+          all land in <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> so
+          downstream consumers can answer the &quot;why was this flagged&quot; question without
+          re-running detection.
         </p>
         <p>
-          The recall and false-positive contracts established during development are recall ≥
-          0.35 and false-positive rate ≤ 0.10 against the sim engine&apos;s ground-truth
-          anomaly_log. The contract is verified by a separate evaluation script —{" "}
+          Heuristic is the right shape here. The data is synthetic and small: 8 stores, 184
+          days per year, two years of canonical. A fitted model would be measuring &quot;can a
+          learned classifier reproduce a learned distribution&quot; rather than &quot;can these
+          specific rules catch these specific injections.&quot; Static bands keep the question
+          transparent — every flag is auditable in YAML — and they meet the recall ≥ 0.35 and
+          false-positive rate ≤ 0.10 detection contract against the sim engine&apos;s ground
+          truth. The bands are deliberately wide because they don&apos;t adjust for
+          day-of-week or seasonal variance; the YAML notes this directly. Real retail data
+          with seasonality would produce massive false-positive rates against bands this wide,
+          at which point an empirical-baseline phase is necessary. See{" "}
+          <Link
+            href="/about/decisions#static-band-rules-over-ml-for-detection"
+            className="underline hover:text-foreground"
+          >
+            Static-band rules over ML for detection
+          </Link>{" "}
+          for the rejected alternatives and the honest note on ML-as-engineering-theater.
+        </p>
+        <p>
+          The contract itself is verified by a separate evaluation script —{" "}
           <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code> — which
-          is the only file in the entire platform allowed to read the ground-truth log. The
-          evaluation report is committed at{" "}
+          is the only file in the entire platform allowed to read the sim engine&apos;s
+          ground-truth log. The evaluation report is committed at{" "}
           <code className="bg-muted px-1 rounded">
             data/processed/eval/detection_quality_report.md
           </code>
+          . The boundary between detection code and ground-truth code is a deliberate social
+          contract; see{" "}
+          <Link
+            href="/about/decisions#anomaly-log-boundary"
+            className="underline hover:text-foreground"
+          >
+            Anomaly_log boundary
+          </Link>
           .
         </p>
       </section>
@@ -199,9 +311,22 @@ export default function EtlPage() {
           shape and idempotently upserts to Postgres via SQLAlchemy with parameterized queries.
         </p>
         <p>
-          Why same repo: the macro and grocery pipelines share configuration patterns,
-          observability setup, exception types, and CI. Splitting into separate repos would
-          duplicate infrastructure for negligible architectural benefit.
+          The macro side leans on stdlib{" "}
+          <code className="bg-muted px-1 rounded">logging.info(...)</code> calls with{" "}
+          <code className="bg-muted px-1 rounded">extra=&#123;...&#125;</code> structured
+          fields rather than native structlog idioms. That style requires a bridge — without
+          it, the <code className="bg-muted px-1 rounded">extra</code> dict silently
+          disappears from the JSON output. The bridge in this repo is{" "}
+          <code className="bg-muted px-1 rounded">structlog.stdlib.ExtraAdder()</code>, added
+          to the shared processors list in{" "}
+          <code className="bg-muted px-1 rounded">observability.py</code>. Story:{" "}
+          <Link
+            href="/about/lessons#the-structlog-stdlib-bridge-that-nearly-didn-t-work"
+            className="underline hover:text-foreground"
+          >
+            The structlog/stdlib bridge that nearly didn&apos;t work
+          </Link>
+          .
         </p>
       </section>
 
