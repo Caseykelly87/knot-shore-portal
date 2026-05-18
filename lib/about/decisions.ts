@@ -106,7 +106,7 @@ export const DECISIONS: DecisionCategory[] = [
         decision:
           "The canonical fixtures contain both 2024 and 2025 data, not just the demo window.",
         rationale:
-          "Year-over-year comparison is a natural analytical question for stakeholder dashboards. The sim engine produces paired-year data natively (each run-command anchor generates the same calendar date one year prior). Including both years in the canonical enables the YoY chart on the store drilldown without any new data sources or fetch patterns.",
+          "Year-over-year comparison is a natural analytical question for stakeholder dashboards. The sim engine produces paired-year data natively (each run-command anchor generates the same calendar date one year prior). Including both years in the canonical lets the YoY chart on the store drilldown work without any new data sources or fetch patterns.",
         cost:
           "Canonical size doubles. Goes from ~250KB to ~500KB total. The yoy_comp anomaly rule fires for 2025 dates because there's now a 2024 baseline (extra 184 info-severity flags).",
         revisitWhen:
@@ -258,7 +258,7 @@ export const DECISIONS: DecisionCategory[] = [
           "These fields are identifiers, not numbers. Arithmetic on a ZIP code is meaningless. Zero-padded strings round-trip correctly for entries with leading zeros (none in the current St. Louis-area data, but plausible for future expansion). The API service layer coerces from int64 to string at the contract boundary.",
         cost:
           "API service layer has explicit coercion logic. Schema declares str types; conversions are tested.",
-        revisitWhen: "Never. This is ergonomically the right decision for identifier fields.",
+        revisitWhen: "Never. This is the right shape for identifier fields.",
       },
       {
         title: "Department names embedded portal-side",
