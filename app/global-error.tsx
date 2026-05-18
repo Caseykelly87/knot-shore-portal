@@ -18,6 +18,9 @@ export default function GlobalError({
     });
   }, [error]);
 
+  // Inline styles only — this boundary runs when the global layout/CSS
+  // pipeline may have failed, so it cannot depend on Tailwind classes or
+  // CSS variables from globals.css. Brand colors are inlined as hex.
   return (
     <html lang="en">
       <body
@@ -31,15 +34,34 @@ export default function GlobalError({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
-          background: "#0b0f14",
-          color: "#e6edf3",
+          background: "#1c2b3a",
+          color: "#f5f0e8",
         }}
       >
         <div style={{ maxWidth: "32rem", width: "100%" }}>
-          <h1 style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>
+          <div
+            style={{
+              fontFamily: "Georgia, Cambria, Times New Roman, serif",
+              fontSize: "0.95rem",
+              color: "#7faaa0",
+              marginBottom: "2rem",
+              letterSpacing: "0.05em",
+            }}
+          >
+            Knot Shore Grocery
+          </div>
+          <h1
+            style={{
+              fontFamily: "Georgia, Cambria, Times New Roman, serif",
+              fontSize: "1.75rem",
+              fontWeight: 600,
+              marginBottom: "0.75rem",
+              color: "#f5f0e8",
+            }}
+          >
             Something went wrong
           </h1>
-          <p style={{ marginBottom: "1rem", lineHeight: 1.5 }}>
+          <p style={{ marginBottom: "1rem", lineHeight: 1.5, color: "#d4d0c4" }}>
             The portal hit an unexpected error while rendering this page.
           </p>
           {error.digest ? (
@@ -48,7 +70,7 @@ export default function GlobalError({
                 fontFamily:
                   "ui-monospace, SFMono-Regular, Menlo, monospace",
                 fontSize: "0.85rem",
-                color: "#8b949e",
+                color: "#7faaa0",
                 marginBottom: "1.5rem",
               }}
             >
@@ -60,11 +82,12 @@ export default function GlobalError({
             style={{
               padding: "0.5rem 1rem",
               fontSize: "0.95rem",
-              background: "#1f6feb",
-              color: "#ffffff",
+              background: "#7faaa0",
+              color: "#1c2b3a",
               border: "none",
               borderRadius: "0.375rem",
               cursor: "pointer",
+              fontWeight: 500,
             }}
           >
             Try again
