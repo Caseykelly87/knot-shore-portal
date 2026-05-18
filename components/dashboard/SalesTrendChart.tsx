@@ -80,10 +80,10 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
               <Line
                 type="monotone"
                 dataKey="totalSales"
-                stroke="hsl(var(--primary))"
+                stroke="var(--brand-kelp-green)"
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4 }}
+                activeDot={{ r: 4, fill: "var(--brand-kelp-green)" }}
               />
             </LineChart>
           </ResponsiveContainer>

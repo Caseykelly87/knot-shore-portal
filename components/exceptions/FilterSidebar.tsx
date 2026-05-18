@@ -22,9 +22,11 @@ interface FilterSidebarProps {
 }
 
 const SEVERITY_BADGE_STYLES: Record<string, string> = {
-  critical: "bg-red-500/10 text-red-700 hover:bg-red-500/20 border-red-200",
-  warning: "bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 border-amber-200",
-  info: "bg-blue-500/10 text-blue-700 hover:bg-blue-500/20 border-blue-200",
+  critical:
+    "bg-severity-critical/10 text-severity-critical-strong hover:bg-severity-critical/20 border-severity-critical/30",
+  warning:
+    "bg-severity-warning/15 text-severity-warning-strong hover:bg-severity-warning/25 border-severity-warning/40",
+  info: "bg-severity-info/15 text-severity-info-strong hover:bg-severity-info/25 border-severity-info/40",
 };
 
 export function FilterSidebar({

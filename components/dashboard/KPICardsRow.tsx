@@ -13,21 +13,25 @@ export function KPICardsRow({ data }: KPICardsRowProps) {
         label="Total Sales"
         value={formatCurrency(data.totalSales)}
         helperText="Jul 1 – Dec 31, 2025"
+        accent="kelp-green"
       />
       <KPICard
         label="Total Transactions"
         value={formatCount(data.totalTransactions)}
         helperText="Across all stores"
+        accent="sea-glass"
       />
       <KPICard
         label="Active Exceptions"
         value={formatCount(data.activeExceptions)}
         helperText={`${data.exceptionSeverityCounts.warning} warning, ${data.exceptionSeverityCounts.critical} critical`}
+        accent="shore-rust"
       />
       <KPICard
         label="Avg Labor Cost Pct"
         value={formatPercent(data.avgLaborCostPct)}
         helperText="Average across stores"
+        accent="deep-navy"
       />
     </div>
   );

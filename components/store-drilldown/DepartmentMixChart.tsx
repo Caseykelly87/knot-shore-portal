@@ -68,7 +68,7 @@ export function DepartmentMixChart({ data }: DepartmentMixChartProps) {
                 }}
                 cursor={{ fill: "hsl(var(--muted))" }}
               />
-              <Bar dataKey="totalSales" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="totalSales" fill="var(--brand-deep-navy)" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

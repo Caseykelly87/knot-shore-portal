@@ -76,7 +76,7 @@ export function YearOverYearChart({ data }: YearOverYearChartProps) {
                 type="monotone"
                 dataKey="priorYearSales"
                 name="2024"
-                stroke="hsl(var(--muted-foreground))"
+                stroke="var(--brand-sea-glass)"
                 strokeWidth={2}
                 strokeDasharray="4 4"
                 dot={false}
@@ -87,10 +87,10 @@ export function YearOverYearChart({ data }: YearOverYearChartProps) {
                 type="monotone"
                 dataKey="currentYearSales"
                 name="2025"
-                stroke="hsl(var(--primary))"
+                stroke="var(--brand-kelp-green)"
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4 }}
+                activeDot={{ r: 4, fill: "var(--brand-kelp-green)" }}
               />
             </LineChart>
           </ResponsiveContainer>

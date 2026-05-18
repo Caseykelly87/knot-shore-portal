@@ -17,9 +17,12 @@ const TRADE_AREA_LABELS: Record<string, string> = {
 };
 
 const TRADE_AREA_BADGE_STYLES: Record<string, string> = {
-  "suburban-family": "bg-emerald-500/10 text-emerald-700 border-emerald-200",
-  "urban-dense": "bg-blue-500/10 text-blue-700 border-blue-200",
-  "value-market": "bg-amber-500/10 text-amber-700 border-amber-200",
+  "suburban-family":
+    "bg-brand-kelp-green/10 text-brand-kelp-green border-brand-kelp-green/30",
+  "urban-dense":
+    "bg-brand-sea-glass/15 text-brand-deep-navy border-brand-sea-glass/40",
+  "value-market":
+    "bg-severity-warning/15 text-severity-warning-strong border-severity-warning/40",
 };
 
 const MONTHS = [
@@ -60,7 +63,9 @@ export function StoreHeader({
       <CardContent className="pt-6">
         <div className="flex items-start justify-between flex-wrap gap-4">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">{storeName}</h1>
+            <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">
+              {storeName}
+            </h1>
             <p className="text-muted-foreground">
               {address} · {city}, MO {zip}
             </p>
@@ -73,10 +78,10 @@ export function StoreHeader({
         </div>
         <div className="mt-4 flex flex-wrap gap-6 text-sm text-muted-foreground">
           <div>
-            <span className="font-medium text-foreground">{sqft.toLocaleString()}</span> sq ft
+            <span className="font-medium tabular-nums text-brand-deep-navy">{sqft.toLocaleString()}</span> sq ft
           </div>
           <div>
-            Opened <span className="font-medium text-foreground">{formatOpenDate(openDate)}</span>
+            Opened <span className="font-medium text-brand-deep-navy">{formatOpenDate(openDate)}</span>
           </div>
         </div>
       </CardContent>

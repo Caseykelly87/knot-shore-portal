@@ -11,9 +11,9 @@ interface StoreAnomaliesCardProps {
 }
 
 const SEVERITY_DOT_STYLES: Record<string, string> = {
-  critical: "bg-red-500",
-  warning: "bg-amber-500",
-  info: "bg-blue-500",
+  critical: "bg-severity-critical",
+  warning: "bg-severity-warning",
+  info: "bg-severity-info",
 };
 
 const SEVERITY_ORDER: Record<string, number> = {
