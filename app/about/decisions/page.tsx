@@ -14,8 +14,33 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+function renderInline(text: string): React.ReactNode[] {
+  const parts = text.split(/(`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("`") && part.endsWith("`") && part.length >= 2) {
+      return (
+        <code
+          key={i}
+          className="font-mono text-[0.85em] bg-muted text-foreground px-1.5 py-0.5 rounded"
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
+function isDeepEntry(entry: DecisionEntry): boolean {
+  return entry.problem !== undefined;
+}
+
 export default function DecisionsPage() {
   const totalDecisions = DECISIONS.reduce((sum, c) => sum + c.entries.length, 0);
+  const deepCount = DECISIONS.reduce(
+    (sum, c) => sum + c.entries.filter(isDeepEntry).length,
+    0,
+  );
 
   return (
     <article className="mx-auto max-w-4xl px-6 py-8 space-y-10">
@@ -26,11 +51,12 @@ export default function DecisionsPage() {
           </Link>{" "}
           / Decisions
         </p>
-        <h1 className="text-4xl font-bold tracking-tight">Decisions</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Decisions</h1>
         <p className="text-lg text-muted-foreground">
           {totalDecisions} architectural decisions made during the platform build, grouped by
-          category. Each entry records what was decided, why, what it costs, and when it should
-          be revisited.
+          category. {deepCount} of them carry the full treatment — problem, what I chose, what I
+          rejected, tradeoff accepted, when it breaks down, and where I have second thoughts. The
+          rest are shorter: decision, rationale, cost, when to revisit.
         </p>
       </header>
 
@@ -76,15 +102,31 @@ function CategorySection({ category }: { category: DecisionCategory }) {
 }
 
 function DecisionCard({ entry }: { entry: DecisionEntry }) {
+  const deep = isDeepEntry(entry);
   return (
     <div className="rounded-lg border border-border bg-card p-5 space-y-4">
       <h3 className="text-lg font-semibold tracking-tight" id={slugify(entry.title)}>
         {entry.title}
       </h3>
-      <DecisionField label="Decision" value={entry.decision} />
-      <DecisionField label="Rationale" value={entry.rationale} />
-      <DecisionField label="Cost" value={entry.cost} />
-      <DecisionField label="Revisit when" value={entry.revisitWhen} />
+      {deep ? (
+        <>
+          <DecisionField label="Problem" value={entry.problem!} />
+          <DecisionField label="What I chose" value={entry.decision} />
+          <DecisionField label="What I rejected" value={entry.rejected!} />
+          <DecisionField label="Tradeoff accepted" value={entry.cost} />
+          <DecisionField label="When this breaks down" value={entry.revisitWhen} />
+          {entry.honestNote && (
+            <DecisionField label="Honest note" value={entry.honestNote} />
+          )}
+        </>
+      ) : (
+        <>
+          <DecisionField label="Decision" value={entry.decision} />
+          {entry.rationale && <DecisionField label="Rationale" value={entry.rationale} />}
+          <DecisionField label="Cost" value={entry.cost} />
+          <DecisionField label="Revisit when" value={entry.revisitWhen} />
+        </>
+      )}
     </div>
   );
 }
@@ -95,7 +137,7 @@ function DecisionField({ label, value }: { label: string; value: string }) {
       <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </div>
-      <div className="text-sm leading-relaxed">{value}</div>
+      <div className="text-sm leading-relaxed">{renderInline(value)}</div>
     </div>
   );
 }
