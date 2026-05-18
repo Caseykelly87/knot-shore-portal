@@ -33,10 +33,21 @@ export default function PortalPage() {
           </Link>{" "}
           / Portal
         </p>
-        <h1 className="text-4xl font-bold tracking-tight">Portal</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Portal</h1>
         <p className="text-lg text-muted-foreground">
           The Next.js 14 application you&apos;re reading right now. Three primary user-facing
           pages plus this documentation hub.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          For the reasoning behind the choices this layer relies on, see the{" "}
+          <Link href="/about/decisions" className="underline hover:text-foreground">
+            Decisions
+          </Link>{" "}
+          page; for the bugs and surprises that shaped it, see{" "}
+          <Link href="/about/lessons" className="underline hover:text-foreground">
+            Lessons
+          </Link>
+          .
         </p>
       </header>
 
@@ -55,7 +66,47 @@ export default function PortalPage() {
           The portal can run in offline mode (against bundled JSON fixtures) or online mode
           (against an upstream API). Both modes serve the same dashboards with the same shape;
           neither is a degraded fallback. A clone-and-run demo against fixtures looks the same
-          as a live deployment against an API.
+          as a live deployment against an API. The public Vercel deployment runs offline mode
+          by default — see{" "}
+          <Link
+            href="/about/decisions#offline-mode-as-the-public-deploy-default"
+            className="underline hover:text-foreground"
+          >
+            Offline mode as the public-deploy default
+          </Link>{" "}
+          for why a public reviewer should not depend on a live API being up.
+        </p>
+      </section>
+
+      <section className="space-y-4" id="who">
+        <h2 className="text-2xl font-semibold tracking-tight">Who would use this and how</h2>
+        <p>
+          The portal is designed for a small set of operator workflows. The shape of the UI
+          serves these workflows specifically rather than building features no specific user
+          would ask for.
+        </p>
+        <ul className="list-disc list-inside space-y-2 text-sm">
+          <li>
+            <strong>A store manager</strong> checks yesterday&apos;s exceptions for their
+            store — a focused view filtered to one store, sorted by severity, with the
+            actual-vs-expected band visible on each flag.
+          </li>
+          <li>
+            <strong>A regional manager</strong> reviews the network-wide exception trend —
+            counts by day, severity mix, which stores are over-flagging this week. The
+            dashboard&apos;s KPI cards and trend chart serve this read.
+          </li>
+          <li>
+            <strong>An analyst</strong> investigates specific anomalies via the drilldown —
+            click an exception, land on the store, look at year-over-year and the department
+            mix for context.
+          </li>
+        </ul>
+        <p>
+          Several features are deliberately absent — no admin dashboard, no user management,
+          no notification preferences, no annotations or saved views. Those features would be
+          right for a different audience. For this triage-and-analysis tool, they are
+          intentional non-features.
         </p>
       </section>
 
@@ -73,10 +124,17 @@ export default function PortalPage() {
         </p>
         <p>
           The data-shaping transformer is always pure (no I/O, no side effects, deterministic
-          input-to-output) and always unit-tested. The fetcher is server-only and not unit-
-          tested directly; its behavior is verified in integration via the page render. The
-          split makes the testable surface as small as possible while exercising the
-          interesting logic.
+          input-to-output) and always unit-tested. The fetcher is server-only and not
+          unit-tested directly; its behavior is verified in integration via the page render.
+          The split makes the testable surface as small as possible while exercising the
+          interesting logic. See{" "}
+          <Link
+            href="/about/decisions#charts-as-client-components-pages-as-server-components"
+            className="underline hover:text-foreground"
+          >
+            Charts as client components, pages as server components
+          </Link>{" "}
+          for the boundary rationale.
         </p>
       </section>
 
@@ -100,8 +158,81 @@ export default function PortalPage() {
           The cost: more code than <code className="bg-muted px-1 rounded">useState</code>{" "}
           would require, and the consuming page must be wrapped in{" "}
           <code className="bg-muted px-1 rounded">&lt;Suspense&gt;</code> because{" "}
-          <code className="bg-muted px-1 rounded">useSearchParams</code> is a client-only API in
-          Next.js 14&apos;s App Router. The trade is worth it for the URL-as-state behavior.
+          <code className="bg-muted px-1 rounded">useSearchParams</code> is a client-only API
+          in Next.js 14&apos;s App Router. The trade is worth it for the URL-as-state
+          behavior. See{" "}
+          <Link
+            href="/about/decisions#url-synced-filter-state"
+            className="underline hover:text-foreground"
+          >
+            URL-synced filter state
+          </Link>{" "}
+          for the rejected alternatives.
+        </p>
+        <p>
+          Filter application itself runs client-side after one fetch. The exceptions page
+          fetches all 831 anomalies on page load — paginated through the API&apos;s 200-row
+          cap in online mode, one fixture in offline mode — then re-filters in memory on every
+          filter change. At this dataset size the re-filter is imperceptible; at a million
+          rows it would freeze the browser. The decision is explicit that the choice
+          won&apos;t scale, and that&apos;s the right call at current scale. See{" "}
+          <Link
+            href="/about/decisions#client-side-filtering-after-one-fetch"
+            className="underline hover:text-foreground"
+          >
+            Client-side filtering after one fetch
+          </Link>
+          .
+        </p>
+      </section>
+
+      <section className="space-y-4" id="loading-and-errors">
+        <h2 className="text-2xl font-semibold tracking-tight">Loading and error states</h2>
+        <p>
+          Server components fetch data on the server, which means the user sees nothing in the
+          browser until the first byte of the response arrives. On a fast connection that gap
+          is sub-100ms; on a slow connection it can be seconds. A skeleton-loader pattern
+          fills the visual gap and signals &quot;data is coming.&quot; Without one, the page
+          is blank during the fetch, which is operationally indistinguishable from a broken
+          page. The skeletons are not decorative — they&apos;re feedback. Each page has its
+          own skeleton component matching the eventual layout (KPI card outlines, chart
+          rectangles, table row placeholders) so the visual shape is stable across the
+          transition.
+        </p>
+        <p>
+          A global <code className="bg-muted px-1 rounded">app/global-error.tsx</code>{" "}
+          boundary catches unhandled exceptions in any route. It logs the actual error to the
+          console with a <code className="bg-muted px-1 rounded">useEffect</code>-deferred{" "}
+          <code className="bg-muted px-1 rounded">console.error</code>. The boundary
+          originally went in to diagnose a Vercel deploy bug that surfaced only in production
+          — local dev streamed dynamically and never hit the problematic path. Without the
+          boundary, Vercel&apos;s logs showed only an opaque digest. With it, the error
+          turned into a specific TypeError that pointed at the bug in seconds. The boundary
+          stayed in place after the bug was fixed because that&apos;s exactly when this
+          diagnostic is load-bearing — when something else is unexpectedly broken in
+          production. Full story:{" "}
+          <Link
+            href="/about/lessons#the-vercel-deploy-bug-that-became-an-architectural-improvement"
+            className="underline hover:text-foreground"
+          >
+            The Vercel deploy bug that became an architectural improvement
+          </Link>
+          .
+        </p>
+        <p>
+          One known framework-level rough edge: the{" "}
+          <code className="bg-muted px-1 rounded">/stores/[id]</code> page&apos;s{" "}
+          <code className="bg-muted px-1 rounded">notFound()</code> call renders the
+          not-found UI correctly but returns HTTP 200, not 404. RSC streaming has already
+          flushed response headers by the time the validation fails. The UI behavior is
+          right; the status code mismatch is documented as an accepted limitation. See{" "}
+          <Link
+            href="/about/lessons#the-streaming-bug-where-404-returned-200"
+            className="underline hover:text-foreground"
+          >
+            The streaming bug where 404 returned 200
+          </Link>
+          .
         </p>
       </section>
 
@@ -124,82 +255,103 @@ export default function PortalPage() {
           <code className="bg-muted px-1 rounded">-server.ts</code> suffix is the marker;
           it&apos;s not enforced by tooling but it&apos;s the convention.
         </p>
+        <p>
+          This split was the second design, not the first. The discovery story —{" "}
+          <Link
+            href="/about/lessons#the-next-headers-error-that-revealed-the-server-client-boundary"
+            className="underline hover:text-foreground"
+          >
+            The next/headers error that revealed the server/client boundary
+          </Link>{" "}
+          — covers why the framework needs this partition at bundle time rather than runtime,
+          and why the error message reads as a runtime mystery until that lands. The decision
+          itself is documented at{" "}
+          <Link
+            href="/about/decisions#module-split-for-next-headers-boundary"
+            className="underline hover:text-foreground"
+          >
+            Module split for next/headers boundary
+          </Link>
+          .
+        </p>
       </section>
 
       <section className="space-y-4" id="code-organization">
         <h2 className="text-2xl font-semibold tracking-tight">Code organization</h2>
         <p>
           The Next.js App Router structure under{" "}
-          <code className="bg-muted px-1 rounded">app/</code>; shared utilities under{" "}
-          <code className="bg-muted px-1 rounded">lib/</code>; UI components under{" "}
-          <code className="bg-muted px-1 rounded">components/</code>:
+          <code className="bg-muted px-1 rounded">app/</code>: route segments are server
+          components by default; client islands are explicitly marked.{" "}
+          <code className="bg-muted px-1 rounded">app/api/*/route.ts</code> contains the
+          portal-side route handlers that switch between offline (direct fixture import) and
+          online (upstream proxy) based on{" "}
+          <code className="bg-muted px-1 rounded">API_MODE</code>.
         </p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>
-            <code className="bg-muted px-1 rounded">app/page.tsx</code>,{" "}
-            <code className="bg-muted px-1 rounded">app/stores/[id]/page.tsx</code>,{" "}
-            <code className="bg-muted px-1 rounded">app/exceptions/page.tsx</code> — the three
-            primary user-facing pages. All server components.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">app/about/</code> — this documentation hub.
-            All server components.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">app/api/*/route.ts</code> — portal-side
-            route handlers. Each routes between offline (fixtures) and online (upstream proxy)
-            based on <code className="bg-muted px-1 rounded">API_MODE</code>.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">lib/dashboard-data.ts</code>,{" "}
-            <code className="bg-muted px-1 rounded">lib/store-data.ts</code>,{" "}
-            <code className="bg-muted px-1 rounded">lib/exceptions-data.ts</code> /{" "}
-            <code className="bg-muted px-1 rounded">-server.ts</code> — per-page data layer.
-            Each is a pure shape transformer plus a server fetcher.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">lib/use-exceptions-filters.ts</code> — the
-            URL-synced filter hook.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">lib/api-mode.ts</code> — mode resolution
-            and upstream URL construction.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">lib/logger.ts</code> — pino with sync
-            streams for Next.js compatibility; bound to incoming X-Request-ID via{" "}
-            <code className="bg-muted px-1 rounded">getRequestLogger</code>.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">lib/metrics.ts</code> — prom-client custom
-            Registry cached on{" "}
-            <code className="bg-muted px-1 rounded">globalThis.__portalMetrics</code> so each
-            route handler&apos;s webpack chunk shares the same instance.
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">components/dashboard/</code>,{" "}
-            <code className="bg-muted px-1 rounded">components/store-drilldown/</code>,{" "}
-            <code className="bg-muted px-1 rounded">components/exceptions/</code> — page-
-            specific components. Charts use recharts (pinned to v2).
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">components/ui/</code> — shadcn primitives
-            (Card, Button, Sheet, Select, etc.).
-          </li>
-          <li>
-            <code className="bg-muted px-1 rounded">components/about/MermaidDiagram.tsx</code>{" "}
-            — the lazy-CDN-loaded diagram component used on{" "}
-            <code className="bg-muted px-1 rounded">/about</code> pages.
-          </li>
-        </ul>
+        <p>
+          The per-page data layer lives under{" "}
+          <code className="bg-muted px-1 rounded">lib/</code>: a pure shape transformer (types,
+          filters, mapping; importable from anywhere) plus a server-only fetcher (the{" "}
+          <code className="bg-muted px-1 rounded">-server.ts</code> file with{" "}
+          <code className="bg-muted px-1 rounded">headers()</code> imports). The shape
+          transformers are the unit-test surface; the fetchers are exercised in integration.
+        </p>
+        <p>
+          Cross-route infrastructure also lives in{" "}
+          <code className="bg-muted px-1 rounded">lib/</code>: a pino logger bound to the
+          incoming <code className="bg-muted px-1 rounded">X-Request-ID</code>, a prom-client
+          custom Registry cached on{" "}
+          <code className="bg-muted px-1 rounded">globalThis.__portalMetrics</code> (because
+          each route handler is its own webpack chunk; see{" "}
+          <Link
+            href="/about/lessons#the-prometheus-metrics-that-vanished-between-routes"
+            className="underline hover:text-foreground"
+          >
+            The Prometheus metrics that vanished between routes
+          </Link>
+          ), and the mode-resolution helper that the route handlers branch on.
+        </p>
+        <p>
+          UI components under <code className="bg-muted px-1 rounded">components/</code> are
+          grouped by feature (dashboard, store-drilldown, exceptions, about) with shadcn
+          primitives under <code className="bg-muted px-1 rounded">components/ui/</code>. The
+          department list is hardcoded as a TypeScript constant in{" "}
+          <code className="bg-muted px-1 rounded">lib/dim-departments.ts</code> rather than
+          fetched through the API — see{" "}
+          <Link
+            href="/about/decisions#department-names-embedded-portal-side"
+            className="underline hover:text-foreground"
+          >
+            Department names embedded portal-side
+          </Link>{" "}
+          for why 10 strings of stable reference data don&apos;t earn an API round-trip.
+        </p>
       </section>
 
       <section className="space-y-4" id="charts">
         <h2 className="text-2xl font-semibold tracking-tight">Charts</h2>
         <p>
-          Recharts, pinned to v2. The pin matters: recharts v3 changed several core component
-          APIs (<code className="bg-muted px-1 rounded">LineChart</code> children, tooltip
-          shape, etc.); upgrading would require rewriting every chart for no visual benefit.
+          Recharts, pinned to <code className="bg-muted px-1 rounded">^2.13.0</code>. The pin
+          is load-bearing, not housekeeping. Recharts v3 changed several core component APIs
+          (<code className="bg-muted px-1 rounded">LineChart</code> children, tooltip shape);
+          upgrading would require rewriting every chart for no visual benefit. The chart
+          components are also deliberately not unit-tested — recharts internals are too
+          fragile to assert against across versions — so visual review is the only safety
+          net. That makes the version pin part of the test strategy, not separate from it. An
+          afternoon was lost discovering this:{" "}
+          <Link
+            href="/about/lessons#the-recharts-v3-release-that-broke-everything-for-an-afternoon"
+            className="underline hover:text-foreground"
+          >
+            The recharts v3 release that broke everything for an afternoon
+          </Link>
+          . Decision write-up:{" "}
+          <Link
+            href="/about/decisions#recharts-pinned-to-v2"
+            className="underline hover:text-foreground"
+          >
+            Recharts pinned to v2
+          </Link>
+          .
         </p>
         <p>
           Chart components are always client components (use{" "}
