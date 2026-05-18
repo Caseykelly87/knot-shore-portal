@@ -103,10 +103,22 @@ export default function PortalPage() {
           </li>
         </ul>
         <p>
-          Several features are deliberately absent — no admin dashboard, no user management,
-          no notification preferences, no annotations or saved views. Those features would be
-          right for a different audience. For this triage-and-analysis tool, they are
-          intentional non-features.
+          Several features are deliberately absent — no admin dashboard, no{" "}
+          <Link
+            href="/about/operations#authentication"
+            className="underline hover:text-foreground"
+          >
+            user management
+          </Link>
+          , no notification preferences, no{" "}
+          <Link
+            href="/about/operations#authorization"
+            className="underline hover:text-foreground"
+          >
+            annotations or saved views
+          </Link>
+          . Those features would be right for a different audience. For this
+          triage-and-analysis tool, they are intentional non-features.
         </p>
       </section>
 
