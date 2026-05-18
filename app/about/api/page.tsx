@@ -34,11 +34,22 @@ export default function ApiPage() {
           </Link>{" "}
           / API
         </p>
-        <h1 className="text-4xl font-bold tracking-tight">API</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">API</h1>
         <p className="text-lg text-muted-foreground">
           The HTTP service layer. Exposes canonical grocery data and macro-economic data through
           a small set of FastAPI endpoints. Operates in either fixture or live mode per data
           source.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          For the reasoning behind the choices this layer relies on, see the{" "}
+          <Link href="/about/decisions" className="underline hover:text-foreground">
+            Decisions
+          </Link>{" "}
+          page; for the bugs and surprises that shaped it, see{" "}
+          <Link href="/about/lessons" className="underline hover:text-foreground">
+            Lessons
+          </Link>
+          .
         </p>
       </header>
 
@@ -62,16 +73,26 @@ export default function ApiPage() {
       <section className="space-y-4" id="dual-mode">
         <h2 className="text-2xl font-semibold tracking-tight">Dual-mode operation</h2>
         <p>
+          The dual-mode design exists for an operational reason. A demo platform needs to work
+          for any reviewer landing on the URL — no infrastructure to set up, no config to fill
+          in, just data. A real production deployment needs to work against live data sources
+          with mounted parquet volumes or pointed at a regenerated canonical. The same code
+          serves both shapes. Configuration is the only thing that changes between them, and
+          neither mode is a degraded fallback.
+        </p>
+        <p>
           For grocery data, the API supports two modes per data source:{" "}
           <strong>fixtures</strong> (default, reads bundled parquets at{" "}
           <code className="bg-muted px-1 rounded">app/fixtures/</code>) and <strong>live</strong>{" "}
           (reads parquets at configured paths, e.g., a mounted volume in a container
-          deployment). Mode is per-data-source — the four grocery paths (
+          deployment). The four grocery paths —{" "}
           <code className="bg-muted px-1 rounded">STORE_METRICS_PATH</code>,{" "}
           <code className="bg-muted px-1 rounded">DEPARTMENT_METRICS_PATH</code>,{" "}
           <code className="bg-muted px-1 rounded">ANOMALY_FLAGS_PATH</code>,{" "}
-          <code className="bg-muted px-1 rounded">DIM_STORES_PATH</code>) can be toggled
-          independently.
+          <code className="bg-muted px-1 rounded">DIM_STORES_PATH</code> — resolve
+          independently per-property, but the platform-wide mode label only reports{" "}
+          <code className="bg-muted px-1 rounded">live</code> when all four resolve to readable
+          files. Partial config falls back transparently to the bundled fixtures.
         </p>
         <p>
           The mechanism is a <code className="bg-muted px-1 rounded">resolved_*_path</code>{" "}
@@ -87,11 +108,34 @@ def resolved_store_metrics_path(self) -> str:
     return f"{self.GROCERY_FIXTURES_DIR}/store_daily_metrics.parquet"`}</code>
         </pre>
         <p>
-          The <code className="bg-muted px-1 rounded">/health</code> endpoint reports a{" "}
-          <code className="bg-muted px-1 rounded">grocery_data_source</code> label of either{" "}
-          <code className="bg-muted px-1 rounded">live</code> or{" "}
-          <code className="bg-muted px-1 rounded">fixtures</code>. Live is reported only when
-          all four grocery paths point at readable files.
+          A production deployment would set all four paths as environment variables pointing at
+          a mounted canonical volume; <code className="bg-muted px-1 rounded">/health</code>{" "}
+          would report{" "}
+          <code className="bg-muted px-1 rounded">&quot;grocery_data_source&quot;: &quot;live&quot;</code>;
+          an operator would alert if{" "}
+          <code className="bg-muted px-1 rounded">/health</code> ever reported{" "}
+          <code className="bg-muted px-1 rounded">&quot;fixtures&quot;</code> unexpectedly
+          (the canonical sign of a misconfigured deployment that silently fell back).
+        </p>
+        <p>
+          The bundled fixtures themselves are byte-identical to the ETL repo&apos;s canonical
+          parquets — same file size, same SHA-256, same row count. The integrity is verifiable
+          by <code className="bg-muted px-1 rounded">cmp</code> at the repo boundary. See{" "}
+          <Link
+            href="/about/decisions#two-mode-demo-as-first-class"
+            className="underline hover:text-foreground"
+          >
+            Two-mode demo as first-class
+          </Link>{" "}
+          for the full decision, including the honest note that &quot;fail loudly&quot; would
+          be the correct production default; and{" "}
+          <Link
+            href="/about/decisions#byte-identical-fixtures-across-repos"
+            className="underline hover:text-foreground"
+          >
+            Byte-identical fixtures across repos
+          </Link>{" "}
+          for the canonical-fixture flow.
         </p>
       </section>
 
@@ -162,7 +206,16 @@ def resolved_store_metrics_path(self) -> str:
           Every paginated endpoint enforces a 200-row maximum on the{" "}
           <code className="bg-muted px-1 rounded">limit</code> query parameter. Larger queries
           paginate; Pydantic validation rejects{" "}
-          <code className="bg-muted px-1 rounded">limit &gt; 200</code> with a 422.
+          <code className="bg-muted px-1 rounded">limit &gt; 200</code> with a 422. The cap
+          serves two purposes — keeping any single response payload under 100KB and forcing
+          bulk readers to paginate explicitly. See{" "}
+          <Link
+            href="/about/decisions#200-row-api-limit"
+            className="underline hover:text-foreground"
+          >
+            200-row API limit
+          </Link>
+          .
         </p>
       </section>
 
@@ -172,16 +225,29 @@ def resolved_store_metrics_path(self) -> str:
           Every endpoint declares its response shape via Pydantic v2 models in{" "}
           <code className="bg-muted px-1 rounded">app/schemas/</code>. The schemas are the
           response contract; FastAPI validates outputs against them and the OpenAPI spec is
-          generated from them.
+          generated from them. Schema choices have operational consequences. A concrete
+          example:
         </p>
-        <p>Two coercion patterns worth noting:</p>
+        <p>
+          Newport Beach, CA has the ZIP code <code className="bg-muted px-1 rounded">07712</code>.
+          If <code className="bg-muted px-1 rounded">zip_code</code> is declared as an integer
+          field, pandas parses it as <code className="bg-muted px-1 rounded">7712</code> on the
+          way in. <code className="bg-muted px-1 rounded">7712</code> is a ZIP in New Jersey.
+          The dashboard map silently relocates Newport Beach to Eatontown, NJ. The data
+          contract was &quot;ZIP is a number,&quot; the implication is &quot;leading zeros
+          don&apos;t survive,&quot; and the cost is a wrong dashboard. The reverse — declaring
+          ZIP as a five-character zero-padded string and coercing at the contract boundary —
+          costs a few lines of service-layer code and preserves the identifier.
+        </p>
+        <p>The two coercion patterns this repo uses:</p>
         <ul className="list-disc list-inside text-sm space-y-1">
           <li>
             ZIP and county_fips on <code className="bg-muted px-1 rounded">/dim-stores</code>{" "}
             are declared as <code className="bg-muted px-1 rounded">str</code> in the schema,
             even though the parquet stores them as int64. The service layer coerces via{" "}
-            <code className="bg-muted px-1 rounded">f&#123;value:05d&#125;</code> at the
-            contract boundary. They&apos;re identifiers, not numbers.
+            <code className="bg-muted px-1 rounded">f&quot;&#123;value:05d&#125;&quot;</code>{" "}
+            at the contract boundary. They&apos;re identifiers, not numbers — arithmetic on a
+            ZIP code is meaningless.
           </li>
           <li>
             <code className="bg-muted px-1 rounded">open_date</code> on{" "}
@@ -191,31 +257,49 @@ def resolved_store_metrics_path(self) -> str:
             coerces via <code className="bg-muted px-1 rounded">date.fromisoformat</code>.
           </li>
         </ul>
+        <p>
+          The pattern: where the storage type and the contract type differ, coerce at the
+          contract boundary and declare the contract in Pydantic. Don&apos;t let storage
+          decisions leak into the response shape. See{" "}
+          <Link
+            href="/about/decisions#zip-and-county-fips-as-zero-padded-strings"
+            className="underline hover:text-foreground"
+          >
+            ZIP and county_fips as zero-padded strings
+          </Link>
+          .
+        </p>
       </section>
 
       <section className="space-y-4" id="observability">
         <h2 className="text-2xl font-semibold tracking-tight">Observability</h2>
         <p>
-          Structured JSON logs in production via structlog. The configurator (
-          <code className="bg-muted px-1 rounded">app/core/logging_config.py</code>) chains
-          processors that add a timestamp, the request-bound correlation ID, the log level, and
-          the calling logger&apos;s name. The chain includes{" "}
-          <code className="bg-muted px-1 rounded">structlog.stdlib.ExtraAdder()</code> so calls
-          like{" "}
-          <code className="bg-muted px-1 rounded">
-            logging.info(&quot;foo&quot;, extra=&#123;...&#125;)
-          </code>{" "}
-          propagate the structured fields through the stdlib bridge.
+          Structured JSON logs in production via structlog, with request correlation end-to-end
+          on <code className="bg-muted px-1 rounded">X-Request-ID</code>. The configurator
+          uses an <code className="bg-muted px-1 rounded">ExtraAdder</code> bridge to pick up
+          stdlib <code className="bg-muted px-1 rounded">logging.info(...)</code> calls that
+          carry <code className="bg-muted px-1 rounded">extra=&#123;...&#125;</code> dicts —
+          without that, <code className="bg-muted px-1 rounded">extra</code> silently
+          disappears from output. Story:{" "}
+          <Link
+            href="/about/lessons#the-structlog-stdlib-bridge-that-nearly-didn-t-work"
+            className="underline hover:text-foreground"
+          >
+            The structlog/stdlib bridge that nearly didn&apos;t work
+          </Link>
+          .
         </p>
         <p>
           Prometheus metrics exposed at <code className="bg-muted px-1 rounded">/metrics</code>{" "}
-          on a custom registry (not the global default). Three custom counters:{" "}
-          <code className="bg-muted px-1 rounded">service_call_total</code> (per service
-          function), <code className="bg-muted px-1 rounded">grocery_data_source_total</code>{" "}
-          (per service function, labeled with live or fixtures), and a service-call latency
-          histogram. The custom registry isolates the platform&apos;s metrics from any
-          third-party library that might write to{" "}
-          <code className="bg-muted px-1 rounded">REGISTRY</code> at import time.
+          on a custom registry (not the global default). Three custom counters and a
+          histogram: <code className="bg-muted px-1 rounded">service_call_total</code>{" "}
+          (per service function),{" "}
+          <code className="bg-muted px-1 rounded">grocery_data_source_total</code> (per
+          service function, labeled <code className="bg-muted px-1 rounded">live</code> or{" "}
+          <code className="bg-muted px-1 rounded">fixtures</code> so an operator can see mode
+          changes over time), and a service-call latency histogram. The custom registry
+          isolates the platform&apos;s metrics from any third-party library that might write
+          to the global default registry at import time.
         </p>
       </section>
 
