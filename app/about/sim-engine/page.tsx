@@ -32,10 +32,21 @@ export default function SimEnginePage() {
           </Link>{" "}
           / Sim engine
         </p>
-        <h1 className="text-4xl font-bold tracking-tight">Sim engine</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Sim engine</h1>
         <p className="text-lg text-muted-foreground">
           The synthetic data generator for the platform. Produces deterministic store and
           department-level retail data with injected anomalies and ground-truth labels.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          For the reasoning behind specific choices the sim engine relies on, see the{" "}
+          <Link href="/about/decisions" className="underline hover:text-foreground">
+            Decisions
+          </Link>{" "}
+          page; for the bugs and surprises that shaped it, see{" "}
+          <Link href="/about/lessons" className="underline hover:text-foreground">
+            Lessons
+          </Link>
+          .
         </p>
       </header>
 
@@ -77,12 +88,14 @@ export default function SimEnginePage() {
           <code className="bg-muted px-1 rounded">anomaly_log.csv</code> alongside the data files.
         </p>
         <p>
-          The ground-truth log is the platform&apos;s detection-quality reference. No code in any
-          repo&apos;s <code className="bg-muted px-1 rounded">src/</code> or{" "}
-          <code className="bg-muted px-1 rounded">tests/</code> reads it. Only the ETL
-          repo&apos;s <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code>{" "}
-          may read it, and only for measuring the static-band rules&apos; recall and false-
-          positive rate against the truth.
+          The ground-truth log is the platform&apos;s detection-quality reference. It is
+          deliberately quarantined — only one file in the entire platform is permitted to read
+          it. See{" "}
+          <a href="#anomaly-log-boundary" className="underline hover:text-foreground">
+            The anomaly_log boundary
+          </a>{" "}
+          below for the reasoning and the honest note about how this boundary was named rather
+          than enforced.
         </p>
       </section>
 
@@ -104,16 +117,136 @@ rng = np.random.default_rng(date_seed)`}</code>
           same data as generating it as part of a larger backfill.
         </p>
         <p>
-          This property is what makes the platform&apos;s paired-year canonical possible. The
-          ETL repo&apos;s 2024-07-01 row would have been the same byte sequence whether it was
-          produced by{" "}
+          The natural alternative is a single global RNG that walks forward in time, advancing
+          state through each generated date in order. That approach is shorter to write — one{" "}
+          <code className="bg-muted px-1 rounded">np.random.default_rng(global_seed)</code>{" "}
+          at the top of the run — but it cascades. Any fix to the generation logic for
+          2025-08-15 would change every date generated after it, because the RNG state at
+          2025-08-16 would depend on every random draw made on 2025-08-15. Partial regeneration
+          becomes impossible. Fixing a bug on one date invalidates every subsequent date in the
+          canonical window.
+        </p>
+        <p>
+          Per-date seeding sidesteps the cascade. Anomaly injection and the realism layer take
+          the same shape with offset constants —{" "}
+          <code className="bg-muted px-1 rounded">date_seed + 1_000_000</code> for injection,{" "}
+          <code className="bg-muted px-1 rounded">date_seed + 999_999</code> for realism — so
+          their distributions don&apos;t accidentally overlap with the baseline sales RNG.
+          Backfilling 2024-07-01 produces byte-identical data whether it&apos;s part of a 2024
+          backfill, a 2025 anchor&apos;s T-365 paired generation, or a single-day regeneration.
+          The architectural property is that partial regeneration is safe.
+        </p>
+        <p>
+          This is what makes the paired-year canonical possible. The ETL repo&apos;s 2024-07-01
+          row would have been the same byte sequence whether it was produced by{" "}
           <code className="bg-muted px-1 rounded">cmd_run --date 2025-07-01</code> (which
-          generates t-365 paired data) or{" "}
+          generates T-365 paired data) or{" "}
           <code className="bg-muted px-1 rounded">
             cmd_backfill --start-date 2024-07-01 --days 184
           </code>
-          . The seed-from-date mechanism is the architectural invariant that makes paired-year
-          generation safe.
+          . It is also what makes the byte-identical canonical fixture flow possible across
+          repos — a regeneration in the ETL repo produces the same parquet bytes that a fresh
+          regeneration on a clean clone would produce. The full rationale, including the
+          options that were rejected, lives in{" "}
+          <Link
+            href="/about/decisions#per-date-deterministic-seeding"
+            className="underline hover:text-foreground"
+          >
+            Per-date deterministic seeding
+          </Link>{" "}
+          on the Decisions page.
+        </p>
+      </section>
+
+      <section className="space-y-4" id="anomaly-injection">
+        <h2 className="text-2xl font-semibold tracking-tight">Anomaly injection</h2>
+        <p>
+          Stage 3 injects four anomaly types — sales spikes, sales drops, transaction
+          anomalies, and labor-cost irregularities — using static, deterministic rules in{" "}
+          <code className="bg-muted px-1 rounded">anomalies.py</code>. Each anomaly type fires
+          with a bounded per-store-day probability; the per-day RNG seeded from{" "}
+          <code className="bg-muted px-1 rounded">date_seed + 1_000_000</code> selects whether
+          and where to fire. Every injection is recorded in{" "}
+          <code className="bg-muted px-1 rounded">anomaly_log.csv</code> alongside the data
+          files, with the rule that fired, the store-day it landed on, and the magnitude of
+          the injection.
+        </p>
+        <p>
+          The choice is deliberately not ML-based. The detection layer downstream — five
+          static-band rules in the ETL — needs ground truth to measure recall and false-positive
+          rate against. If the ground truth were learned from a distribution rather than
+          generated from rules, the eval would be measuring &quot;can a learned classifier
+          reproduce a learned distribution&quot; instead of &quot;can these specific rules
+          detect these specific injections.&quot; Static rules keep the question transparent:
+          every injected anomaly traces to a specific rule, and every detection match traces
+          back to the same source.
+        </p>
+        <p>Two properties matter:</p>
+        <ul className="list-disc list-inside space-y-2 text-sm">
+          <li>
+            <strong>Explainability.</strong> Each row in the anomaly log answers what was
+            injected, when, where, and by which rule. That&apos;s the ground truth the eval
+            script compares against — the basis for the recall and false-positive numbers in
+            the detection-quality report.
+          </li>
+          <li>
+            <strong>Reproducibility.</strong> The same{" "}
+            <code className="bg-muted px-1 rounded">(global_seed, date)</code> produces the
+            same anomaly injections, byte-identically. The eval&apos;s recall and FPR metrics
+            are stable across runs, which is what the recall ≥ 0.35 and FPR ≤ 0.10 detection
+            contract depends on.
+          </li>
+        </ul>
+        <p>
+          The symmetric rationale on the detection side — why the ETL uses static-band rules
+          rather than ML for matching — lives in{" "}
+          <Link
+            href="/about/decisions#static-band-rules-over-ml-for-detection"
+            className="underline hover:text-foreground"
+          >
+            Static-band rules over ML for detection
+          </Link>
+          .
+        </p>
+      </section>
+
+      <section className="space-y-4" id="anomaly-log-boundary">
+        <h2 className="text-2xl font-semibold tracking-tight">The anomaly_log boundary</h2>
+        <p>
+          The anomaly log is the platform&apos;s detection-quality ground truth. Exactly one
+          file in the entire platform may read it: the ETL repo&apos;s{" "}
+          <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code>. The ETL
+          package itself must remain importable and runnable without the log existing. The
+          detection code reads the canonical store-day parquet, not the log. The boundary is
+          enforced socially, by file location and naming, not mechanically.
+        </p>
+        <p>
+          The temptation to violate this boundary is real. &quot;Just join the anomaly log into
+          the detection output&quot; would make eval trivial — every detection&apos;s
+          ground-truth label would be directly available — and would also defeat the entire
+          purpose of the eval. A detector that reads the answer key isn&apos;t detecting; it&apos;s
+          looking up. The eval script lives in{" "}
+          <code className="bg-muted px-1 rounded">scripts/</code> rather than{" "}
+          <code className="bg-muted px-1 rounded">src/</code> specifically so the boundary is
+          visible in the directory structure: anything in <code className="bg-muted px-1 rounded">src/</code>{" "}
+          is part of the platform; anything in <code className="bg-muted px-1 rounded">scripts/</code>{" "}
+          is operational tooling that runs outside the platform&apos;s normal execution path.
+        </p>
+        <p>
+          I felt the temptation. The eval script lives where it does specifically so I could
+          rationalize &quot;but this is just for measurement&quot; without it leaking into the
+          package. The boundary works because it was named and structurally located, not
+          because of discipline. Nothing automated enforces the rule — a future contributor
+          could violate it and CI would not catch it. If the team grows beyond one engineer or
+          the detection rules grow complex enough that the temptation grows with them, a lint
+          rule or a CI grep check becomes worth adding. See{" "}
+          <Link
+            href="/about/decisions#anomaly-log-boundary"
+            className="underline hover:text-foreground"
+          >
+            Anomaly_log boundary
+          </Link>{" "}
+          for the full decision and what was rejected.
         </p>
       </section>
 
@@ -205,6 +338,51 @@ rng = np.random.default_rng(date_seed)`}</code>
         </ul>
       </section>
 
+      <section className="space-y-4" id="not-simulated">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          What the sim engine doesn&apos;t simulate
+        </h2>
+        <p>
+          The scope is deliberately bounded. Several plausible features were considered and
+          left out:
+        </p>
+        <ul className="list-disc list-inside space-y-2 text-sm">
+          <li>
+            <strong>SKU-level data.</strong> Only department aggregates. SKU-level would
+            require storage and UI affordances out of proportion to the audience (regional
+            managers, not category buyers).
+          </li>
+          <li>
+            <strong>Supply chain.</strong> No upstream inventory effects, no truck-arrival
+            noise, no stockouts. Sales are modeled as direct functions of demand factors, not
+            as <code className="bg-muted px-1 rounded">min(demand, inventory)</code>.
+          </li>
+          <li>
+            <strong>Customer demographics.</strong> No per-customer segmentation, no loyalty
+            data, no basket-level customer attribution. The unit of analysis is the
+            store-day-department.
+          </li>
+          <li>
+            <strong>Real-time POS feeds.</strong> Batch daily-grain only. The decision to
+            operate at daily grain is platform-wide, not just sim-engine-specific.
+          </li>
+          <li>
+            <strong>Multi-channel sales.</strong> No online vs. in-store split. All sales flow
+            through one channel.
+          </li>
+          <li>
+            <strong>Promotional planning workflows.</strong> Promotions are generated by{" "}
+            <code className="bg-muted px-1 rounded">cmd_init</code> and apply to the data; the
+            sim engine does not model the workflow of authoring or approving a promo.
+          </li>
+        </ul>
+        <p>
+          Each of these would add complexity that doesn&apos;t earn its keep against the
+          platform&apos;s stated audience and questions. The scope of what&apos;s modeled is
+          the scope of what stakeholder dashboards in this audience class actually need.
+        </p>
+      </section>
+
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
@@ -218,6 +396,19 @@ rng = np.random.default_rng(date_seed)`}</code>
           cover the realism layer&apos;s opt-out path:{" "}
           <code className="bg-muted px-1 rounded">--no-realism</code> must produce the same
           baseline data that the un-flagged run produces before realism touches it.
+        </p>
+        <p>
+          Determinism tests caught one of the platform&apos;s most interesting bugs — a
+          cross-platform test failure that turned out to depend on which Python packages were
+          installed in CI, not on anything the sim engine did or didn&apos;t do. The fix was
+          twelve lines; the diagnosis took longer. Full story:{" "}
+          <Link
+            href="/about/lessons#the-cross-platform-seeding-test-that-wasn-t-actually-a-seeding-bug"
+            className="underline hover:text-foreground"
+          >
+            The cross-platform seeding test that wasn&apos;t actually a seeding bug
+          </Link>
+          .
         </p>
       </section>
     </article>
