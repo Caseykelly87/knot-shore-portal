@@ -61,7 +61,7 @@ export default function AboutPage() {
   return (
     <article className="mx-auto max-w-4xl px-6 py-8 space-y-10">
       <header className="space-y-3">
-        <h1 className="text-4xl font-bold tracking-tight">About</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">About</h1>
         <p className="text-lg text-muted-foreground">
           Documentation for the Knot Shore Grocery analytics platform — what it is, how
           it&apos;s structured, and the reasoning behind specific choices.
@@ -69,6 +69,12 @@ export default function AboutPage() {
       </header>
 
       <section className="space-y-4">
+        <p>
+          This section is the engineering perspective on the platform. It covers what the
+          platform is and how the pieces fit together, but the focus is on the choices behind
+          the code — what was decided, what was rejected, what the tradeoffs are, and what
+          didn&apos;t work the first time.
+        </p>
         <p>
           The platform is an end-to-end retail analytics stack for a fictional 8-store grocery
           chain. It generates synthetic store and department data, ingests through an ETL with
@@ -84,7 +90,11 @@ export default function AboutPage() {
           <Link href="/about/decisions" className="underline hover:text-foreground">
             Decisions
           </Link>{" "}
-          for the reasoning behind specific choices; pick a per-layer page for repo-level depth.
+          for the reasoning behind specific choices and{" "}
+          <Link href="/about/lessons" className="underline hover:text-foreground">
+            Lessons
+          </Link>{" "}
+          for what went sideways during the build; pick a per-layer page for repo-level depth.
         </p>
       </section>
 
