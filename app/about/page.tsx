@@ -21,6 +21,13 @@ const PAGES = [
     available: true,
   },
   {
+    href: "/about/lessons",
+    title: "Lessons",
+    description:
+      "Bugs, gotchas, and surprises from the build — what happened, how it was handled, and what it taught.",
+    available: true,
+  },
+  {
     href: "/about/sim-engine",
     title: "Sim engine",
     description:
