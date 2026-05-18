@@ -15,7 +15,7 @@ function slugify(text: string): string {
 }
 
 function renderInline(text: string): React.ReactNode[] {
-  const parts = text.split(/(`[^`]+`)/g);
+  const parts = text.split(/(`[^`]+`|\[[^\]]+\]\([^)]+\))/g);
   return parts.map((part, i) => {
     if (part.startsWith("`") && part.endsWith("`") && part.length >= 2) {
       return (
@@ -25,6 +25,14 @@ function renderInline(text: string): React.ReactNode[] {
         >
           {part.slice(1, -1)}
         </code>
+      );
+    }
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      return (
+        <Link key={i} href={linkMatch[2]} className="underline hover:text-foreground">
+          {linkMatch[1]}
+        </Link>
       );
     }
     return <span key={i}>{part}</span>;
