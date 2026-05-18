@@ -3,6 +3,7 @@
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -14,6 +15,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 interface TopStoresChartProps {
   data: Array<{ storeId: string; storeName: string; totalSales: number }>;
 }
+
+const BAR_PALETTE = [
+  "var(--brand-deep-navy)",
+  "#2C4356",
+  "var(--brand-kelp-green)",
+  "#52866A",
+  "#6A988B",
+  "var(--brand-sea-glass)",
+  "#9CC1B8",
+  "#B9D3CC",
+];
 
 function formatTickValue(value: number): string {
   if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
@@ -67,7 +79,14 @@ export function TopStoresChart({ data }: TopStoresChartProps) {
                 }}
                 cursor={{ fill: "hsl(var(--muted))" }}
               />
-              <Bar dataKey="totalSales" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="totalSales" radius={[0, 4, 4, 0]}>
+                {data.map((entry, index) => (
+                  <Cell
+                    key={entry.storeId}
+                    fill={BAR_PALETTE[index % BAR_PALETTE.length]}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

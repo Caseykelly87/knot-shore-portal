@@ -13,9 +13,9 @@ interface SeverityRowProps {
 
 function SeverityRow({ severity, count }: SeverityRowProps) {
   const severityStyles = {
-    info: "bg-blue-500",
-    warning: "bg-amber-500",
-    critical: "bg-red-500",
+    info: "bg-severity-info",
+    warning: "bg-severity-warning",
+    critical: "bg-severity-critical",
   };
 
   const severityLabels = {

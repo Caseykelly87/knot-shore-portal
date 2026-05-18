@@ -10,7 +10,9 @@ export default async function DashboardPage() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-8 space-y-8">
       <header className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Daily Dashboard</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">
+          Daily Dashboard
+        </h1>
         <p className="text-muted-foreground">
           Knot Shore Grocery — July 1 through December 31, 2025
         </p>
