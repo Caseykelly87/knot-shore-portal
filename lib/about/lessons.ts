@@ -118,7 +118,7 @@ export const LESSONS: LessonEntry[] = [
       "Updated the README to the correct date. No code change needed — the code was always correct; only the documentation was wrong.",
     ],
     whatItTaught: [
-      "Off-by-one bugs in documentation are worse than off-by-one bugs in code because nothing tests documentation. Every claim in a README that involves a calculation should be verifiable by working out the math. I now treat \"2025-07-01 through 2025-12-31 (184 days)\" as a claim that requires the math to support it, not a fact to repeat from previous versions.",
+      "Off-by-one bugs in documentation are worse than off-by-one bugs in code because [nothing tests documentation](/about/operations#freshness-monitoring). Every claim in a README that involves a calculation should be verifiable by working out the math. I now treat \"2025-07-01 through 2025-12-31 (184 days)\" as a claim that requires the math to support it, not a fact to repeat from previous versions.",
     ],
   },
   {
