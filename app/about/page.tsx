@@ -55,6 +55,13 @@ const PAGES = [
       "The Next.js application — server-component data flow, URL-synced state, charts, theme system, this page itself.",
     available: true,
   },
+  {
+    href: "/about/operations",
+    title: "Operations",
+    description:
+      "What a production deployment would require beyond what is currently built — storage, scheduling, auth, caching, alerting, deploy strategy, data quality.",
+    available: true,
+  },
 ];
 
 export default function AboutPage() {
