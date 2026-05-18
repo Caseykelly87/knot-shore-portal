@@ -48,7 +48,7 @@ export const DECISIONS: DecisionCategory[] = [
         revisitWhen:
           "At any production scale where silent fallback would be a critical operational concern. Production deploys should be configured to fail loudly on missing config; the all-or-nothing pattern is a demo-mode convenience. If the maintenance burden of dual modes ever exceeds the demo-portability benefit, the modes can collapse to one.",
         honestNote:
-          "The choice I rejected — \"fail loudly\" — would have been correct in production but wrong for a demo. The current behavior makes the dual-mode story cleaner for reviewers but is the wrong default for real use.",
+          "The choice I rejected — \"fail loudly\" — would have been correct in production but wrong for a demo. The current behavior makes the dual-mode story cleaner for reviewers but is the wrong default for real use. The production-scale answer is [alerting on operational signals](/about/operations#alerting-on-operational-signals) rather than silent fallback.",
       },
       {
         title: "Offline mode as the public-deploy default",
@@ -189,7 +189,7 @@ export const DECISIONS: DecisionCategory[] = [
         rationale:
           "Stakeholder dashboards in this scale of company are typically deployed behind a corporate VPN or reverse proxy that handles auth. Building auth into the application layer would multiply complexity without serving a need.",
         cost:
-          "The portal is not multi-tenant-safe. Deployment must include an auth boundary at the infrastructure layer.",
+          "The portal is not multi-tenant-safe. Deployment must include an [auth boundary at the infrastructure layer](/about/operations#authentication).",
         revisitWhen: "If the portal needs to serve external users or per-user customization.",
       },
       {
@@ -197,7 +197,7 @@ export const DECISIONS: DecisionCategory[] = [
         decision:
           "All API endpoints are GET. Users cannot submit data through the portal.",
         rationale:
-          "The platform renders analytics derived from the data pipeline; it doesn't accept user input that affects business state. Comments, annotations, or saved views could be added but would require auth (see above) and a separate write path.",
+          "The platform renders analytics derived from the data pipeline; it doesn't accept user input that affects business state. Comments, annotations, or saved views could be added but would require auth (see above) and a [separate write path](/about/operations#authorization).",
         cost:
           "Operational features (annotating an exception, marking a flag as resolved) require a different platform.",
         revisitWhen: "When user-state features become a target.",
@@ -215,7 +215,7 @@ export const DECISIONS: DecisionCategory[] = [
       {
         title: "No background job scheduling",
         decision:
-          "The macro pipeline is Airflow-DAG-ready but no scheduler is configured. Pipeline runs are manual.",
+          "The macro pipeline is Airflow-DAG-ready but [no scheduler is configured](/about/operations#a-scheduler-for-the-macro-pipeline). Pipeline runs are manual.",
         rationale:
           "Adding Airflow or Prefect to the local development stack adds significant complexity (Docker Compose, Postgres for the scheduler, web UI). For a build that mostly runs the pipeline ad-hoc, the cost outweighs the benefit. Production deployment would handle scheduling at the infrastructure level.",
         cost: "Pipelines run on demand. No automated freshness guarantees.",
@@ -227,7 +227,7 @@ export const DECISIONS: DecisionCategory[] = [
         decision:
           "API endpoints read directly from parquet (memory-mapped) or Postgres (with connection pooling). No Redis, Memcached, or application-level cache.",
         rationale:
-          "API responses at this data scale are typically sub-100ms. Adding cache infrastructure would optimize a non-bottleneck. For specific endpoints that aggregate large data (dashboard-summary scans 1,472 rows), cache could help — but the wins are marginal until concurrent load increases.",
+          "API responses at this data scale are typically sub-100ms. Adding cache infrastructure would optimize a non-bottleneck. For specific endpoints that aggregate large data (dashboard-summary scans 1,472 rows), [cache could help](/about/operations#an-lru-cache-on-parquet-reads) — but the wins are marginal until concurrent load increases.",
         cost: "Some endpoints recompute on every request. At low concurrency, no observable issue.",
         revisitWhen:
           "If the API serves enough concurrent traffic that recomputation cost matters, or if response latency becomes user-visible.",

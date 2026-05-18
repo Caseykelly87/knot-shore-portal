@@ -112,8 +112,14 @@ def resolved_store_metrics_path(self) -> str:
           a mounted canonical volume; <code className="bg-muted px-1 rounded">/health</code>{" "}
           would report{" "}
           <code className="bg-muted px-1 rounded">&quot;grocery_data_source&quot;: &quot;live&quot;</code>;
-          an operator would alert if{" "}
-          <code className="bg-muted px-1 rounded">/health</code> ever reported{" "}
+          an operator would{" "}
+          <Link
+            href="/about/operations#alerting-on-operational-signals"
+            className="underline hover:text-foreground"
+          >
+            alert
+          </Link>{" "}
+          if <code className="bg-muted px-1 rounded">/health</code> ever reported{" "}
           <code className="bg-muted px-1 rounded">&quot;fixtures&quot;</code> unexpectedly
           (the canonical sign of a misconfigured deployment that silently fell back).
         </p>
@@ -153,7 +159,15 @@ def resolved_store_metrics_path(self) -> str:
           service-layer function; the service reads via the{" "}
           <code className="bg-muted px-1 rounded">resolved_*_path</code> property; pandas
           filters and paginates; Pydantic serializes; the response includes the request ID in
-          its headers.
+          its headers. The parquet read happens on every request — fine at fixture scale; the
+          production-scale answer is{" "}
+          <Link
+            href="/about/operations#an-lru-cache-on-parquet-reads"
+            className="underline hover:text-foreground"
+          >
+            an LRU cache on parquet reads
+          </Link>
+          .
         </p>
       </section>
 
