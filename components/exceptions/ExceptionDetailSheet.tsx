@@ -18,9 +18,11 @@ interface ExceptionDetailSheetProps {
 }
 
 const SEVERITY_BADGE_STYLES: Record<string, string> = {
-  critical: "bg-red-500/10 text-red-700 border-red-200",
-  warning: "bg-amber-500/10 text-amber-700 border-amber-200",
-  info: "bg-blue-500/10 text-blue-700 border-blue-200",
+  critical:
+    "bg-severity-critical/10 text-severity-critical-strong border-severity-critical/30",
+  warning:
+    "bg-severity-warning/15 text-severity-warning-strong border-severity-warning/40",
+  info: "bg-severity-info/15 text-severity-info-strong border-severity-info/40",
 };
 
 const MONTHS = [
