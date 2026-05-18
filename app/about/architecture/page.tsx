@@ -48,7 +48,7 @@ export default function ArchitecturePage() {
           </Link>{" "}
           / Architecture
         </p>
-        <h1 className="text-4xl font-bold tracking-tight">Architecture</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Architecture</h1>
         <p className="text-lg text-muted-foreground">
           Platform-wide overview of the Knot Shore Grocery analytics platform — what it does, how
           the pieces fit together, and the design principles that shape the code.
@@ -68,6 +68,90 @@ export default function ArchitecturePage() {
           own test suite, CI workflow, and deployable surface. The repos communicate through
           well-defined data contracts: parquet artifacts at the ETL boundary, an HTTP API at the
           service boundary, and JSON fixtures at the portal&apos;s offline boundary.
+        </p>
+      </section>
+
+      <section className="space-y-4" id="optimizes-for">
+        <h2 className="text-2xl font-semibold tracking-tight">What this architecture optimizes for</h2>
+        <p>
+          The architecture optimizes for four properties, in rough order of priority.
+        </p>
+        <ol className="list-decimal list-outside ml-5 space-y-3">
+          <li>
+            <strong>Explainability.</strong> Every detection finding traces to a specific
+            static-band rule and a specific store-day. Every log line traces to a request ID.
+            Every canonical fixture traces to a sim engine seed and date range. Nothing in the
+            platform is opaque.
+          </li>
+          <li>
+            <strong>Deterministic regeneration.</strong> The canonical data can be regenerated
+            byte-identically from scratch by anyone with the repo. This is what makes the
+            platform reviewable — a reader can verify what the code does by running it. The
+            mechanism is documented at{" "}
+            <Link
+              href="/about/decisions#per-date-deterministic-seeding"
+              className="underline hover:text-foreground"
+            >
+              Per-date deterministic seeding
+            </Link>
+            .
+          </li>
+          <li>
+            <strong>Dual-mode operation.</strong> The portal works against bundled fixtures or
+            against a live API with no code changes. This is what makes the demo deployable
+            without infrastructure while preserving the production-shape architecture. See{" "}
+            <Link
+              href="/about/decisions#two-mode-demo-as-first-class"
+              className="underline hover:text-foreground"
+            >
+              Two-mode demo as first-class
+            </Link>{" "}
+            for why this is treated as a contract rather than a development convenience.
+          </li>
+          <li>
+            <strong>Clean cross-repo contracts.</strong> Four repos with explicit boundaries
+            force interfaces to be thought through. The sim engine can&apos;t depend on portal
+            types; the ETL can&apos;t import the API; data flows in one direction.
+          </li>
+        </ol>
+      </section>
+
+      <section className="space-y-4" id="does-not-optimize-for">
+        <h2 className="text-2xl font-semibold tracking-tight">What this architecture does NOT optimize for</h2>
+        <p>
+          Equally important, the architecture deliberately does not optimize for the following.
+          Each is a deliberate non-feature, not a missing one.
+        </p>
+        <ol className="list-decimal list-outside ml-5 space-y-3">
+          <li>
+            <strong>High throughput.</strong> The API serves parquet files directly via{" "}
+            <code className="bg-muted px-1 rounded">pd.read_parquet()</code> on every request.
+            There&apos;s no caching layer. This is fine at demo scale (milliseconds on small
+            data); it would not survive sustained concurrent load.
+          </li>
+          <li>
+            <strong>Real-time updates.</strong> The platform is batch. Daily grain only. No
+            WebSocket endpoints, no Server-Sent Events, no streaming data path. Real-time
+            grocery analytics is a fundamentally different system.
+          </li>
+          <li>
+            <strong>Multi-tenancy.</strong> Every endpoint serves the same data to every caller.
+            No authentication, no per-user state, no row-level security. Production deploys would
+            terminate auth at the infrastructure layer.
+          </li>
+          <li>
+            <strong>Write paths.</strong> All API endpoints are GET. The portal has no forms, no
+            &quot;save view&quot; buttons, no &quot;mark exception as resolved&quot; actions.
+            Adding writes would multiply the operational surface (validation, conflict
+            resolution, audit logging, authorization).
+          </li>
+        </ol>
+        <p>
+          What it would take to support each of these is documented on the{" "}
+          <Link href="/about/operations" className="underline hover:text-foreground">
+            Operations
+          </Link>{" "}
+          page.
         </p>
       </section>
 
@@ -191,6 +275,50 @@ export default function ArchitecturePage() {
           route handlers proxy to the upstream API. The two modes can be combined arbitrarily: a
           portal in online mode can talk to an API in offline mode, etc.
         </p>
+      </section>
+
+      <section className="space-y-4" id="operational-responsibilities">
+        <h2 className="text-2xl font-semibold tracking-tight">Operational responsibilities</h2>
+        <p>
+          Operational responsibilities in a deployed version of this platform would break down
+          as follows.
+        </p>
+        <ul className="list-disc list-outside ml-5 space-y-3">
+          <li>
+            <strong>The macro pipeline runs on a schedule.</strong> A scheduler (cron, Airflow,
+            Prefect, GitHub Actions) invokes{" "}
+            <code className="bg-muted px-1 rounded">python -m macro_pipeline</code> daily or
+            weekly to pull fresh FRED/BLS/ERS data. The current{" "}
+            <code className="bg-muted px-1 rounded">main.py</code> entry point is
+            scheduler-ready; the actual scheduling configuration is not in the repo.
+          </li>
+          <li>
+            <strong>The canonical regenerates manually.</strong> Refreshing the sim engine&apos;s
+            output and the canonical detection results is a deliberate, infrequent action —
+            currently three or four times per year when the platform&apos;s data window needs
+            to shift. The sequence is documented; the trigger is human judgment. The cautionary
+            note that shaped this discipline is{" "}
+            <Link
+              href="/about/lessons#the-off-by-one-in-the-canonical-backfill-default"
+              className="underline hover:text-foreground"
+            >
+              The off-by-one in the canonical backfill default
+            </Link>
+            .
+          </li>
+          <li>
+            <strong>Portal redeployment follows canonical regeneration.</strong> When the
+            canonical changes, the portal&apos;s bundled JSON fixtures need to be regenerated
+            and committed. A CI workflow could automate this on canonical-file change in the API
+            repo; currently this is manual.
+          </li>
+          <li>
+            <strong>The API runs continuously where deployed.</strong> In offline mode it serves
+            bundled fixtures. In live mode it reads parquet files from configured paths. The{" "}
+            <code className="bg-muted px-1 rounded">/health</code> endpoint reports which mode
+            it&apos;s in.
+          </li>
+        </ul>
       </section>
 
       <section className="space-y-4" id="testing">
