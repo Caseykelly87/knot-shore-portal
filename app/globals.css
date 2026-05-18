@@ -4,33 +4,51 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Knot Shore Grocery brand palette. Hex values exposed for use in
+       contexts where Tailwind utilities don't reach (recharts strokes/fills,
+       inline styles, etc.). */
+    --brand-deep-navy: #1c2b3a;
+    --brand-shore-rust: #c05e35;
+    --brand-kelp-green: #3d6b52;
+    --brand-sea-glass: #7faaa0;
+    --brand-salt-white: #f5f0e8;
+
+    /* Severity semantics. Critical uses saturated Shore Rust; warning is a
+       muted amber derived from Shore Rust shifted toward yellow; info is
+       Sea Glass. */
+    --severity-critical: #c05e35;
+    --severity-warning: #d08f5c;
+    --severity-info: #7faaa0;
+
+    /* shadcn-style tokens remapped to brand palette. HSL channel triplets
+       for compatibility with `hsl(var(--token))` consumption. */
+    --background: 37 39% 94%;
+    --foreground: 210 35% 17%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 35% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 210 35% 17%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 210 35% 17%;
+    --primary-foreground: 37 39% 94%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 166 22% 90%;
+    --secondary-foreground: 210 35% 17%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 37 25% 90%;
+    --muted-foreground: 210 18% 38%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 166 22% 90%;
+    --accent-foreground: 210 35% 17%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 18 57% 48%;
+    --destructive-foreground: 37 39% 94%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 37 18% 84%;
+    --input: 37 18% 84%;
+    --ring: 210 35% 17%;
 
     --radius: 0.5rem;
   }
@@ -41,6 +59,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
