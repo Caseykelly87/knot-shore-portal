@@ -43,7 +43,12 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <footer className="border-t border-border bg-card">
           <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between text-sm text-muted-foreground">
-            <span>Knot Shore Portal</span>
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-base text-brand-deep-navy">
+                Knot Shore Grocery
+              </span>
+              <span>· 8 stores</span>
+            </div>
             <ModeIndicator />
           </div>
         </footer>

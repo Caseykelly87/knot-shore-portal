@@ -5,19 +5,17 @@ export function ModeIndicator() {
   const label = mode === "online" ? "Live Data" : "Demo Mode";
   const colorClasses =
     mode === "online"
-      ? "bg-green-100 text-green-800 border-green-200"
-      : "bg-amber-100 text-amber-800 border-amber-200";
+      ? "bg-brand-kelp-green/10 text-brand-kelp-green border-brand-kelp-green/30"
+      : "bg-severity-warning/10 text-severity-warning-strong border-severity-warning/30";
+  const dotClasses =
+    mode === "online" ? "bg-brand-kelp-green" : "bg-severity-warning";
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}
       data-testid="mode-indicator"
       aria-label={`Data source: ${label}`}
     >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${
-          mode === "online" ? "bg-green-500" : "bg-amber-500"
-        }`}
-      />
+      <span className={`h-1.5 w-1.5 rounded-full ${dotClasses}`} />
       {label}
     </span>
   );
