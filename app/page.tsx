@@ -3,19 +3,22 @@ import { KPICardsRow } from "@/components/dashboard/KPICardsRow";
 import { SalesTrendChart } from "@/components/dashboard/SalesTrendChart";
 import { TopStoresChart } from "@/components/dashboard/TopStoresChart";
 import { ExceptionSeverityCard } from "@/components/dashboard/ExceptionSeverityCard";
+import { DashboardWindowIndicator } from "@/components/dashboard/DashboardWindowIndicator";
 
 export default async function DashboardPage() {
   const data = await fetchDashboardData();
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-8 space-y-8">
-      <header className="space-y-2">
+      <header className="space-y-3">
         <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">
           Performance Overview
         </h1>
-        <p className="text-muted-foreground">
-          Knot Shore Grocery — July 2024 through December 2025
-        </p>
+        <DashboardWindowIndicator
+          windowStartDate={data.windowStartDate}
+          windowEndDate={data.windowEndDate}
+          periods={data.periods}
+        />
       </header>
 
       <KPICardsRow data={data} />
