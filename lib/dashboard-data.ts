@@ -18,10 +18,35 @@
 
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
-import { loadFullWindowStoreMetrics, type StoreMetricsRaw } from "@/lib/store-metrics-loader";
+import {
+  loadFullWindowStoreMetrics,
+  type StoreMetricItem,
+  type StoreMetricsRaw,
+} from "@/lib/store-metrics-loader";
+import {
+  computeDashboardPeriods,
+  computeDelta,
+  type DashboardPeriod,
+  type DashboardPeriods,
+} from "@/lib/dashboard-periods";
 
 const ANOMALIES_FETCH_LIMIT = 5000;
 const TOP_STORES_COUNT = 5;
+
+export interface KPIDeltaInfo {
+  recent: number;
+  pop: number | null;
+  yoy: number | null;
+  popDelta: number | null;
+  yoyDelta: number | null;
+}
+
+export interface KPIDeltas {
+  totalSales: KPIDeltaInfo;
+  totalTransactions: KPIDeltaInfo;
+  activeExceptions: KPIDeltaInfo;
+  avgLaborCostPct: KPIDeltaInfo;
+}
 
 export interface DashboardData {
   totalSales: number;
@@ -34,6 +59,8 @@ export interface DashboardData {
   storeNames: Record<number, string>;
   windowStartDate: string | null;
   windowEndDate: string | null;
+  periods: DashboardPeriods | null;
+  kpiDeltas: KPIDeltas;
 }
 
 interface AnomalyItem {
@@ -109,6 +136,9 @@ export function shapeDashboardData(
     else if (item.severity_level === "critical") exceptionSeverityCounts.critical += 1;
   }
 
+  const periods = computeDashboardPeriods(minDate, maxDate);
+  const kpiDeltas = computeKpiDeltas(items, anomalies.items ?? [], periods);
+
   return {
     totalSales,
     totalTransactions,
@@ -120,6 +150,110 @@ export function shapeDashboardData(
     storeNames,
     windowStartDate: minDate,
     windowEndDate: maxDate,
+    periods,
+    kpiDeltas,
+  };
+}
+
+interface PeriodAggregates {
+  totalSales: number;
+  totalTransactions: number;
+  avgLaborCostPct: number;
+  activeExceptions: number;
+}
+
+function aggregatePeriod(
+  metricsItems: StoreMetricItem[],
+  anomalyItems: AnomalyItem[],
+  period: DashboardPeriod,
+): PeriodAggregates {
+  let totalSales = 0;
+  let totalTransactions = 0;
+  let laborSum = 0;
+  let laborCount = 0;
+  for (const item of metricsItems) {
+    if (item.date < period.start || item.date > period.end) continue;
+    totalSales += item.total_sales;
+    totalTransactions += item.transaction_count;
+    if (typeof item.labor_cost_pct === "number") {
+      laborSum += item.labor_cost_pct;
+      laborCount += 1;
+    }
+  }
+  let activeExceptions = 0;
+  for (const item of anomalyItems) {
+    if (!item.date) continue;
+    if (item.date < period.start || item.date > period.end) continue;
+    activeExceptions += 1;
+  }
+  return {
+    totalSales,
+    totalTransactions,
+    avgLaborCostPct: laborCount === 0 ? 0 : laborSum / laborCount,
+    activeExceptions,
+  };
+}
+
+function buildKpiDelta(
+  recent: number,
+  pop: number | null,
+  yoy: number | null,
+): KPIDeltaInfo {
+  return {
+    recent,
+    pop,
+    yoy,
+    popDelta: computeDelta(recent, pop),
+    yoyDelta: computeDelta(recent, yoy),
+  };
+}
+
+function computeKpiDeltas(
+  metricsItems: StoreMetricItem[],
+  anomalyItems: AnomalyItem[],
+  periods: DashboardPeriods | null,
+): KPIDeltas {
+  const empty: KPIDeltaInfo = {
+    recent: 0,
+    pop: null,
+    yoy: null,
+    popDelta: null,
+    yoyDelta: null,
+  };
+  if (!periods) {
+    return {
+      totalSales: empty,
+      totalTransactions: empty,
+      activeExceptions: empty,
+      avgLaborCostPct: empty,
+    };
+  }
+
+  const recentAgg = aggregatePeriod(metricsItems, anomalyItems, periods.recent);
+  const popAgg = periods.pop ? aggregatePeriod(metricsItems, anomalyItems, periods.pop) : null;
+  const yoyAgg = periods.yoy ? aggregatePeriod(metricsItems, anomalyItems, periods.yoy) : null;
+
+  return {
+    totalSales: buildKpiDelta(
+      recentAgg.totalSales,
+      popAgg?.totalSales ?? null,
+      yoyAgg?.totalSales ?? null,
+    ),
+    totalTransactions: buildKpiDelta(
+      recentAgg.totalTransactions,
+      popAgg?.totalTransactions ?? null,
+      yoyAgg?.totalTransactions ?? null,
+    ),
+    activeExceptions: buildKpiDelta(
+      recentAgg.activeExceptions,
+      popAgg?.activeExceptions ?? null,
+      yoyAgg?.activeExceptions ?? null,
+    ),
+    avgLaborCostPct: buildKpiDelta(
+      recentAgg.avgLaborCostPct,
+      popAgg?.avgLaborCostPct ?? null,
+      yoyAgg?.avgLaborCostPct ?? null,
+    ),
   };
 }
 

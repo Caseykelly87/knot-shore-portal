@@ -140,6 +140,122 @@ describe("shapeDashboardData", () => {
     expect(shaped.topStores[0].storeName).toBe("Store 2");
   });
 
+  describe("KPI delta computation", () => {
+    // 18-month window so all three periods (recent, pop, yoy) are present.
+    // Anomalies carry dates aligned with the canonical period boundaries.
+    const periodAnomalies = {
+      total: 6,
+      limit: 200,
+      offset: 0,
+      items: [
+        { date: "2024-08-15", severity_level: "info" },
+        { date: "2024-09-10", severity_level: "warning" },
+        { date: "2025-02-20", severity_level: "critical" },
+        { date: "2025-03-10", severity_level: "info" },
+        { date: "2025-08-01", severity_level: "warning" },
+        { date: "2025-11-30", severity_level: "critical" },
+      ],
+    };
+
+    // Anchors at 2024-07-01 and 2025-12-31 so the derived window is the
+    // canonical 18-month span. Two entries per period keep the totals
+    // round and easy to verify against the expected deltas.
+    const periodMetrics = {
+      total: 8,
+      limit: 200,
+      offset: 0,
+      items: [
+        { date: "2024-07-01", store_id: 1, total_sales: 100, transaction_count: 10, labor_cost_pct: 0.10 },
+        { date: "2024-12-31", store_id: 1, total_sales: 100, transaction_count: 10, labor_cost_pct: 0.10 },
+        { date: "2025-01-01", store_id: 1, total_sales: 200, transaction_count: 20, labor_cost_pct: 0.20 },
+        { date: "2025-06-30", store_id: 1, total_sales: 200, transaction_count: 20, labor_cost_pct: 0.20 },
+        { date: "2025-07-01", store_id: 1, total_sales: 300, transaction_count: 30, labor_cost_pct: 0.30 },
+        { date: "2025-12-31", store_id: 1, total_sales: 300, transaction_count: 30, labor_cost_pct: 0.30 },
+      ],
+    };
+
+    it("computes recent/pop/yoy aggregates for each KPI", () => {
+      const shaped = shapeDashboardData(periodAnomalies, periodMetrics, sampleDimStores);
+      expect(shaped.kpiDeltas.totalSales.recent).toBe(600);
+      expect(shaped.kpiDeltas.totalSales.pop).toBe(400);
+      expect(shaped.kpiDeltas.totalSales.yoy).toBe(200);
+      expect(shaped.kpiDeltas.totalTransactions.recent).toBe(60);
+      expect(shaped.kpiDeltas.totalTransactions.pop).toBe(40);
+      expect(shaped.kpiDeltas.totalTransactions.yoy).toBe(20);
+      expect(shaped.kpiDeltas.activeExceptions.recent).toBe(2);
+      expect(shaped.kpiDeltas.activeExceptions.pop).toBe(2);
+      expect(shaped.kpiDeltas.activeExceptions.yoy).toBe(2);
+      expect(shaped.kpiDeltas.avgLaborCostPct.recent).toBeCloseTo(0.30, 5);
+      expect(shaped.kpiDeltas.avgLaborCostPct.pop).toBeCloseTo(0.20, 5);
+      expect(shaped.kpiDeltas.avgLaborCostPct.yoy).toBeCloseTo(0.10, 5);
+    });
+
+    it("derives proportional deltas for each KPI from the period aggregates", () => {
+      const shaped = shapeDashboardData(periodAnomalies, periodMetrics, sampleDimStores);
+      expect(shaped.kpiDeltas.totalSales.popDelta).toBeCloseTo(0.5, 5);
+      expect(shaped.kpiDeltas.totalSales.yoyDelta).toBeCloseTo(2.0, 5);
+      expect(shaped.kpiDeltas.totalTransactions.popDelta).toBeCloseTo(0.5, 5);
+      expect(shaped.kpiDeltas.avgLaborCostPct.popDelta).toBeCloseTo(0.5, 5);
+      expect(shaped.kpiDeltas.avgLaborCostPct.yoyDelta).toBeCloseTo(2.0, 5);
+    });
+
+    it("includes the derived periods alongside the deltas", () => {
+      const shaped = shapeDashboardData(periodAnomalies, periodMetrics, sampleDimStores);
+      expect(shaped.periods).not.toBeNull();
+      expect(shaped.periods!.recent.start).toBe("2025-07-01");
+      expect(shaped.periods!.recent.end).toBe("2025-12-31");
+      expect(shaped.periods!.pop).toEqual({ start: "2025-01-01", end: "2025-06-30" });
+      expect(shaped.periods!.yoy).toEqual({ start: "2024-07-01", end: "2024-12-31" });
+    });
+
+    it("returns empty deltas when the window is missing", () => {
+      const shaped = shapeDashboardData(
+        sampleAnomalies,
+        { total: 0, limit: 200, offset: 0, items: [] },
+        sampleDimStores,
+      );
+      expect(shaped.periods).toBeNull();
+      expect(shaped.kpiDeltas.totalSales.recent).toBe(0);
+      expect(shaped.kpiDeltas.totalSales.popDelta).toBeNull();
+      expect(shaped.kpiDeltas.totalSales.yoyDelta).toBeNull();
+    });
+
+    it("returns null deltas when the comparison baseline is zero", () => {
+      const zeroBaselineMetrics = {
+        total: 1,
+        limit: 200,
+        offset: 0,
+        items: [
+          // Only data in the recent period; pop and yoy aggregates are zero.
+          { date: "2025-12-31", store_id: 1, total_sales: 500, transaction_count: 50, labor_cost_pct: 0.15 },
+          { date: "2024-07-01", store_id: 1, total_sales: 0, transaction_count: 0 },
+        ],
+      };
+      const shaped = shapeDashboardData(
+        { total: 0, limit: 200, offset: 0, items: [] },
+        zeroBaselineMetrics,
+        sampleDimStores,
+      );
+      expect(shaped.kpiDeltas.totalSales.popDelta).toBeNull();
+    });
+
+    it("skips anomalies without a date when counting per-period exceptions", () => {
+      const anomaliesWithMissingDates = {
+        total: 3,
+        limit: 200,
+        offset: 0,
+        items: [
+          { date: "2025-09-01", severity_level: "info" },
+          { severity_level: "warning" }, // no date — ignored
+          { date: "2024-09-01", severity_level: "info" },
+        ],
+      };
+      const shaped = shapeDashboardData(anomaliesWithMissingDates, periodMetrics, sampleDimStores);
+      expect(shaped.kpiDeltas.activeExceptions.recent).toBe(1);
+      expect(shaped.kpiDeltas.activeExceptions.yoy).toBe(1);
+    });
+  });
+
   it("limits top stores to five entries", () => {
     const manyStores = {
       total: 7,
