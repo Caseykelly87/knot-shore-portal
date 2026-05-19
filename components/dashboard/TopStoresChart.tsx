@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   BarChart,
   Bar,
@@ -42,6 +43,14 @@ function formatTooltipValue(value: number): string {
 }
 
 export function TopStoresChart({ data }: TopStoresChartProps) {
+  const router = useRouter();
+
+  const handleBarClick = (payload: { storeId?: string } | undefined) => {
+    if (payload?.storeId) {
+      router.push(`/stores/${payload.storeId}`);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -79,7 +88,12 @@ export function TopStoresChart({ data }: TopStoresChartProps) {
                 }}
                 cursor={{ fill: "hsl(var(--muted))" }}
               />
-              <Bar dataKey="totalSales" radius={[0, 4, 4, 0]}>
+              <Bar
+                dataKey="totalSales"
+                radius={[0, 4, 4, 0]}
+                onClick={handleBarClick}
+                cursor="pointer"
+              >
                 {data.map((entry, index) => (
                   <Cell
                     key={entry.storeId}
