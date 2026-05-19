@@ -49,7 +49,7 @@ export default async function StorePage({ params }: StorePageProps) {
         <div className="lg:col-span-2">
           <DepartmentMixChart data={data.departmentMix} />
         </div>
-        <StoreAnomaliesCard anomalies={data.anomalies} />
+        <StoreAnomaliesCard storeId={storeId} anomalies={data.anomalies} />
       </div>
 
       <TopDepartmentsChart data={data.topDepartments} />
