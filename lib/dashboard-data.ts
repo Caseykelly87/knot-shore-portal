@@ -18,8 +18,8 @@
 
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
+import { loadFullWindowStoreMetrics, type StoreMetricsRaw } from "@/lib/store-metrics-loader";
 
-const STORE_METRICS_FETCH_LIMIT = 5000;
 const ANOMALIES_FETCH_LIMIT = 5000;
 const TOP_STORES_COUNT = 5;
 
@@ -46,21 +46,6 @@ interface AnomaliesRaw {
   limit?: number;
   offset?: number;
   items: AnomalyItem[];
-}
-
-interface StoreMetricItem {
-  date: string;
-  store_id: number;
-  total_sales: number;
-  transaction_count: number;
-  labor_cost_pct?: number | null;
-}
-
-interface StoreMetricsRaw {
-  total: number;
-  limit?: number;
-  offset?: number;
-  items: StoreMetricItem[];
 }
 
 interface DimStoreRaw {
@@ -146,35 +131,34 @@ interface RawDashboardInputs {
 
 async function loadRawDashboardInputs(): Promise<RawDashboardInputs> {
   if (getApiMode() === "offline") {
-    const [anomaliesMod, storeMetricsMod, dimStoresMod] = await Promise.all([
+    const [anomaliesMod, storeMetrics, dimStoresMod] = await Promise.all([
       import("@/fixtures/anomalies.json"),
-      import("@/fixtures/store-metrics.json"),
+      loadFullWindowStoreMetrics(),
       import("@/fixtures/dim-stores.json"),
     ]);
     return {
       anomalies: anomaliesMod.default as unknown as AnomaliesRaw,
-      storeMetrics: storeMetricsMod.default as unknown as StoreMetricsRaw,
+      storeMetrics,
       dimStores: dimStoresMod.default as unknown as DimStoreRaw[],
     };
   }
 
   const base = getBaseUrl();
 
-  const [anomaliesRes, storeMetricsRes, dimStoresRes] = await Promise.all([
+  const [anomaliesRes, storeMetrics, dimStoresRes] = await Promise.all([
     fetch(`${base}/api/anomalies?limit=${ANOMALIES_FETCH_LIMIT}`, { cache: "no-store" }),
-    fetch(`${base}/api/store-metrics?limit=${STORE_METRICS_FETCH_LIMIT}`, { cache: "no-store" }),
+    loadFullWindowStoreMetrics(),
     fetch(`${base}/api/dim-stores`, { cache: "no-store" }),
   ]);
 
-  if (!anomaliesRes.ok || !storeMetricsRes.ok || !dimStoresRes.ok) {
+  if (!anomaliesRes.ok || !dimStoresRes.ok) {
     throw new Error(
-      `Dashboard data fetch failed: anomalies=${anomaliesRes.status} storeMetrics=${storeMetricsRes.status} dimStores=${dimStoresRes.status}`,
+      `Dashboard data fetch failed: anomalies=${anomaliesRes.status} dimStores=${dimStoresRes.status}`,
     );
   }
 
-  const [anomalies, storeMetrics, dimStores] = await Promise.all([
+  const [anomalies, dimStores] = await Promise.all([
     anomaliesRes.json() as Promise<AnomaliesRaw>,
-    storeMetricsRes.json() as Promise<StoreMetricsRaw>,
     dimStoresRes.json() as Promise<DimStoreRaw[]>,
   ]);
 
