@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface StoreAnomaliesCardProps {
+  storeId: number;
   anomalies: Array<{
     date: string;
     severity: string;
@@ -29,7 +31,7 @@ function formatDate(dateStr: string): string {
   return `${MONTHS[month - 1]} ${day}, ${year}`;
 }
 
-export function StoreAnomaliesCard({ anomalies }: StoreAnomaliesCardProps) {
+export function StoreAnomaliesCard({ storeId, anomalies }: StoreAnomaliesCardProps) {
   const sorted = [...anomalies].sort((a, b) => {
     const sevDiff = (SEVERITY_ORDER[a.severity] ?? 99) - (SEVERITY_ORDER[b.severity] ?? 99);
     if (sevDiff !== 0) return sevDiff;
@@ -71,6 +73,14 @@ export function StoreAnomaliesCard({ anomalies }: StoreAnomaliesCardProps) {
           <p className="text-xs text-muted-foreground mt-4">
             Showing {display.length} of {anomalies.length} exceptions.
           </p>
+        )}
+        {anomalies.length > 0 && (
+          <Link
+            href={`/exceptions?store=${storeId}`}
+            className="inline-block mt-4 text-sm font-medium text-brand-kelp-green hover:text-brand-deep-navy hover:underline"
+          >
+            View all exceptions for this store →
+          </Link>
         )}
       </CardContent>
     </Card>

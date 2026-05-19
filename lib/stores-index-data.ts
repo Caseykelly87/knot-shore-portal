@@ -13,8 +13,8 @@
 
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
+import { loadFullWindowStoreMetrics, type StoreMetricsRaw } from "@/lib/store-metrics-loader";
 
-const STORE_METRICS_FETCH_LIMIT = 5000;
 const ANOMALIES_FETCH_LIMIT = 5000;
 
 export interface StoresIndexEntry {
@@ -25,20 +25,6 @@ export interface StoresIndexEntry {
   totalTransactions: number;
   exceptionCount: number;
   severityCounts: { info: number; warning: number; critical: number };
-}
-
-interface StoreMetricItem {
-  date: string;
-  store_id: number;
-  total_sales: number;
-  transaction_count: number;
-}
-
-interface StoreMetricsRaw {
-  total: number;
-  limit?: number;
-  offset?: number;
-  items: StoreMetricItem[];
 }
 
 interface AnomalyItem {
@@ -107,35 +93,34 @@ interface RawStoresIndexInputs {
 
 async function loadRawStoresIndexInputs(): Promise<RawStoresIndexInputs> {
   if (getApiMode() === "offline") {
-    const [dimStoresMod, storeMetricsMod, anomaliesMod] = await Promise.all([
+    const [dimStoresMod, storeMetrics, anomaliesMod] = await Promise.all([
       import("@/fixtures/dim-stores.json"),
-      import("@/fixtures/store-metrics.json"),
+      loadFullWindowStoreMetrics(),
       import("@/fixtures/anomalies.json"),
     ]);
     return {
       dimStores: dimStoresMod.default as unknown as DimStoreRaw[],
-      storeMetrics: storeMetricsMod.default as unknown as StoreMetricsRaw,
+      storeMetrics,
       anomalies: anomaliesMod.default as unknown as AnomaliesRaw,
     };
   }
 
   const base = getBaseUrl();
 
-  const [dimStoresRes, storeMetricsRes, anomaliesRes] = await Promise.all([
+  const [dimStoresRes, storeMetrics, anomaliesRes] = await Promise.all([
     fetch(`${base}/api/dim-stores`, { cache: "no-store" }),
-    fetch(`${base}/api/store-metrics?limit=${STORE_METRICS_FETCH_LIMIT}`, { cache: "no-store" }),
+    loadFullWindowStoreMetrics(),
     fetch(`${base}/api/anomalies?limit=${ANOMALIES_FETCH_LIMIT}`, { cache: "no-store" }),
   ]);
 
-  if (!dimStoresRes.ok || !storeMetricsRes.ok || !anomaliesRes.ok) {
+  if (!dimStoresRes.ok || !anomaliesRes.ok) {
     throw new Error(
-      `Stores index fetch failed: dimStores=${dimStoresRes.status} storeMetrics=${storeMetricsRes.status} anomalies=${anomaliesRes.status}`,
+      `Stores index fetch failed: dimStores=${dimStoresRes.status} anomalies=${anomaliesRes.status}`,
     );
   }
 
-  const [dimStores, storeMetrics, anomalies] = await Promise.all([
+  const [dimStores, anomalies] = await Promise.all([
     dimStoresRes.json() as Promise<DimStoreRaw[]>,
-    storeMetricsRes.json() as Promise<StoreMetricsRaw>,
     anomaliesRes.json() as Promise<AnomaliesRaw>,
   ]);
 
