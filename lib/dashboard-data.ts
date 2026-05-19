@@ -7,17 +7,21 @@
  * and returns a single shaped object the dashboard page renders.
  *
  * shapeDashboardData() is the pure transform separated for unit
- * testing. It composes data from the four endpoint responses into
- * the dashboard's view model. The fourth input — dim_stores — supplies
- * real store names for the top-stores chart; without it the chart
- * falls back to a synthesized 'Store {N}' label.
+ * testing. It composes the view model from three endpoint responses:
+ * store-metrics (per-store-per-day grain), anomalies (severity items),
+ * and dim_stores (store names for the top-stores chart). All KPI
+ * aggregates, the daily trend, the top-stores ranking, and the
+ * severity breakdown are computed here from store-metrics and
+ * anomalies, so the dashboard reflects the full window present in
+ * those fixtures rather than a pre-aggregated slice.
  */
 
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
 
-const DASHBOARD_START_DATE = "2025-07-01";
-const DASHBOARD_END_DATE = "2025-12-31";
+const STORE_METRICS_FETCH_LIMIT = 5000;
+const ANOMALIES_FETCH_LIMIT = 5000;
+const TOP_STORES_COUNT = 5;
 
 export interface DashboardData {
   totalSales: number;
@@ -28,28 +32,35 @@ export interface DashboardData {
   topStores: Array<{ storeId: string; storeName: string; totalSales: number }>;
   exceptionSeverityCounts: { info: number; warning: number; critical: number };
   storeNames: Record<number, string>;
+  windowStartDate: string | null;
+  windowEndDate: string | null;
 }
 
-interface DashboardSummaryRaw {
-  total_sales: number;
-  total_transactions: number;
-  daily_sales_trend: Array<{ date: string; total_sales: number; transaction_count?: number }>;
-  top_stores_by_revenue: Array<{ store_id: number | string; total_sales: number }>;
-  exception_count_by_severity?: Array<{ severity_level: string; count: number }>;
+interface AnomalyItem {
+  date?: string;
+  severity_level?: string;
 }
 
 interface AnomaliesRaw {
   total: number;
   limit?: number;
   offset?: number;
-  items: Array<{ severity_level?: string }>;
+  items: AnomalyItem[];
+}
+
+interface StoreMetricItem {
+  date: string;
+  store_id: number;
+  total_sales: number;
+  transaction_count: number;
+  labor_cost_pct?: number | null;
 }
 
 interface StoreMetricsRaw {
   total: number;
   limit?: number;
   offset?: number;
-  items: Array<{ labor_cost_pct?: number | null }>;
+  items: StoreMetricItem[];
 }
 
 interface DimStoreRaw {
@@ -58,7 +69,6 @@ interface DimStoreRaw {
 }
 
 export function shapeDashboardData(
-  summary: DashboardSummaryRaw,
   anomalies: AnomaliesRaw,
   storeMetrics: StoreMetricsRaw,
   dimStores: DimStoreRaw[],
@@ -68,53 +78,67 @@ export function shapeDashboardData(
     storeNames[store.store_id] = store.store_name;
   }
 
-  // Severity counts come from the dashboard-summary endpoint's
-  // pre-computed exception_count_by_severity field. The /api/anomalies
-  // endpoint paginates and the offline fixture caps items at 200, so
-  // counting from items would underrepresent warning/critical buckets
-  // when those rows fall after the cap. The summary's counts are
-  // authoritative for the full population.
-  const exceptionSeverityCounts = { info: 0, warning: 0, critical: 0 };
-  for (const bucket of summary.exception_count_by_severity ?? []) {
-    if (bucket.severity_level === "info") exceptionSeverityCounts.info = bucket.count;
-    else if (bucket.severity_level === "warning") exceptionSeverityCounts.warning = bucket.count;
-    else if (bucket.severity_level === "critical") exceptionSeverityCounts.critical = bucket.count;
+  const items = storeMetrics.items ?? [];
+
+  let totalSales = 0;
+  let totalTransactions = 0;
+  let laborSum = 0;
+  let laborCount = 0;
+  const salesByDate = new Map<string, number>();
+  const salesByStore = new Map<number, number>();
+  let minDate: string | null = null;
+  let maxDate: string | null = null;
+
+  for (const item of items) {
+    totalSales += item.total_sales;
+    totalTransactions += item.transaction_count;
+    if (typeof item.labor_cost_pct === "number") {
+      laborSum += item.labor_cost_pct;
+      laborCount += 1;
+    }
+    salesByDate.set(item.date, (salesByDate.get(item.date) ?? 0) + item.total_sales);
+    salesByStore.set(item.store_id, (salesByStore.get(item.store_id) ?? 0) + item.total_sales);
+    if (minDate === null || item.date < minDate) minDate = item.date;
+    if (maxDate === null || item.date > maxDate) maxDate = item.date;
   }
 
-  const laborItems = storeMetrics.items ?? [];
-  const laborWithValues = laborItems.filter(
-    (item): item is { labor_cost_pct: number } =>
-      typeof item.labor_cost_pct === "number",
-  );
-  const avgLaborCostPct =
-    laborWithValues.length === 0
-      ? 0
-      : laborWithValues.reduce((sum, item) => sum + item.labor_cost_pct, 0) / laborWithValues.length;
+  const avgLaborCostPct = laborCount === 0 ? 0 : laborSum / laborCount;
+
+  const dailyTrend = Array.from(salesByDate.entries())
+    .map(([date, total]) => ({ date, totalSales: total }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const topStores = Array.from(salesByStore.entries())
+    .map(([storeId, total]) => ({
+      storeId: String(storeId),
+      storeName: storeNames[storeId] ?? `Store ${storeId}`,
+      totalSales: total,
+    }))
+    .sort((a, b) => b.totalSales - a.totalSales)
+    .slice(0, TOP_STORES_COUNT);
+
+  const exceptionSeverityCounts = { info: 0, warning: 0, critical: 0 };
+  for (const item of anomalies.items ?? []) {
+    if (item.severity_level === "info") exceptionSeverityCounts.info += 1;
+    else if (item.severity_level === "warning") exceptionSeverityCounts.warning += 1;
+    else if (item.severity_level === "critical") exceptionSeverityCounts.critical += 1;
+  }
 
   return {
-    totalSales: summary.total_sales,
-    totalTransactions: summary.total_transactions,
+    totalSales,
+    totalTransactions,
     activeExceptions: anomalies.total,
     avgLaborCostPct,
-    dailyTrend: (summary.daily_sales_trend ?? []).map((d) => ({
-      date: d.date,
-      totalSales: d.total_sales,
-    })),
-    topStores: (summary.top_stores_by_revenue ?? []).map((s) => {
-      const numericId = typeof s.store_id === "number" ? s.store_id : Number(s.store_id);
-      return {
-        storeId: String(s.store_id),
-        storeName: storeNames[numericId] ?? `Store ${s.store_id}`,
-        totalSales: s.total_sales,
-      };
-    }),
+    dailyTrend,
+    topStores,
     exceptionSeverityCounts,
     storeNames,
+    windowStartDate: minDate,
+    windowEndDate: maxDate,
   };
 }
 
 interface RawDashboardInputs {
-  summary: DashboardSummaryRaw;
   anomalies: AnomaliesRaw;
   storeMetrics: StoreMetricsRaw;
   dimStores: DimStoreRaw[];
@@ -122,14 +146,12 @@ interface RawDashboardInputs {
 
 async function loadRawDashboardInputs(): Promise<RawDashboardInputs> {
   if (getApiMode() === "offline") {
-    const [summaryMod, anomaliesMod, storeMetricsMod, dimStoresMod] = await Promise.all([
-      import("@/fixtures/dashboard-summary.json"),
+    const [anomaliesMod, storeMetricsMod, dimStoresMod] = await Promise.all([
       import("@/fixtures/anomalies.json"),
       import("@/fixtures/store-metrics.json"),
       import("@/fixtures/dim-stores.json"),
     ]);
     return {
-      summary: summaryMod.default as unknown as DashboardSummaryRaw,
       anomalies: anomaliesMod.default as unknown as AnomaliesRaw,
       storeMetrics: storeMetricsMod.default as unknown as StoreMetricsRaw,
       dimStores: dimStoresMod.default as unknown as DimStoreRaw[],
@@ -138,33 +160,28 @@ async function loadRawDashboardInputs(): Promise<RawDashboardInputs> {
 
   const base = getBaseUrl();
 
-  const [summaryRes, anomaliesRes, storeMetricsRes, dimStoresRes] = await Promise.all([
-    fetch(
-      `${base}/api/dashboard-summary?start_date=${DASHBOARD_START_DATE}&end_date=${DASHBOARD_END_DATE}`,
-      { cache: "no-store" },
-    ),
-    fetch(`${base}/api/anomalies?limit=200`, { cache: "no-store" }),
-    fetch(`${base}/api/store-metrics?limit=200`, { cache: "no-store" }),
+  const [anomaliesRes, storeMetricsRes, dimStoresRes] = await Promise.all([
+    fetch(`${base}/api/anomalies?limit=${ANOMALIES_FETCH_LIMIT}`, { cache: "no-store" }),
+    fetch(`${base}/api/store-metrics?limit=${STORE_METRICS_FETCH_LIMIT}`, { cache: "no-store" }),
     fetch(`${base}/api/dim-stores`, { cache: "no-store" }),
   ]);
 
-  if (!summaryRes.ok || !anomaliesRes.ok || !storeMetricsRes.ok || !dimStoresRes.ok) {
+  if (!anomaliesRes.ok || !storeMetricsRes.ok || !dimStoresRes.ok) {
     throw new Error(
-      `Dashboard data fetch failed: summary=${summaryRes.status} anomalies=${anomaliesRes.status} storeMetrics=${storeMetricsRes.status} dimStores=${dimStoresRes.status}`,
+      `Dashboard data fetch failed: anomalies=${anomaliesRes.status} storeMetrics=${storeMetricsRes.status} dimStores=${dimStoresRes.status}`,
     );
   }
 
-  const [summary, anomalies, storeMetrics, dimStores] = await Promise.all([
-    summaryRes.json() as Promise<DashboardSummaryRaw>,
+  const [anomalies, storeMetrics, dimStores] = await Promise.all([
     anomaliesRes.json() as Promise<AnomaliesRaw>,
     storeMetricsRes.json() as Promise<StoreMetricsRaw>,
     dimStoresRes.json() as Promise<DimStoreRaw[]>,
   ]);
 
-  return { summary, anomalies, storeMetrics, dimStores };
+  return { anomalies, storeMetrics, dimStores };
 }
 
 export async function fetchDashboardData(): Promise<DashboardData> {
-  const { summary, anomalies, storeMetrics, dimStores } = await loadRawDashboardInputs();
-  return shapeDashboardData(summary, anomalies, storeMetrics, dimStores);
+  const { anomalies, storeMetrics, dimStores } = await loadRawDashboardInputs();
+  return shapeDashboardData(anomalies, storeMetrics, dimStores);
 }
