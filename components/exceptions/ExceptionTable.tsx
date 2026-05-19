@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { ExceptionRow } from "@/lib/exceptions-data";
@@ -118,7 +119,15 @@ export function ExceptionTable({ rows, onRowSelect }: ExceptionTableProps) {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{formatDate(row.date)}</td>
-                  <td className="px-4 py-3">{row.storeName}</td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/stores/${row.storeId}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-brand-deep-navy underline decoration-brand-sea-glass/60 underline-offset-2 hover:decoration-brand-sea-glass hover:text-brand-kelp-green"
+                    >
+                      {row.storeName}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{row.ruleId}</td>
                   <td className="px-4 py-3 text-muted-foreground">{row.description}</td>
                 </tr>
