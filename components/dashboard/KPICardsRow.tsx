@@ -12,7 +12,7 @@ export function KPICardsRow({ data }: KPICardsRowProps) {
       <KPICard
         label="Total Sales"
         value={formatCurrency(data.totalSales)}
-        helperText="Jul 1 – Dec 31, 2025"
+        helperText="Jul 2024 – Dec 2025"
         accent="kelp-green"
       />
       <KPICard
@@ -24,7 +24,7 @@ export function KPICardsRow({ data }: KPICardsRowProps) {
       <KPICard
         label="Active Exceptions"
         value={formatCount(data.activeExceptions)}
-        helperText={`${data.exceptionSeverityCounts.warning} warning, ${data.exceptionSeverityCounts.critical} critical`}
+        helperText={`${formatCount(data.exceptionSeverityCounts.critical)} critical, ${formatCount(data.exceptionSeverityCounts.warning)} warning, ${formatCount(data.exceptionSeverityCounts.info)} info`}
         accent="shore-rust"
       />
       <KPICard
