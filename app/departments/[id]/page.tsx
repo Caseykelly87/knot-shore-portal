@@ -43,6 +43,7 @@ export default async function DepartmentPage({ params }: DepartmentPageProps) {
         totalTransactions={data.totalTransactions}
         avgDailySales={data.avgDailySales}
         revenueShare={data.revenueShare}
+        kpiDeltas={data.kpiDeltas}
       />
 
       <DepartmentByStoreChart data={data.byStore} />
