@@ -30,8 +30,13 @@ Endpoints captured (matches the TypeScript capture-fixtures.ts):
   /store-metrics               paginated, full canonical
   /anomalies                   paginated, full canonical
   /dashboard-summary           single,    fixed 2025 H2 window
-  /department-metrics          paginated, fixed 2025 H2 window
+  /department-metrics          paginated, full canonical
   /dim-stores                  array,     8 store rows
+
+Paginated endpoints are captured at the full canonical window with no
+date filter; dashboard-summary is the one deliberate exception, pinned
+to 2025 H2 as a fixed KPI canary. See scripts/README.md for the
+regeneration workflow and post-capture verification steps.
 
 DB env vars are forced to a non-routable host so the API never reaches
 RDS. The /health endpoint depends on the DB and therefore returns
@@ -142,10 +147,10 @@ def main() -> None:
     size = write_json("dashboard-summary.json", dashboard)
     print(f"  dashboard-summary.json       {size:>9,} bytes")
 
-    department_metrics = capture_paginated(
-        client,
-        "/department-metrics?start_date=2025-07-01&end_date=2025-12-31",
-    )
+    # Captured at the full canonical window. A date filter here would
+    # window the fixture to a subset; store-metrics and anomalies are
+    # likewise captured unfiltered.
+    department_metrics = capture_paginated(client, "/department-metrics")
     size = write_json("department-metrics.json", department_metrics)
     print(
         f"  department-metrics.json      {size:>9,} bytes  "
