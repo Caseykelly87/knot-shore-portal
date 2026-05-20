@@ -62,7 +62,7 @@ export interface DashboardData {
   totalTransactions: number;
   activeExceptions: number;
   avgLaborCostPct: number;
-  dailyTrend: Array<{ date: string; totalSales: number }>;
+  dailyTrend: Array<{ date: string; totalSales: number; priorYearSales: number | null }>;
   topStores: Array<{ storeId: string; storeName: string; totalSales: number }>;
   exceptionSeverityCounts: { info: number; warning: number; critical: number };
   storeNames: Record<number, string>;
@@ -90,6 +90,15 @@ interface DimStoreRaw {
   store_id: number;
   store_name: string;
   trade_area_profile?: string;
+}
+
+// The prior-year overlay looks up the same calendar month-day in the prior
+// year. The lookup falls back to null when no matching prior-year datum
+// exists, which is the honest representation for both the leading edge of
+// the fixture window and Feb 29 in a non-leap prior year.
+function shiftDateOneYearBack(iso: string): string {
+  const [year, month, day] = iso.split("-").map(Number);
+  return `${year - 1}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
 export function shapeDashboardData(
@@ -129,7 +138,11 @@ export function shapeDashboardData(
   const avgLaborCostPct = laborCount === 0 ? 0 : laborSum / laborCount;
 
   const dailyTrend = Array.from(salesByDate.entries())
-    .map(([date, total]) => ({ date, totalSales: total }))
+    .map(([date, total]) => ({
+      date,
+      totalSales: total,
+      priorYearSales: salesByDate.get(shiftDateOneYearBack(date)) ?? null,
+    }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const topStores = Array.from(salesByStore.entries())

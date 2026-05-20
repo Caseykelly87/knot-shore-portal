@@ -7,12 +7,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface SalesTrendChartProps {
-  data: Array<{ date: string; totalSales: number }>;
+  data: Array<{ date: string; totalSales: number; priorYearSales: number | null }>;
 }
 
 function formatTickDate(dateStr: string): string {
@@ -30,7 +31,8 @@ function formatTickValue(value: number): string {
   return `$${value.toFixed(0)}`;
 }
 
-function formatTooltipValue(value: number): string {
+function formatTooltipValue(value: number | null): string {
+  if (value === null) return "—";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -43,6 +45,7 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
   const ticks = data
     .filter((_, i) => i % tickInterval === 0)
     .map((d) => d.date);
+  const hasPriorYearData = data.some((d) => d.priorYearSales !== null);
 
   return (
     <Card>
@@ -68,7 +71,10 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
                 width={60}
               />
               <Tooltip
-                formatter={(value: number) => [formatTooltipValue(value), "Sales"]}
+                formatter={(value, name) => [
+                  formatTooltipValue(value as number | null),
+                  name as string,
+                ]}
                 labelFormatter={formatTickDate}
                 contentStyle={{
                   backgroundColor: "hsl(var(--popover))",
@@ -77,9 +83,24 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
                   fontSize: "0.875rem",
                 }}
               />
+              {hasPriorYearData && <Legend wrapperStyle={{ fontSize: "0.875rem" }} />}
+              {hasPriorYearData && (
+                <Line
+                  type="monotone"
+                  dataKey="priorYearSales"
+                  name="Prior year"
+                  stroke="var(--brand-sea-glass)"
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  connectNulls={false}
+                />
+              )}
               <Line
                 type="monotone"
                 dataKey="totalSales"
+                name="Current"
                 stroke="var(--brand-kelp-green)"
                 strokeWidth={2}
                 dot={false}

@@ -42,11 +42,65 @@ describe("shapeDashboardData", () => {
 
   it("computes daily trend by summing across stores per date", () => {
     const shaped = shapeDashboardData(sampleAnomalies, sampleStoreMetrics, sampleDimStores);
-    expect(shaped.dailyTrend).toEqual([
+    expect(shaped.dailyTrend.map(({ date, totalSales }) => ({ date, totalSales }))).toEqual([
       { date: "2024-07-01", totalSales: 300 },
       { date: "2024-07-02", totalSales: 330 },
       { date: "2025-12-31", totalSales: 400 },
     ]);
+  });
+
+  describe("prior-year overlay on dailyTrend", () => {
+    it("attaches priorYearSales when the date one year back exists in the window", () => {
+      const metrics = {
+        total: 4,
+        limit: 200,
+        offset: 0,
+        items: [
+          { date: "2024-07-01", store_id: 1, total_sales: 100, transaction_count: 10 },
+          { date: "2024-07-02", store_id: 1, total_sales: 110, transaction_count: 11 },
+          { date: "2025-07-01", store_id: 1, total_sales: 130, transaction_count: 13 },
+          { date: "2025-07-02", store_id: 1, total_sales: 140, transaction_count: 14 },
+        ],
+      };
+      const shaped = shapeDashboardData(sampleAnomalies, metrics, sampleDimStores);
+      const trend = shaped.dailyTrend;
+      const map = Object.fromEntries(trend.map((p) => [p.date, p.priorYearSales]));
+      expect(map["2024-07-01"]).toBeNull();
+      expect(map["2024-07-02"]).toBeNull();
+      expect(map["2025-07-01"]).toBe(100);
+      expect(map["2025-07-02"]).toBe(110);
+    });
+
+    it("returns null priorYearSales when no prior-year datum exists", () => {
+      const metrics = {
+        total: 2,
+        limit: 200,
+        offset: 0,
+        items: [
+          { date: "2025-07-01", store_id: 1, total_sales: 100, transaction_count: 10 },
+          { date: "2025-07-02", store_id: 1, total_sales: 110, transaction_count: 11 },
+        ],
+      };
+      const shaped = shapeDashboardData(sampleAnomalies, metrics, sampleDimStores);
+      expect(shaped.dailyTrend.every((p) => p.priorYearSales === null)).toBe(true);
+    });
+
+    it("returns null on Feb 29 when the prior non-leap year has no matching date", () => {
+      // The lookup is by exact month-day in the prior year; if that day
+      // didn't exist (e.g., Feb 29 in a non-leap year), the prior-year
+      // line breaks at that point.
+      const metrics = {
+        total: 1,
+        limit: 200,
+        offset: 0,
+        items: [
+          { date: "2024-02-29", store_id: 1, total_sales: 80, transaction_count: 8 },
+        ],
+      };
+      const shaped = shapeDashboardData(sampleAnomalies, metrics, sampleDimStores);
+      const feb29 = shaped.dailyTrend.find((p) => p.date === "2024-02-29")!;
+      expect(feb29.priorYearSales).toBeNull();
+    });
   });
 
   it("computes top stores by total revenue across the window", () => {
