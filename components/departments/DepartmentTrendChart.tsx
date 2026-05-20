@@ -7,13 +7,12 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface SalesTrendChartProps {
-  data: Array<{ date: string; totalSales: number; priorYearSales: number | null }>;
+interface DepartmentTrendChartProps {
+  data: Array<{ date: string; totalSales: number }>;
 }
 
 function formatTickDate(dateStr: string): string {
@@ -31,8 +30,7 @@ function formatTickValue(value: number): string {
   return `$${value.toFixed(0)}`;
 }
 
-function formatTooltipValue(value: number | null): string {
-  if (value === null) return "—";
+function formatTooltipValue(value: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -40,12 +38,9 @@ function formatTooltipValue(value: number | null): string {
   }).format(value);
 }
 
-export function SalesTrendChart({ data }: SalesTrendChartProps) {
-  const tickInterval = Math.floor(data.length / 6) || 1;
-  const ticks = data
-    .filter((_, i) => i % tickInterval === 0)
-    .map((d) => d.date);
-  const hasPriorYearData = data.some((d) => d.priorYearSales !== null);
+export function DepartmentTrendChart({ data }: DepartmentTrendChartProps) {
+  const tickInterval = Math.max(1, Math.floor(data.length / 6));
+  const ticks = data.filter((_, i) => i % tickInterval === 0).map((d) => d.date);
 
   return (
     <Card>
@@ -71,10 +66,7 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
                 width={60}
               />
               <Tooltip
-                formatter={(value, name) => [
-                  formatTooltipValue(value as number | null),
-                  name as string,
-                ]}
+                formatter={(value: number) => [formatTooltipValue(value), "Sales"]}
                 labelFormatter={formatTickDate}
                 contentStyle={{
                   backgroundColor: "hsl(var(--popover))",
@@ -83,24 +75,9 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
                   fontSize: "0.875rem",
                 }}
               />
-              {hasPriorYearData && <Legend wrapperStyle={{ fontSize: "0.875rem" }} />}
-              {hasPriorYearData && (
-                <Line
-                  type="monotone"
-                  dataKey="priorYearSales"
-                  name="Prior year"
-                  stroke="var(--brand-sea-glass)"
-                  strokeWidth={2}
-                  strokeDasharray="4 4"
-                  dot={false}
-                  activeDot={{ r: 4 }}
-                  connectNulls={false}
-                />
-              )}
               <Line
                 type="monotone"
                 dataKey="totalSales"
-                name="Current"
                 stroke="var(--brand-kelp-green)"
                 strokeWidth={2}
                 dot={false}

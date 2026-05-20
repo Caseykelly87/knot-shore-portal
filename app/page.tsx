@@ -4,6 +4,7 @@ import { SalesTrendChart } from "@/components/dashboard/SalesTrendChart";
 import { TopStoresChart } from "@/components/dashboard/TopStoresChart";
 import { ExceptionSeverityCard } from "@/components/dashboard/ExceptionSeverityCard";
 import { DashboardWindowIndicator } from "@/components/dashboard/DashboardWindowIndicator";
+import { TradeAreaComparison } from "@/components/dashboard/TradeAreaComparison";
 
 export default async function DashboardPage() {
   const data = await fetchDashboardData();
@@ -30,6 +31,8 @@ export default async function DashboardPage() {
         </div>
         <ExceptionSeverityCard counts={data.exceptionSeverityCounts} />
       </div>
+
+      <TradeAreaComparison summaries={data.tradeAreaSummaries} />
     </div>
   );
 }

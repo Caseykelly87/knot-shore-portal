@@ -32,6 +32,7 @@ import {
 
 const ANOMALIES_FETCH_LIMIT = 5000;
 const TOP_STORES_COUNT = 5;
+const TRADE_AREA_ORDER = ["suburban-family", "urban-dense", "value-market"] as const;
 
 export interface KPIDeltaInfo {
   recent: number;
@@ -48,12 +49,20 @@ export interface KPIDeltas {
   avgLaborCostPct: KPIDeltaInfo;
 }
 
+export interface TradeAreaSummary {
+  tradeArea: string;
+  storeCount: number;
+  totalSales: number;
+  avgSalesPerStore: number;
+  totalExceptions: number;
+}
+
 export interface DashboardData {
   totalSales: number;
   totalTransactions: number;
   activeExceptions: number;
   avgLaborCostPct: number;
-  dailyTrend: Array<{ date: string; totalSales: number }>;
+  dailyTrend: Array<{ date: string; totalSales: number; priorYearSales: number | null }>;
   topStores: Array<{ storeId: string; storeName: string; totalSales: number }>;
   exceptionSeverityCounts: { info: number; warning: number; critical: number };
   storeNames: Record<number, string>;
@@ -61,10 +70,12 @@ export interface DashboardData {
   windowEndDate: string | null;
   periods: DashboardPeriods | null;
   kpiDeltas: KPIDeltas;
+  tradeAreaSummaries: TradeAreaSummary[];
 }
 
 interface AnomalyItem {
   date?: string;
+  store_id?: number;
   severity_level?: string;
 }
 
@@ -78,6 +89,16 @@ interface AnomaliesRaw {
 interface DimStoreRaw {
   store_id: number;
   store_name: string;
+  trade_area_profile?: string;
+}
+
+// The prior-year overlay looks up the same calendar month-day in the prior
+// year. The lookup falls back to null when no matching prior-year datum
+// exists, which is the honest representation for both the leading edge of
+// the fixture window and Feb 29 in a non-leap prior year.
+function shiftDateOneYearBack(iso: string): string {
+  const [year, month, day] = iso.split("-").map(Number);
+  return `${year - 1}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
 export function shapeDashboardData(
@@ -117,7 +138,11 @@ export function shapeDashboardData(
   const avgLaborCostPct = laborCount === 0 ? 0 : laborSum / laborCount;
 
   const dailyTrend = Array.from(salesByDate.entries())
-    .map(([date, total]) => ({ date, totalSales: total }))
+    .map(([date, total]) => ({
+      date,
+      totalSales: total,
+      priorYearSales: salesByDate.get(shiftDateOneYearBack(date)) ?? null,
+    }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const topStores = Array.from(salesByStore.entries())
@@ -138,6 +163,7 @@ export function shapeDashboardData(
 
   const periods = computeDashboardPeriods(minDate, maxDate);
   const kpiDeltas = computeKpiDeltas(items, anomalies.items ?? [], periods);
+  const tradeAreaSummaries = shapeTradeAreaComparison(items, anomalies.items ?? [], dimStores);
 
   return {
     totalSales,
@@ -152,7 +178,62 @@ export function shapeDashboardData(
     windowEndDate: maxDate,
     periods,
     kpiDeltas,
+    tradeAreaSummaries,
   };
+}
+
+export function shapeTradeAreaComparison(
+  metricsItems: StoreMetricItem[],
+  anomalyItems: AnomalyItem[],
+  dimStores: DimStoreRaw[],
+): TradeAreaSummary[] {
+  const profileByStore = new Map<number, string>();
+  const storesByProfile = new Map<string, Set<number>>();
+  for (const store of dimStores) {
+    const profile = store.trade_area_profile;
+    if (!profile) continue;
+    profileByStore.set(store.store_id, profile);
+    let bucket = storesByProfile.get(profile);
+    if (!bucket) {
+      bucket = new Set<number>();
+      storesByProfile.set(profile, bucket);
+    }
+    bucket.add(store.store_id);
+  }
+
+  const salesByProfile = new Map<string, number>();
+  for (const item of metricsItems) {
+    const profile = profileByStore.get(item.store_id);
+    if (!profile) continue;
+    salesByProfile.set(profile, (salesByProfile.get(profile) ?? 0) + item.total_sales);
+  }
+
+  const exceptionsByProfile = new Map<string, number>();
+  for (const item of anomalyItems) {
+    if (item.store_id === undefined) continue;
+    const profile = profileByStore.get(item.store_id);
+    if (!profile) continue;
+    exceptionsByProfile.set(profile, (exceptionsByProfile.get(profile) ?? 0) + 1);
+  }
+
+  const profileOrder: string[] = [...TRADE_AREA_ORDER];
+  storesByProfile.forEach((_value, profile) => {
+    if (!profileOrder.includes(profile)) profileOrder.push(profile);
+  });
+
+  return profileOrder
+    .filter((profile) => (storesByProfile.get(profile)?.size ?? 0) > 0)
+    .map((profile) => {
+      const storeCount = storesByProfile.get(profile)?.size ?? 0;
+      const totalSales = salesByProfile.get(profile) ?? 0;
+      return {
+        tradeArea: profile,
+        storeCount,
+        totalSales,
+        avgSalesPerStore: storeCount === 0 ? 0 : totalSales / storeCount,
+        totalExceptions: exceptionsByProfile.get(profile) ?? 0,
+      };
+    });
 }
 
 interface PeriodAggregates {
