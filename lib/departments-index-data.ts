@@ -11,11 +11,10 @@
  * lib/dim-departments — the upstream api does not expose a
  * /dim-departments endpoint and the taxonomy is small and stable.
  *
- * Totals are computed across the entire available window of the
- * department-metrics fixture (currently Jul–Dec 2025), not the
- * 18-month window store-metrics covers. The window-source field on
- * each entry surfaces this so the index page can describe what the
- * totals mean.
+ * Totals are computed across the entire available window present in
+ * the department-metrics source. The windowStart and windowEnd fields
+ * on the result report that window so the index page can describe
+ * what the totals span.
  */
 
 import {

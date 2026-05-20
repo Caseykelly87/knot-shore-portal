@@ -4,11 +4,9 @@
  * the bundled fixture; online mode fetches the portal's own /api/*
  * route handlers.
  *
- * The department-metrics fixture covers the recent half of the
- * canonical window (Jul–Dec 2025) rather than the full 18 months that
- * store-metrics covers — the loader returns whatever the fixture or
- * api contains, and downstream shapers reason about the window from
- * the data they receive.
+ * Both fixtures cover the full canonical window. The loaders return
+ * whatever the fixture or api contains, and downstream shapers reason
+ * about the window from the min/max dates of the data they receive.
  */
 
 import { getApiMode } from "@/lib/api-mode";
