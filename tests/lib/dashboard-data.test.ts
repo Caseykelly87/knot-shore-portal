@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { shapeDashboardData } from "@/lib/dashboard-data";
+import { shapeDashboardData, shapeTradeAreaComparison } from "@/lib/dashboard-data";
 
 describe("shapeDashboardData", () => {
   const sampleAnomalies = {
@@ -253,6 +253,121 @@ describe("shapeDashboardData", () => {
       const shaped = shapeDashboardData(anomaliesWithMissingDates, periodMetrics, sampleDimStores);
       expect(shaped.kpiDeltas.activeExceptions.recent).toBe(1);
       expect(shaped.kpiDeltas.activeExceptions.yoy).toBe(1);
+    });
+  });
+
+  describe("trade-area comparison", () => {
+    const tradeAreaDimStores = [
+      { store_id: 1, store_name: "Suburb A", trade_area_profile: "suburban-family" },
+      { store_id: 2, store_name: "Suburb B", trade_area_profile: "suburban-family" },
+      { store_id: 3, store_name: "Urban A", trade_area_profile: "urban-dense" },
+      { store_id: 4, store_name: "Value A", trade_area_profile: "value-market" },
+    ];
+
+    const tradeAreaMetrics = {
+      total: 8,
+      limit: 200,
+      offset: 0,
+      items: [
+        { date: "2025-07-01", store_id: 1, total_sales: 100, transaction_count: 10 },
+        { date: "2025-07-01", store_id: 2, total_sales: 200, transaction_count: 20 },
+        { date: "2025-07-01", store_id: 3, total_sales: 300, transaction_count: 30 },
+        { date: "2025-07-01", store_id: 4, total_sales: 50, transaction_count: 5 },
+      ],
+    };
+
+    const tradeAreaAnomalies = {
+      total: 5,
+      limit: 200,
+      offset: 0,
+      items: [
+        { store_id: 1, severity_level: "info" },
+        { store_id: 1, severity_level: "warning" },
+        { store_id: 2, severity_level: "critical" },
+        { store_id: 3, severity_level: "info" },
+        { store_id: 4, severity_level: "info" },
+      ],
+    };
+
+    it("groups stores by trade area in canonical order", () => {
+      const summaries = shapeTradeAreaComparison(
+        tradeAreaMetrics.items,
+        tradeAreaAnomalies.items,
+        tradeAreaDimStores,
+      );
+      expect(summaries.map((s) => s.tradeArea)).toEqual([
+        "suburban-family",
+        "urban-dense",
+        "value-market",
+      ]);
+    });
+
+    it("aggregates store count, total sales, and avg-per-store per profile", () => {
+      const summaries = shapeTradeAreaComparison(
+        tradeAreaMetrics.items,
+        tradeAreaAnomalies.items,
+        tradeAreaDimStores,
+      );
+      const suburban = summaries.find((s) => s.tradeArea === "suburban-family")!;
+      expect(suburban.storeCount).toBe(2);
+      expect(suburban.totalSales).toBe(300);
+      expect(suburban.avgSalesPerStore).toBe(150);
+
+      const urban = summaries.find((s) => s.tradeArea === "urban-dense")!;
+      expect(urban.storeCount).toBe(1);
+      expect(urban.totalSales).toBe(300);
+      expect(urban.avgSalesPerStore).toBe(300);
+    });
+
+    it("counts anomalies attributed to stores in each profile", () => {
+      const summaries = shapeTradeAreaComparison(
+        tradeAreaMetrics.items,
+        tradeAreaAnomalies.items,
+        tradeAreaDimStores,
+      );
+      expect(summaries.find((s) => s.tradeArea === "suburban-family")!.totalExceptions).toBe(3);
+      expect(summaries.find((s) => s.tradeArea === "urban-dense")!.totalExceptions).toBe(1);
+      expect(summaries.find((s) => s.tradeArea === "value-market")!.totalExceptions).toBe(1);
+    });
+
+    it("omits profiles with no stores in dim_stores", () => {
+      const partial = tradeAreaDimStores.filter((s) => s.trade_area_profile !== "value-market");
+      const summaries = shapeTradeAreaComparison(
+        tradeAreaMetrics.items,
+        tradeAreaAnomalies.items,
+        partial,
+      );
+      expect(summaries.map((s) => s.tradeArea)).toEqual(["suburban-family", "urban-dense"]);
+    });
+
+    it("ignores anomalies without a store_id", () => {
+      const summaries = shapeTradeAreaComparison(
+        tradeAreaMetrics.items,
+        [
+          { severity_level: "info" },
+          { store_id: 1, severity_level: "warning" },
+        ],
+        tradeAreaDimStores,
+      );
+      expect(summaries.find((s) => s.tradeArea === "suburban-family")!.totalExceptions).toBe(1);
+    });
+
+    it("ignores anomalies whose store is not in dim_stores", () => {
+      const summaries = shapeTradeAreaComparison(
+        tradeAreaMetrics.items,
+        [{ store_id: 99, severity_level: "critical" }],
+        tradeAreaDimStores,
+      );
+      expect(summaries.every((s) => s.totalExceptions === 0)).toBe(true);
+    });
+
+    it("includes trade-area summaries in shapeDashboardData output", () => {
+      const shaped = shapeDashboardData(tradeAreaAnomalies, tradeAreaMetrics, tradeAreaDimStores);
+      expect(shaped.tradeAreaSummaries.map((s) => s.tradeArea)).toEqual([
+        "suburban-family",
+        "urban-dense",
+        "value-market",
+      ]);
     });
   });
 
