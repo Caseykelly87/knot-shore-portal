@@ -88,3 +88,102 @@ describe("shapeDepartmentData", () => {
     );
   });
 });
+
+describe("shapeDepartmentData PoP/YoY deltas", () => {
+  const sampleDimStores = [
+    { store_id: 1, store_name: "Knot Shore — Alpha", trade_area_profile: "suburban-family" },
+  ];
+
+  // A full 18-month window (Jul 2024 – Dec 2025) so the period helper
+  // derives recent (Jul–Dec 2025), pop (Jan–Jun 2025), and yoy
+  // (Jul–Dec 2024). Department 1 has rows in all three periods.
+  // Department 2 appears only in the recent period, so its prior-period
+  // comparisons have no baseline — the missing-prior-period case.
+  const fullWindowMetrics = {
+    total: 8,
+    items: [
+      // Department 1 — year-over-year period (Jul–Dec 2024)
+      { date: "2024-07-01", store_id: 1, department_id: 1, net_sales: 100, transactions: 10, units_sold: 40, gross_margin_pct: 0.5 },
+      { date: "2024-12-01", store_id: 1, department_id: 1, net_sales: 100, transactions: 10, units_sold: 40, gross_margin_pct: 0.5 },
+      // Department 1 — prior period (Jan–Jun 2025)
+      { date: "2025-01-01", store_id: 1, department_id: 1, net_sales: 200, transactions: 20, units_sold: 80, gross_margin_pct: 0.5 },
+      { date: "2025-06-01", store_id: 1, department_id: 1, net_sales: 200, transactions: 20, units_sold: 80, gross_margin_pct: 0.5 },
+      // Department 1 — recent period (Jul–Dec 2025)
+      { date: "2025-07-01", store_id: 1, department_id: 1, net_sales: 300, transactions: 30, units_sold: 120, gross_margin_pct: 0.5 },
+      { date: "2025-12-01", store_id: 1, department_id: 1, net_sales: 300, transactions: 30, units_sold: 120, gross_margin_pct: 0.5 },
+      // Department 2 — recent period only, absent in 2024 and H1 2025
+      { date: "2025-08-01", store_id: 1, department_id: 2, net_sales: 500, transactions: 50, units_sold: 200, gross_margin_pct: 0.3 },
+      { date: "2025-09-01", store_id: 1, department_id: 2, net_sales: 500, transactions: 50, units_sold: 200, gross_margin_pct: 0.3 },
+    ],
+  };
+
+  it("computes proportional PoP and YoY deltas for sales, transactions, and avg daily sales", () => {
+    const { kpiDeltas } = shapeDepartmentData(1, fullWindowMetrics, sampleDimStores);
+    // recent 600 vs pop 400 vs yoy 200
+    expect(kpiDeltas.totalSales.pop).toBeCloseTo(0.5, 5);
+    expect(kpiDeltas.totalSales.yoy).toBeCloseTo(2.0, 5);
+    // recent 60 vs pop 40 vs yoy 20
+    expect(kpiDeltas.totalTransactions.pop).toBeCloseTo(0.5, 5);
+    expect(kpiDeltas.totalTransactions.yoy).toBeCloseTo(2.0, 5);
+    // recent 300/day vs pop 200/day vs yoy 100/day
+    expect(kpiDeltas.avgDailySales.pop).toBeCloseTo(0.5, 5);
+    expect(kpiDeltas.avgDailySales.yoy).toBeCloseTo(2.0, 5);
+  });
+
+  it("aggregates each period from its own calendar slice", () => {
+    // YoY must count only the two 2024 rows (200) and PoP only the two
+    // H1-2025 rows (400); a delta that swept the whole window would not
+    // land on these ratios.
+    const { kpiDeltas } = shapeDepartmentData(1, fullWindowMetrics, sampleDimStores);
+    expect(kpiDeltas.totalSales.yoy).toBeCloseTo((600 - 200) / 200, 5);
+    expect(kpiDeltas.totalSales.pop).toBeCloseTo((600 - 400) / 400, 5);
+  });
+
+  it("computes revenue-share deltas against per-period all-department sales", () => {
+    // recent share 600/1600 = 0.375; pop share 400/400 = 1.0; yoy 200/200 = 1.0
+    const { kpiDeltas } = shapeDepartmentData(1, fullWindowMetrics, sampleDimStores);
+    expect(kpiDeltas.revenueShare.pop).toBeCloseTo((0.375 - 1) / 1, 5);
+    expect(kpiDeltas.revenueShare.yoy).toBeCloseTo((0.375 - 1) / 1, 5);
+  });
+
+  it("returns null deltas when the department has no rows in a comparison period", () => {
+    const { kpiDeltas } = shapeDepartmentData(2, fullWindowMetrics, sampleDimStores);
+    expect(kpiDeltas.totalSales.pop).toBeNull();
+    expect(kpiDeltas.totalSales.yoy).toBeNull();
+    expect(kpiDeltas.totalTransactions.pop).toBeNull();
+    expect(kpiDeltas.totalTransactions.yoy).toBeNull();
+    expect(kpiDeltas.avgDailySales.pop).toBeNull();
+    expect(kpiDeltas.avgDailySales.yoy).toBeNull();
+  });
+
+  it("returns null revenue-share deltas when the prior-period baseline is zero", () => {
+    const { kpiDeltas } = shapeDepartmentData(2, fullWindowMetrics, sampleDimStores);
+    expect(kpiDeltas.revenueShare.pop).toBeNull();
+    expect(kpiDeltas.revenueShare.yoy).toBeNull();
+  });
+
+  it("returns null deltas for every KPI when the department is absent entirely", () => {
+    const { kpiDeltas } = shapeDepartmentData(3, fullWindowMetrics, sampleDimStores);
+    for (const delta of [
+      kpiDeltas.totalSales,
+      kpiDeltas.totalTransactions,
+      kpiDeltas.avgDailySales,
+      kpiDeltas.revenueShare,
+    ]) {
+      expect(delta.pop).toBeNull();
+      expect(delta.yoy).toBeNull();
+    }
+  });
+
+  it("returns null deltas when the window is too short to derive comparison periods", () => {
+    const shortWindow = {
+      total: 1,
+      items: [
+        { date: "2025-07-15", store_id: 1, department_id: 1, net_sales: 100, transactions: 10, units_sold: 40, gross_margin_pct: 0.5 },
+      ],
+    };
+    const { kpiDeltas } = shapeDepartmentData(1, shortWindow, sampleDimStores);
+    expect(kpiDeltas.totalSales.pop).toBeNull();
+    expect(kpiDeltas.totalSales.yoy).toBeNull();
+  });
+});
