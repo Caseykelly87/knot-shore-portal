@@ -60,12 +60,8 @@ const TARGETS: CaptureSpec[] = [
     shape: "single",
   },
 
-  // department-metrics — 2025 only (current-year view), paginated.
-  {
-    url: "/department-metrics?start_date=2025-07-01&end_date=2025-12-31",
-    filename: "department-metrics.json",
-    shape: "paginated",
-  },
+  // department-metrics — full 2024+2025 canonical, paginated.
+  { url: "/department-metrics", filename: "department-metrics.json", shape: "paginated" },
 
   // dim-stores — flat array of 8 store rows, no envelope.
   { url: "/dim-stores", filename: "dim-stores.json", shape: "array" },
