@@ -140,8 +140,12 @@ describe("shapeStoreData", () => {
       sampleAnomalies,
     );
     const expectedSales = sampleStoreMetrics.items.reduce((sum, r) => sum + r.total_sales, 0);
+    const expectedTransactions = sampleStoreMetrics.items.reduce(
+      (sum, r) => sum + r.transaction_count,
+      0,
+    );
     expect(shaped.totalSales).toBe(expectedSales);
-    expect(shaped.totalTransactions).toBeGreaterThan(0);
+    expect(shaped.totalTransactions).toBe(expectedTransactions);
     expect(shaped.activeExceptions).toBe(2);
     expect(shaped.avgLaborCostPct).toBeCloseTo(0.105, 4);
   });
