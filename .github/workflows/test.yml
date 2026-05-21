@@ -27,6 +27,6 @@ jobs:
 
       - run: pnpm tsc --noEmit
 
-      - run: pnpm vitest run --no-file-parallelism
+      - run: pnpm vitest run
 
       - run: pnpm build

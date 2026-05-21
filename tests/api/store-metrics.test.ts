@@ -1,36 +1,49 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { NextRequest } from "next/server";
+import { GET } from "@/app/api/store-metrics/route";
+import { loadStoreMetricsFixture } from "@/lib/fixture-loader";
 
+/**
+ * The route handler is imported statically, once, at module evaluation.
+ * It reads API_MODE and API_BASE_URL only at request time (inside GET),
+ * so there is no need to re-import it per test — and re-importing it was
+ * the source of a cross-test race. The dynamic import pulled the route's
+ * transitive fixture graph (including the multi-megabyte department
+ * metrics JSON) inside the test body; under parallel file execution
+ * that import could exceed the 5s test timeout, and a timed-out test's
+ * continuation still ran GET() against process.env / globalThis.fetch
+ * that a sibling test had since reassigned. A static import moves the
+ * cost to collection time, so no test times out and no continuation
+ * leaks across tests.
+ *
+ * Environment and fetch are mutated through vi.stubEnv / vi.stubGlobal
+ * and reverted in afterEach, rather than reassigning process.env and
+ * globalThis.fetch wholesale, so each test is self-contained.
+ */
 describe("store-metrics route handler", () => {
-  const originalEnv = { ...process.env };
-  const originalFetch = globalThis.fetch;
-
-  beforeEach(() => {
-    process.env = { ...originalEnv };
-  });
-
   afterEach(() => {
-    process.env = { ...originalEnv };
-    globalThis.fetch = originalFetch;
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
-  it("returns fixture data when API_MODE is offline", async () => {
-    process.env.API_MODE = "offline";
-    const { GET } = await import("@/app/api/store-metrics/route");
+  it("serves the store-metrics fixture verbatim when API_MODE is offline", async () => {
+    vi.stubEnv("API_MODE", "offline");
     const req = new NextRequest("http://localhost/api/store-metrics");
     const res = await GET(req);
     const data = await res.json();
+
     expect(res.status).toBe(200);
-    expect(data).toHaveProperty("total");
-    expect(data).toHaveProperty("items");
-    expect(Array.isArray(data.items)).toBe(true);
+    // Offline mode returns the bundled fixture unchanged — same total,
+    // same row count, same canonical anchor row.
+    expect(data).toEqual(loadStoreMetricsFixture());
+    expect(data.total).toBe(2944);
     expect(res.headers.get("X-Data-Source")).toBeNull();
   });
 
   it("returns upstream body when API_MODE is online and upstream succeeds", async () => {
-    process.env.API_MODE = "online";
-    process.env.API_BASE_URL = "http://upstream.test";
+    vi.stubEnv("API_MODE", "online");
+    vi.stubEnv("API_BASE_URL", "http://upstream.test");
     const upstreamBody = { total: 1, limit: 1, offset: 0, items: [{ marker: "from-upstream" }] };
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(JSON.stringify(upstreamBody), {
@@ -38,9 +51,8 @@ describe("store-metrics route handler", () => {
         headers: { "content-type": "application/json" },
       }),
     );
-    globalThis.fetch = fetchMock as typeof fetch;
+    vi.stubGlobal("fetch", fetchMock);
 
-    const { GET } = await import("@/app/api/store-metrics/route");
     const req = new NextRequest("http://localhost/api/store-metrics");
     const res = await GET(req);
     const data = await res.json();
@@ -52,13 +64,12 @@ describe("store-metrics route handler", () => {
     expect(res.headers.get("X-Data-Source")).toBeNull();
   });
 
-  it("falls back to fixture with X-Data-Source: fallback when upstream fetch fails", async () => {
-    process.env.API_MODE = "online";
-    process.env.API_BASE_URL = "http://upstream.test";
+  it("falls back to the fixture with X-Data-Source: fallback when upstream fetch fails", async () => {
+    vi.stubEnv("API_MODE", "online");
+    vi.stubEnv("API_BASE_URL", "http://upstream.test");
     const fetchMock = vi.fn().mockRejectedValue(new Error("ECONNREFUSED"));
-    globalThis.fetch = fetchMock as typeof fetch;
+    vi.stubGlobal("fetch", fetchMock);
 
-    const { GET } = await import("@/app/api/store-metrics/route");
     const req = new NextRequest("http://localhost/api/store-metrics");
     const res = await GET(req);
     const data = await res.json();
@@ -66,8 +77,7 @@ describe("store-metrics route handler", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     expect(res.status).toBe(200);
     expect(res.headers.get("X-Data-Source")).toBe("fallback");
-    expect(data).toHaveProperty("total");
-    expect(data).toHaveProperty("items");
-    expect(Array.isArray(data.items)).toBe(true);
+    // The fallback body is the bundled fixture, identical to offline mode.
+    expect(data).toEqual(loadStoreMetricsFixture());
   });
 });
