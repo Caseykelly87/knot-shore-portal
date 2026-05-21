@@ -199,19 +199,39 @@ Tests left as structural, with the reason each was not strengthened:
   analogous observability tests.
 
 One data observation surfaced while building the cross-grain contract
-test and is left for separate work: the bundled `department-metrics.json`
-does not reconcile exactly against `store-metrics.json`. Of the 2944
-store-days, 2872 reconcile to the cent; the remaining 72 trace to 52
-store-days whose department-row coverage is irregular — 39 carry only 9
-department rows, 13 carry 11 rows with a duplicated `department_id`. The
-aggregate gap is 0.04% of total sales. This has the shape of a
-fixture-capture artifact (a pagination boundary in `scripts/capture-fixtures.ts`
-double-counting and dropping rows) rather than a portal defect; the
-shapers aggregate whatever rows they receive correctly. The cross-grain
-contract test asserts the aggregate gap stays under 0.1% and that
-per-store-day reconciliation holds for over 95% of store-days, which
-still catches a genuine portal aggregation bug while tolerating the
-fixture irregularity. Regenerating the fixture cleanly is the fix.
+test and is upstream-resident, not a portal defect: the
+`department-metrics.json` does not reconcile exactly against
+`store-metrics.json`. Of the 2944 store-days, 2872 reconcile to the
+cent; the remaining 52 carry irregular department-row coverage — 39
+with 9 department rows, 13 with 11 rows including a duplicated
+`department_id`. Aggregate gap is 0.04% of total sales.
+
+Verified by reading the ETL canonical directly: `department_daily_metrics.parquet`
+at `economic-data-etl/data/processed/canonical/` contains the same 52
+irregular store-days at the same counts (39 with 9 rows, 13 with 11
+rows; total 29,414 vs. the 29,440 a strict 8 × 10 × 368 baseline would
+expect). The pattern is upstream sim engine anomaly injection (the
+`missing_department` anomaly type per the platform's anomaly-injection
+design), structurally present in the canonical pipeline through all
+four repos.
+
+The current detection rules — `revenue_band`, `transactions_band`,
+`yoy_comp` per the 831-entry anomaly log — flag statistical outliers
+in sales and transaction volume. They do not flag structural
+irregularities like missing department rows or duplicated
+`department_id` values. This matches the open architectural question
+documented on the platform's about pages: whether detection rules
+looking for summary-detail mismatches would actually trigger on the
+missing-department injection. They currently do not.
+
+The cross-grain contract test in this repo asserts the aggregate gap
+stays under 0.1% and that per-store-day reconciliation holds for over
+95% of store-days. That tolerance is correctly calibrated for known
+upstream data behavior, and the test still catches genuine portal
+aggregation bugs (anything beyond the documented irregularity). Adding
+a structural-integrity detection rule that flags store-days with
+abnormal department row counts is a Phase 4 detection-engineering
+target — the data exists; the detection layer needs the new rule type.
 
 ## The contract test chain
 
