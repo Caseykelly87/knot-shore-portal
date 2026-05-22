@@ -43,11 +43,11 @@ describe("API -> portal contract", () => {
       expect(data.windowEndDate).toBe("2025-12-31");
 
       // Every anomaly flag is an active exception; the canonical set
-      // carries 831, all info or warning, no criticals.
-      expect(data.activeExceptions).toBe(831);
+      // carries 883, all info or warning, no criticals.
+      expect(data.activeExceptions).toBe(883);
       expect(data.exceptionSeverityCounts).toEqual({
         info: 807,
-        warning: 24,
+        warning: 76,
         critical: 0,
       });
 
@@ -89,9 +89,9 @@ describe("API -> portal contract", () => {
       expect(entries.map((e) => e.storeId)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
 
       // Every anomaly flag is attributed to a store, so the per-store
-      // exception counts sum back to the canonical 831.
+      // exception counts sum back to the canonical 883.
       const exceptionTotal = entries.reduce((sum, e) => sum + e.exceptionCount, 0);
-      expect(exceptionTotal).toBe(831);
+      expect(exceptionTotal).toBe(883);
 
       // The per-store sales sum equals the dashboard's full-window
       // total: both aggregate the same store-metrics fixture.
@@ -101,12 +101,13 @@ describe("API -> portal contract", () => {
       const store1 = entries.find((e) => e.storeId === 1)!;
       expect(store1.totalSales).toBeCloseTo(37182419.48, 2);
       expect(store1.totalTransactions).toBe(982814);
-      expect(store1.exceptionCount).toBe(107);
-      expect(store1.severityCounts).toEqual({ info: 107, warning: 0, critical: 0 });
+      expect(store1.exceptionCount).toBe(112);
+      expect(store1.severityCounts).toEqual({ info: 107, warning: 5, critical: 0 });
 
-      // Store 7 is the one carrying warning-severity flags.
+      // Store 7 carries warning-severity flags from both the band rules
+      // and the structural department_coverage rule.
       const store7 = entries.find((e) => e.storeId === 7)!;
-      expect(store7.severityCounts).toEqual({ info: 177, warning: 13, critical: 0 });
+      expect(store7.severityCounts).toEqual({ info: 177, warning: 17, critical: 0 });
     });
   });
 
@@ -141,12 +142,13 @@ describe("API -> portal contract", () => {
     it("shapes the canonical exceptions table from the bundled fixtures", () => {
       const data = shapeExceptionsData(loadAnomaliesFixture(), loadDimStoresFixture());
 
-      expect(data.rows).toHaveLength(831);
+      expect(data.rows).toHaveLength(883);
 
-      // The canonical set fires three rule families across all eight
+      // The canonical set fires four rule families across all eight
       // stores, at info and warning severity only.
       expect(data.uniqueSeverities).toEqual(["info", "warning"]);
       expect(data.uniqueRules).toEqual([
+        "department_coverage",
         "revenue_band",
         "transactions_band",
         "yoy_comp",
@@ -160,10 +162,10 @@ describe("API -> portal contract", () => {
         true,
       );
 
-      // The 24 warning flags filter out exactly, matching the
+      // The 76 warning flags filter out exactly, matching the
       // dashboard's warning severity count.
       const warnings = applyFilters(data.rows, { severities: ["warning"] });
-      expect(warnings).toHaveLength(24);
+      expect(warnings).toHaveLength(76);
       expect(applyFilters(data.rows, { severities: ["info"] })).toHaveLength(807);
     });
   });

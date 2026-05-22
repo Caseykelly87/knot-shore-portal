@@ -32,9 +32,9 @@ describe("fixture loaders", () => {
 
   it("loadAnomaliesFixture serves the canonical anomaly-flags set", () => {
     const data = loadAnomaliesFixture();
-    // 831 anomaly flags — the canonical count carried from the API.
-    expect(data.total).toBe(831);
-    expect(data.items).toHaveLength(831);
+    // 883 anomaly flags — the canonical count carried from the API.
+    expect(data.total).toBe(883);
+    expect(data.items).toHaveLength(883);
     expect(data.items[0]).toMatchObject({
       date: "2024-07-05",
       store_id: 7,
@@ -67,8 +67,8 @@ describe("fixture loaders", () => {
       data.exception_count_by_severity.map((e) => [e.severity_level, e.count]),
     );
     // All three levels are always present; the recent window carries
-    // 482 info and 12 warning flags and no criticals.
-    expect(counts).toEqual({ info: 482, warning: 12, critical: 0 });
+    // 482 info and 40 warning flags and no criticals.
+    expect(counts).toEqual({ info: 482, warning: 40, critical: 0 });
   });
 
   it("loadHealthFixture reports the offline-mode health envelope", () => {
