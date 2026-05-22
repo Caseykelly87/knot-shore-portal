@@ -1,6 +1,6 @@
 {
-  "total": 831,
-  "limit": 831,
+  "total": 883,
+  "limit": 883,
   "offset": 0,
   "items": [
     {
@@ -191,6 +191,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2024-07-17",
+      "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2024-07-20",
       "store_id": 7,
       "rule_id": "transactions_band",
@@ -222,6 +233,17 @@
       "distance_from_band": 19.75,
       "severity_score": 0.048615384615384616,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-08-01",
+      "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-08-02",
@@ -367,6 +389,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2024-08-08",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2024-08-10",
       "store_id": 7,
       "rule_id": "revenue_band",
@@ -422,6 +455,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2024-08-17",
+      "store_id": 6,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2024-08-18",
       "store_id": 7,
       "rule_id": "revenue_band",
@@ -444,6 +488,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2024-08-19",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2024-08-25",
       "store_id": 7,
       "rule_id": "revenue_band",
@@ -453,6 +508,28 @@
       "distance_from_band": 527.4700000000012,
       "severity_score": 0.03836145454545463,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-08-26",
+      "store_id": 2,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-08-26",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-08-31",
@@ -620,6 +697,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2024-09-10",
+      "store_id": 1,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2024-09-14",
       "store_id": 7,
       "rule_id": "transactions_band",
@@ -655,6 +743,17 @@
     {
       "date": "2024-09-16",
       "store_id": 8,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-09-16",
+      "store_id": 8,
       "rule_id": "revenue_band",
       "actual_value": 38959.8,
       "expected_low": 39000.0,
@@ -684,6 +783,17 @@
       "distance_from_band": 31.5625,
       "severity_score": 0.07345454545454545,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-09-24",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-09-24",
@@ -816,6 +926,39 @@
       "distance_from_band": 2004.300000000003,
       "severity_score": 0.1541769230769233,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-10-11",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-10-16",
+      "store_id": 8,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-10-17",
+      "store_id": 1,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-10-19",
@@ -1135,6 +1278,17 @@
       "distance_from_band": 41.57894736842081,
       "severity_score": 0.05745454545454512,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-11-03",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-11-03",
@@ -1864,6 +2018,17 @@
     },
     {
       "date": "2024-11-30",
+      "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-11-30",
       "store_id": 7,
       "rule_id": "revenue_band",
       "actual_value": 71795.92,
@@ -2083,6 +2248,39 @@
       "severity_level": "warning"
     },
     {
+      "date": "2024-12-03",
+      "store_id": 1,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-12-03",
+      "store_id": 8,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-12-04",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2024-12-06",
       "store_id": 1,
       "rule_id": "revenue_band",
@@ -2279,6 +2477,17 @@
       "distance_from_band": 174.0,
       "severity_score": 0.2784,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-12-07",
+      "store_id": 2,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-12-07",
@@ -2589,6 +2798,17 @@
       "severity_level": "warning"
     },
     {
+      "date": "2024-12-12",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2024-12-13",
       "store_id": 1,
       "rule_id": "revenue_band",
@@ -2653,6 +2873,17 @@
       "distance_from_band": 98.94736842105249,
       "severity_score": 0.17694117647058796,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-12-13",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-12-13",
@@ -3360,6 +3591,17 @@
     },
     {
       "date": "2024-12-22",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2024-12-22",
       "store_id": 6,
       "rule_id": "revenue_band",
       "actual_value": 79599.29,
@@ -3423,6 +3665,17 @@
       "distance_from_band": 213.75,
       "severity_score": 0.5261538461538462,
       "severity_level": "info"
+    },
+    {
+      "date": "2024-12-26",
+      "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2024-12-27",
@@ -3711,6 +3964,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2024-12-31",
+      "store_id": 2,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2025-07-04",
       "store_id": 1,
       "rule_id": "transactions_band",
@@ -3757,6 +4021,17 @@
     {
       "date": "2025-07-05",
       "store_id": 1,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-07-05",
+      "store_id": 1,
       "rule_id": "yoy_comp",
       "actual_value": 0.8015360650052202,
       "expected_low": 0.85,
@@ -3764,6 +4039,17 @@
       "distance_from_band": 0.048463934994779745,
       "severity_score": 0.24231967497389872,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-07-05",
+      "store_id": 2,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-07-05",
@@ -3929,6 +4215,17 @@
       "distance_from_band": 0.14295778261240966,
       "severity_score": 0.7147889130620483,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-07-11",
+      "store_id": 1,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-07-11",
@@ -4160,6 +4457,17 @@
       "distance_from_band": 0.17173068628523191,
       "severity_score": 0.8586534314261596,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-07-25",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-07-25",
@@ -4428,6 +4736,17 @@
     {
       "date": "2025-08-04",
       "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-08-04",
+      "store_id": 5,
       "rule_id": "yoy_comp",
       "actual_value": 0.7717536418872579,
       "expected_low": 0.85,
@@ -4581,6 +4900,17 @@
     },
     {
       "date": "2025-08-10",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-08-10",
       "store_id": 7,
       "rule_id": "revenue_band",
       "actual_value": 73433.89,
@@ -4703,6 +5033,17 @@
     {
       "date": "2025-08-12",
       "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-08-12",
+      "store_id": 5,
       "rule_id": "yoy_comp",
       "actual_value": 0.8125563982366804,
       "expected_low": 0.85,
@@ -4710,6 +5051,50 @@
       "distance_from_band": 0.03744360176331962,
       "severity_score": 0.1872180088165981,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-08-14",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-08-15",
+      "store_id": 2,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-08-15",
+      "store_id": 7,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-08-15",
+      "store_id": 8,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-08-18",
@@ -4798,6 +5183,17 @@
       "distance_from_band": 0.18526954658109662,
       "severity_score": 0.9263477329054831,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-08-20",
+      "store_id": 7,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-08-23",
@@ -4897,6 +5293,17 @@
       "distance_from_band": 0.013386684412950545,
       "severity_score": 0.06693342206475272,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-08-25",
+      "store_id": 7,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-08-25",
@@ -5062,6 +5469,17 @@
       "distance_from_band": 0.12199479325794116,
       "severity_score": 0.6099739662897058,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-09-01",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-09-01",
@@ -5337,6 +5755,28 @@
       "distance_from_band": 0.12836789348135524,
       "severity_score": 0.6418394674067762,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-09-10",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-09-11",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-09-12",
@@ -5656,6 +6096,17 @@
       "distance_from_band": 0.08426750539278904,
       "severity_score": 0.4213375269639452,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-09-29",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-09-29",
@@ -6001,6 +6452,17 @@
     {
       "date": "2025-10-15",
       "store_id": 8,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-10-15",
+      "store_id": 8,
       "rule_id": "revenue_band",
       "actual_value": 32351.64,
       "expected_low": 39000.0,
@@ -6030,6 +6492,17 @@
       "distance_from_band": 0.14669782126508402,
       "severity_score": 0.7334891063254201,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-10-16",
+      "store_id": 7,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-10-17",
@@ -6175,6 +6648,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2025-10-25",
+      "store_id": 6,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2025-10-26",
       "store_id": 8,
       "rule_id": "transactions_band",
@@ -6272,6 +6756,39 @@
       "distance_from_band": 0.1702465785470575,
       "severity_score": 0.8512328927352875,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-10-28",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-10-29",
+      "store_id": 4,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-10-31",
+      "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-11-01",
@@ -6591,6 +7108,28 @@
       "distance_from_band": 0.14643547595601236,
       "severity_score": 0.7321773797800618,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-11-06",
+      "store_id": 2,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-11-06",
+      "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-11-07",
@@ -7253,6 +7792,17 @@
       "severity_level": "info"
     },
     {
+      "date": "2025-11-19",
+      "store_id": 3,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
+    },
+    {
       "date": "2025-11-23",
       "store_id": 8,
       "rule_id": "transactions_band",
@@ -7349,6 +7899,17 @@
       "expected_high": 1.25,
       "distance_from_band": 0.2422076383218077,
       "severity_score": 1.2110381916090385,
+      "severity_level": "warning"
+    },
+    {
+      "date": "2025-11-28",
+      "store_id": 5,
+      "rule_id": "department_coverage",
+      "actual_value": 9.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
       "severity_level": "warning"
     },
     {
@@ -8032,6 +8593,17 @@
       "distance_from_band": 0.15052270191314332,
       "severity_score": 0.7526135095657166,
       "severity_level": "info"
+    },
+    {
+      "date": "2025-12-09",
+      "store_id": 8,
+      "rule_id": "department_coverage",
+      "actual_value": 11.0,
+      "expected_low": 10.0,
+      "expected_high": 10.0,
+      "distance_from_band": 1.0,
+      "severity_score": 1.0,
+      "severity_level": "warning"
     },
     {
       "date": "2025-12-12",
