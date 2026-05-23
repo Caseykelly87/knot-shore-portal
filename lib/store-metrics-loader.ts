@@ -71,23 +71,38 @@ export async function loadFullWindowDepartmentMetrics(): Promise<DepartmentMetri
   }
   const base = getBaseUrl();
   const PAGE_SIZE = 200;
-  let offset = 0;
-  let total = 0;
-  const items: DepartmentMetricItem[] = [];
 
-  while (true) {
-    const res = await fetch(
-      `${base}/api/department-metrics?limit=${PAGE_SIZE}&offset=${offset}`,
-      { cache: "no-store" },
-    );
-    if (!res.ok) {
-      throw new Error(`Department metrics fetch failed: ${res.status}`);
-    }
-    const body = (await res.json()) as DepartmentMetricsRaw;
-    total = body.total;
+  const firstRes = await fetch(
+    `${base}/api/department-metrics?limit=${PAGE_SIZE}&offset=0`,
+    { cache: "no-store" },
+  );
+  if (!firstRes.ok) {
+    throw new Error(`Department metrics fetch failed: ${firstRes.status}`);
+  }
+  const firstBody = (await firstRes.json()) as DepartmentMetricsRaw;
+  const total = firstBody.total;
+  const items: DepartmentMetricItem[] = [...firstBody.items];
+
+  const remainingOffsets: number[] = [];
+  for (let offset = PAGE_SIZE; offset < total; offset += PAGE_SIZE) {
+    remainingOffsets.push(offset);
+  }
+
+  const remainingResponses = await Promise.all(
+    remainingOffsets.map(async (offset) => {
+      const res = await fetch(
+        `${base}/api/department-metrics?limit=${PAGE_SIZE}&offset=${offset}`,
+        { cache: "no-store" },
+      );
+      if (!res.ok) {
+        throw new Error(`Department metrics fetch failed: ${res.status}`);
+      }
+      return (await res.json()) as DepartmentMetricsRaw;
+    }),
+  );
+
+  for (const body of remainingResponses) {
     items.push(...body.items);
-    if (items.length >= total || body.items.length === 0) break;
-    offset += PAGE_SIZE;
   }
 
   return { total, limit: items.length, offset: 0, items };
