@@ -13,7 +13,6 @@ import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
 
 const STORE_METRICS_FETCH_LIMIT = 5000;
-const DEPARTMENT_METRICS_FETCH_LIMIT = 20000;
 
 export interface StoreMetricItem {
   date: string;
@@ -70,16 +69,26 @@ export async function loadFullWindowDepartmentMetrics(): Promise<DepartmentMetri
     const mod = await import("@/fixtures/department-metrics.json");
     return mod.default as unknown as DepartmentMetricsRaw;
   }
-
   const base = getBaseUrl();
-  const res = await fetch(
-    `${base}/api/department-metrics?limit=${DEPARTMENT_METRICS_FETCH_LIMIT}`,
-    { cache: "no-store" },
-  );
+  const PAGE_SIZE = 200;
+  let offset = 0;
+  let total = 0;
+  const items: DepartmentMetricItem[] = [];
 
-  if (!res.ok) {
-    throw new Error(`Department metrics fetch failed: ${res.status}`);
+  while (true) {
+    const res = await fetch(
+      `${base}/api/department-metrics?limit=${PAGE_SIZE}&offset=${offset}`,
+      { cache: "no-store" },
+    );
+    if (!res.ok) {
+      throw new Error(`Department metrics fetch failed: ${res.status}`);
+    }
+    const body = (await res.json()) as DepartmentMetricsRaw;
+    total = body.total;
+    items.push(...body.items);
+    if (items.length >= total || body.items.length === 0) break;
+    offset += PAGE_SIZE;
   }
 
-  return (await res.json()) as DepartmentMetricsRaw;
+  return { total, limit: items.length, offset: 0, items };
 }
