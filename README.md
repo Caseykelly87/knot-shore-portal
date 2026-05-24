@@ -322,25 +322,33 @@ knot-shore-portal/
 ## Testing
 
 ```bash
-pnpm test          # Run once (54 tests)
+pnpm test          # Run once (153 tests)
 pnpm test:watch    # Watch mode
 ```
 
 Coverage emphasizes the pure shape transformers and infrastructure boundaries. Presentational components (charts, KPI cards, table rows) are not unit tested — recharts internals are fragile to assert against, and visual review catches rendering issues more reliably than DOM tests would.
 
-The 9 test files:
+The 16 test files:
 
-| File | Coverage |
-|---|---|
-| `tests/api/store-metrics.test.ts` | Route handler in offline mode (fixture path) and online mode (proxy path) |
-| `tests/components/ModeIndicator.test.tsx` | Mode-aware badge rendering (Demo Mode vs Live Data) |
-| `tests/lib/api-mode.test.ts` | API_MODE resolver, default behavior, env var override |
-| `tests/lib/dashboard-data.test.ts` | Dashboard shape transformer (KPI aggregation, top stores ranking) |
-| `tests/lib/exceptions-data.test.ts` | Exception filter applicator, sort logic, description synthesis |
-| `tests/lib/fixture-loader.test.ts` | JSON fixture imports and shape validation |
-| `tests/lib/logger.test.ts` | pino configuration, child logger creation, request_id binding |
-| `tests/lib/metrics.test.ts` | prom-client Registry singleton, counter/histogram wiring |
-| `tests/lib/store-data.test.ts` | Store drilldown shape transformer (year-over-year alignment, dept mix) |
+| File | Tests | Coverage |
+|---|---|---|
+| `tests/api/store-metrics.test.ts` | 3 | Route handler in offline mode (fixture path) and online mode (proxy path) |
+| `tests/components/DepartmentsIndexClient.test.tsx` | 15 | Default sort, re-sort, direction toggle, per-field defaults, card links |
+| `tests/components/ModeIndicator.test.tsx` | 3 | Mode-aware badge rendering (Demo Mode vs Live Data) |
+| `tests/components/StoresIndexClient.test.tsx` | 13 | Default sort, re-sort, direction toggle, per-field defaults, card links |
+| `tests/contract/api-portal-contract.test.ts` | 6 | API → portal contract: dashboard, stores, departments, exceptions, cross-grain and cross-endpoint reconciliation |
+| `tests/lib/api-mode.test.ts` | 4 | API_MODE resolver, default behavior, env var override |
+| `tests/lib/dashboard-data.test.ts` | 29 | Dashboard shape transformer (KPI aggregation, top-stores, trend, severity, PoP/YoY deltas, trade-area) |
+| `tests/lib/dashboard-periods.test.ts` | 13 | Calendar-month period derivation and `computeDelta` |
+| `tests/lib/department-data.test.ts` | 15 | Per-department drilldown shape transformer (totals, PoP/YoY deltas, trend) |
+| `tests/lib/departments-index-data.test.ts` | 8 | Departments index aggregation |
+| `tests/lib/exceptions-data.test.ts` | 18 | Exception filter applicator, severity sort, description synthesis |
+| `tests/lib/fixture-loader.test.ts` | 5 | JSON fixture imports and canonical value pinning |
+| `tests/lib/logger.test.ts` | 3 | pino configuration, child logger creation, request_id binding |
+| `tests/lib/metrics.test.ts` | 3 | prom-client Registry singleton, counter/histogram wiring |
+| `tests/lib/store-data.test.ts` | 9 | Store drilldown shape transformer (year-over-year alignment, dept mix) |
+| `tests/lib/stores-index-data.test.ts` | 6 | Stores index aggregation |
+| **Total** | **153** | |
 
 The split is deliberate: pure logic gets dense unit coverage; rendering gets visual review.
 
