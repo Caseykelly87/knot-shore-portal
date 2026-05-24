@@ -167,9 +167,12 @@ export default function EtlPage() {
             store-day-department: net sales, transactions, units, gross margin percentage.
           </li>
           <li>
-            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 831 rows. Each
+            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 883 rows. Each
             row is a flagged store-day with the rule that fired, the actual value, the expected
-            band, and a severity level.
+            band, and a severity level. The band rules contribute 831 flags over the store-day
+            grain; the <code className="bg-muted px-1 rounded">department_coverage</code>{" "}
+            structural-integrity rule contributes the remaining 52 flags over the
+            department grain, writing to the same schema.
           </li>
           <li>
             <code className="bg-muted px-1 rounded">dim_stores.parquet</code> — 8 rows of store
@@ -240,16 +243,17 @@ export default function EtlPage() {
       <section className="space-y-4" id="detection">
         <h2 className="text-2xl font-semibold tracking-tight">Detection rules</h2>
         <p>
-          Anomaly detection is heuristic, by design — five static-band rules in{" "}
+          Anomaly detection is heuristic, by design — five static-band rules over store-day
+          metrics plus one structural-integrity rule over department-grain metrics, all in{" "}
           <code className="bg-muted px-1 rounded">detect_rules.py</code> with thresholds
           declared in <code className="bg-muted px-1 rounded">rules.yaml</code>. Not ML. Not a
           fitted model. The CLI{" "}
           <code className="bg-muted px-1 rounded">detect_cli.py</code> applies the rules to the
-          canonical store-day parquet and writes{" "}
+          canonical store-day and department-day parquets and writes a unified{" "}
           <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code>.
         </p>
         <p>
-          The five rules: revenue band (±25% of profile center), labor-cost-pct band (±5
+          The five band rules: revenue band (±25% of profile center), labor-cost-pct band (±5
           percentage points), avg-ticket band (±20%), transactions band (±25%), and yoy_comp
           (year-over-year revenue ratio outside [0.85, 1.25]). Each store carries a{" "}
           <code className="bg-muted px-1 rounded">trade_area_profile</code> — suburban-family,

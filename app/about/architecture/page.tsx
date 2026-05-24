@@ -79,7 +79,8 @@ export default function ArchitecturePage() {
         <ol className="list-decimal list-outside ml-5 space-y-3">
           <li>
             <strong>Explainability.</strong> Every detection finding traces to a specific
-            static-band rule and a specific store-day. Every log line traces to a request ID.
+            rule (a band rule over a store-day, or the structural rule over a department-day)
+            and writes to a shared schema. Every log line traces to a request ID.
             Every canonical fixture traces to a sim engine seed and date range. Nothing in the
             platform is opaque.
           </li>
@@ -338,8 +339,10 @@ export default function ArchitecturePage() {
           <code className="bg-muted px-1 rounded">total_sales</code> for the 2025 demo window is{" "}
           <code className="bg-muted px-1 rounded">$115,253,718</code>. Store 1&apos;s drilldown
           total is <code className="bg-muted px-1 rounded">$18,598,268</code>. The full canonical
-          contains 831 anomaly flags. If these change unexpectedly, something has drifted — the
-          canaries are how the platform knows.
+          contains 883 anomaly flags (831 from band rules over store-day metrics, plus 52 from
+          the <code className="bg-muted px-1 rounded">department_coverage</code> structural rule
+          over department-grain metrics). If these change unexpectedly, something has drifted —
+          the canaries are how the platform knows.
         </p>
       </section>
 
