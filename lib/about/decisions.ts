@@ -91,7 +91,7 @@ export const DECISIONS: DecisionCategory[] = [
         problem:
           "Anomaly detection on retail data has obvious appeal for ML — seasonal baselines, store-level fitted distributions, multivariate outlier scoring. But the actual constraints were narrower: the detection contract is recall at least 0.35 and false-positive rate at most 0.10 on injected anomalies; every flagged exception has to answer \"why was this flagged\" with a band the operator can read.",
         decision:
-          "Anomaly detection uses static-band rules with documented thresholds, not machine-learning models. Five rules in `config/detection_rules.yaml`: revenue band ±25%, labor_pct band ±5pp around the profile center, avg_ticket band ±20% around the profile center, transactions band ±25%, yoy_comp [0.85, 1.25]. Severity buckets come from distance past the band edge. Each store has a `trade_area_profile` (suburban-family, urban-dense, value-market) and bands are configured per profile. The yoy_comp rule fires only where a T-365 baseline exists; otherwise it's silently skipped. The rules are interpretable, debuggable, and meet the recall and false-positive contracts established during phase 2.",
+          "Anomaly detection uses static-band rules with documented thresholds, not machine-learning models. Five band rules over the store-day grain in `config/detection_rules.yaml`: revenue band ±25%, labor_pct band ±5pp around the profile center, avg_ticket band ±20% around the profile center, transactions band ±25%, yoy_comp [0.85, 1.25]. One structural-integrity rule over the department grain — `department_coverage` — flags store-days whose department row count deviates from the canonical 10. Severity buckets come from distance past the band edge. Each store has a `trade_area_profile` (suburban-family, urban-dense, value-market) and band thresholds are configured per profile. The yoy_comp rule fires only where a T-365 baseline exists; otherwise it's silently skipped. Both rule kinds write to the same `anomaly_flags` schema so downstream consumers triage them through a single surface. The rules are interpretable, debuggable, and meet the recall and false-positive contracts the detection contract specifies.",
         rejected:
           "Per-store fitted baselines from historical data — there's no real historical data; this is synthetic. Seasonal decomposition or STL outlier detection — overkill for deterministic test inputs. Isolation Forest or autoencoders — would have looked impressive on a resume but would have been unjustifiable here.",
         cost:
@@ -311,7 +311,7 @@ export const DECISIONS: DecisionCategory[] = [
         rejected:
           "React state with manual URL serialization — would have needed both-way sync logic. A state library like Jotai or Zustand — overkill for one page's filter state. Search params with a `useState` mirror — creates two sources of truth.",
         cost:
-          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 831 rows). The URL gets long when many filters are active.",
+          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 883 rows). The URL gets long when many filters are active.",
         revisitWhen:
           "When filter state becomes complex enough that URLs become hostile — 15+ params with serialized objects. At that point a state library plus a URL-sync layer makes sense.",
         honestNote:
@@ -322,7 +322,7 @@ export const DECISIONS: DecisionCategory[] = [
         problem:
           "Filter changes should feel instant. Round-tripping every filter change to the server makes the UI feel sluggish even on fast connections.",
         decision:
-          "The `/exceptions` page fetches all 831 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
+          "The `/exceptions` page fetches all 883 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
         rejected:
           "Server-side filtering with debounced fetches — would handle larger datasets but adds latency and complexity for a small table. Hybrid (paginate on server, filter on client within the page) — wastes work on both sides.",
         cost:
