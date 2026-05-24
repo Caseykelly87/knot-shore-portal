@@ -169,7 +169,8 @@ should import statically and keep slow work out of the timed test body.
 
 ## Test categories observed
 
-The suite held 147 tests at the start of this pass. Classification:
+Snapshot from the test-quality pass that completed 2026-05-21. The suite
+held 147 tests at the start of that pass. Classification:
 
 | Category             | At start | After pass |
 |----------------------|----------|------------|
@@ -180,12 +181,13 @@ The suite held 147 tests at the start of this pass. Classification:
 | Total                | 147      | 153        |
 
 The suite was already overwhelmingly business-correctness: the shaper and
-component tests assert derived and rendered values throughout. This pass
+component tests assert derived and rendered values throughout. That pass
 converted six structural tests covering hot paths into business-correctness
 tests — the four fixture-loader tests (which now pin the canonical dataset
 values rather than checking response shape) and the two store-metrics
 route tests (which now assert the served body equals the fixture) — and
-added six contract tests, bringing the suite to 153.
+added six contract tests, bringing the suite to 153, the count the
+suite still carries.
 
 ## Known weak areas
 

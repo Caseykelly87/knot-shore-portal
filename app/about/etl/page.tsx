@@ -412,7 +412,7 @@ export default function EtlPage() {
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
-          The ETL has 254 tests. Coverage centers on the boundary contracts: schema validation
+          The ETL has 262 tests. Coverage centers on the boundary contracts: schema validation
           rejects malformed input with descriptive errors, the source adapter and transform are
           isolated from each other (transform tests use synthetic typed records, not CSV
           fixtures), and the canonical fixture builder produces byte-identical output across
