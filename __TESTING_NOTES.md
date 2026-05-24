@@ -99,24 +99,28 @@ link in a chain the upstream repositories build: the ETL's
 The fixtures are the bundled JSON files under `fixtures/` — captured API
 responses, byte-identical with what the API serves in online mode. The
 canonical dataset is two H2 slices a year apart (2024 and 2025): 8 stores
-across 368 days, 2944 store-day rows, 29,414 department rows, and 831
-anomaly flags. Because the API serves byte-identical output for a given
+across 368 days, 2944 store-day rows, 29,414 department rows, and 883
+anomaly flags (831 from the band rules over store-day metrics, 52 from
+the `department_coverage` structural-integrity rule over department-grain
+metrics). Because the API serves byte-identical output for a given
 upstream dataset, a committed fixture is a stable contract input.
 
 The six tests assert:
 
 - **dashboard surface** — `shapeDashboardData` over the bundled fixtures
-  yields the canonical full-window totals, the 831/807/24/0 exception
-  counts, the top-stores ranking, and the two-slice period shape (the PoP
-  delta is null because the dataset has no first-half-2025 data).
+  yields the canonical full-window totals, the 883/807/76/0 exception
+  counts (total / info / warning / critical), the top-stores ranking, and
+  the two-slice period shape (the PoP delta is null because the dataset
+  has no first-half-2025 data).
 - **stores surface** — `shapeStoresIndexData` yields one entry per store,
-  per-store exception counts that sum back to 831, and per-store sales
+  per-store exception counts that sum back to 883, and per-store sales
   that sum to the dashboard's full-window total.
 - **departments surface** — `shapeDepartmentsIndexData` yields the
   ten-department taxonomy with the canonical per-department aggregates.
-- **exceptions surface** — `shapeExceptionsData` yields 831 rows, the
-  three canonical rule families, the severity sort, and filter counts
-  that match the dashboard's severity breakdown.
+- **exceptions surface** — `shapeExceptionsData` yields 883 rows, the
+  four canonical rule families (`revenue_band`, `transactions_band`,
+  `yoy_comp`, and `department_coverage`), the severity sort, and filter
+  counts that match the dashboard's severity breakdown.
 - **cross-grain reconciliation** — department `net_sales` aggregates back
   to store `total_sales` (see "Known weak areas" for the tolerance).
 - **cross-endpoint reconciliation** — the portal's own recent-window
@@ -215,23 +219,24 @@ expect). The pattern is upstream sim engine anomaly injection (the
 design), structurally present in the canonical pipeline through all
 four repos.
 
-The current detection rules — `revenue_band`, `transactions_band`,
-`yoy_comp` per the 831-entry anomaly log — flag statistical outliers
-in sales and transaction volume. They do not flag structural
-irregularities like missing department rows or duplicated
-`department_id` values. This matches the open architectural question
-documented on the platform's about pages: whether detection rules
-looking for summary-detail mismatches would actually trigger on the
-missing-department injection. They currently do not.
+The detection layer now mixes two rule kinds writing to the same
+`anomaly_flags` schema. The band rules — `revenue_band`,
+`transactions_band`, and `yoy_comp` — flag statistical outliers in
+sales and transaction volume against per-profile bands over the
+store-day grain (831 flags). The `department_coverage` rule operates
+on the department grain and flags the same 52 irregular store-days
+the cross-grain reconciliation observes, contributing the remaining
+52 flags to bring the canonical total to 883.
 
 The cross-grain contract test in this repo asserts the aggregate gap
 stays under 0.1% and that per-store-day reconciliation holds for over
-95% of store-days. That tolerance is correctly calibrated for known
-upstream data behavior, and the test still catches genuine portal
-aggregation bugs (anything beyond the documented irregularity). Adding
-a structural-integrity detection rule that flags store-days with
-abnormal department row counts is a Phase 4 detection-engineering
-target — the data exists; the detection layer needs the new rule type.
+95% of store-days. That tolerance is correctly calibrated for the
+known upstream data behavior, and the test still catches genuine
+portal aggregation bugs (anything beyond the documented irregularity).
+The structural-integrity rule means a portal-side consumer of
+`/anomalies` can now triage the missing-department injections through
+the same exception surface as the band-rule outliers, without the
+portal having to compute the gap itself.
 
 ## The contract test chain
 
