@@ -173,8 +173,9 @@ rng = np.random.default_rng(date_seed)`}</code>
         </p>
         <p>
           The choice is deliberately not ML-based. The detection layer downstream — five
-          static-band rules in the ETL — needs ground truth to measure recall and false-positive
-          rate against. If the ground truth were learned from a distribution rather than
+          static-band rules over store-day metrics and one structural-integrity rule over
+          department-grain metrics, both writing to a shared anomaly schema — needs ground
+          truth to measure recall and false-positive rate against. If the ground truth were learned from a distribution rather than
           generated from rules, the eval would be measuring &quot;can a learned classifier
           reproduce a learned distribution&quot; instead of &quot;can these specific rules
           detect these specific injections.&quot; Static rules keep the question transparent:
