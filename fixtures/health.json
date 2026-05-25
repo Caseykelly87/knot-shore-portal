@@ -1,6 +1,13 @@
 {
   "status": "degraded",
   "version": "1.0.0",
-  "db": "unavailable",
-  "data_source": "fixtures"
+  "grocery_pipeline": {
+    "status": "healthy",
+    "mode": "offline",
+    "canonical_path": "app\\fixtures"
+  },
+  "macro_pipeline": {
+    "status": "unavailable",
+    "reason": "database unreachable"
+  }
 }

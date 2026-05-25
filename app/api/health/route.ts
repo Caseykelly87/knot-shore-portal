@@ -39,7 +39,12 @@ export async function GET(req: NextRequest) {
       );
       portalUpstreamUnreachableTotal.inc();
       response = NextResponse.json(
-        { status: "upstream_unreachable", data_source: "live" },
+        {
+          status: "upstream_unreachable",
+          version: "unknown",
+          grocery_pipeline: { status: "unavailable" },
+          macro_pipeline: { status: "unavailable" },
+        },
         { status: 503 },
       );
     }
