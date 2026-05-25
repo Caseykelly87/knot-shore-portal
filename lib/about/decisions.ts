@@ -311,7 +311,7 @@ export const DECISIONS: DecisionCategory[] = [
         rejected:
           "React state with manual URL serialization — would have needed both-way sync logic. A state library like Jotai or Zustand — overkill for one page's filter state. Search params with a `useState` mirror — creates two sources of truth.",
         cost:
-          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 883 rows). The URL gets long when many filters are active.",
+          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 894 rows). The URL gets long when many filters are active.",
         revisitWhen:
           "When filter state becomes complex enough that URLs become hostile — 15+ params with serialized objects. At that point a state library plus a URL-sync layer makes sense.",
         honestNote:
@@ -322,7 +322,7 @@ export const DECISIONS: DecisionCategory[] = [
         problem:
           "Filter changes should feel instant. Round-tripping every filter change to the server makes the UI feel sluggish even on fast connections.",
         decision:
-          "The `/exceptions` page fetches all 883 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
+          "The `/exceptions` page fetches all 894 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
         rejected:
           "Server-side filtering with debounced fetches — would handle larger datasets but adds latency and complexity for a small table. Hybrid (paginate on server, filter on client within the page) — wastes work on both sides.",
         cost:

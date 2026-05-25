@@ -167,12 +167,14 @@ export default function EtlPage() {
             store-day-department: net sales, transactions, units, gross margin percentage.
           </li>
           <li>
-            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 883 rows. Each
+            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 894 rows. Each
             row is a flagged store-day with the rule that fired, the actual value, the expected
-            band, and a severity level. The band rules contribute 831 flags over the store-day
-            grain; the <code className="bg-muted px-1 rounded">department_coverage</code>{" "}
-            structural-integrity rule contributes the remaining 52 flags over the
-            department grain, writing to the same schema.
+            band, and a severity level. The static band rules contribute 831 flags over the
+            store-day grain; the{" "}
+            <code className="bg-muted px-1 rounded">department_coverage</code>{" "}
+            structural-integrity rule contributes 52 flags over the department grain; the{" "}
+            <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> rolling-baseline
+            rule contributes the remaining 11. All three rule kinds write to the same schema.
           </li>
           <li>
             <code className="bg-muted px-1 rounded">dim_stores.parquet</code> — 8 rows of store
@@ -244,7 +246,8 @@ export default function EtlPage() {
         <h2 className="text-2xl font-semibold tracking-tight">Detection rules</h2>
         <p>
           Anomaly detection is heuristic, by design — five static-band rules over store-day
-          metrics plus one structural-integrity rule over department-grain metrics, all in{" "}
+          metrics, one structural-integrity rule over department-grain metrics, and one
+          rolling-baseline rule that learns a per-store expectation. All in{" "}
           <code className="bg-muted px-1 rounded">detect_rules.py</code> with thresholds
           declared in <code className="bg-muted px-1 rounded">rules.yaml</code>. Not ML. Not a
           fitted model. The CLI{" "}
@@ -263,6 +266,19 @@ export default function EtlPage() {
           all land in <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> so
           downstream consumers can answer the &quot;why was this flagged&quot; question without
           re-running detection.
+        </p>
+        <p>
+          The <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> rule complements
+          the static revenue band by learning a per-store expectation. For each store-day it
+          computes the 28-day trailing mean and standard deviation of total sales, then flags
+          any day with |z| ≥ 2.5; severity buckets at 2.5–3 (info), 3–4 (warning), and ≥ 4
+          (critical). It catches gradual-drift cases where a store&apos;s true expected revenue
+          has moved away from the static profile center but stays inside the ±25% static band —
+          a class of misses the band rules can&apos;t see by construction. Cold-start dates with
+          fewer than 14 days of history are skipped silently, the same way yoy_comp skips
+          missing T-365 baselines. On the canonical dataset the rule contributes 11 flags,
+          including the platform&apos;s first critical-severity row (store 4, 2024-09-24, |z| ≈
+          4.02).
         </p>
         <p>
           Heuristic is the right shape here. The data is synthetic and small: 8 stores, 184

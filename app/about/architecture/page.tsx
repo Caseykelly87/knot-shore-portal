@@ -329,8 +329,8 @@ export default function ArchitecturePage() {
           before implementation; new bugs start with a failing test that reproduces them.
         </p>
         <p>
-          Total test count across the platform is 688 — 138 in the sim engine, 262 in the ETL,
-          135 in the API, and 153 in the portal. Each test exists for a documented reason;
+          Total test count across the platform is 690 — 138 in the sim engine, 262 in the ETL,
+          135 in the API, and 155 in the portal. Each test exists for a documented reason;
           coverage isn&apos;t the goal, behavioral integrity is.
         </p>
         <p>
@@ -339,10 +339,12 @@ export default function ArchitecturePage() {
           <code className="bg-muted px-1 rounded">total_sales</code> for the 2025 demo window is{" "}
           <code className="bg-muted px-1 rounded">$115,253,718</code>. Store 1&apos;s drilldown
           total is <code className="bg-muted px-1 rounded">$18,598,268</code>. The full canonical
-          contains 883 anomaly flags (831 from band rules over store-day metrics, plus 52 from
-          the <code className="bg-muted px-1 rounded">department_coverage</code> structural rule
-          over department-grain metrics). If these change unexpectedly, something has drifted —
-          the canaries are how the platform knows.
+          contains 894 anomaly flags (831 from band rules over store-day metrics, 52 from the{" "}
+          <code className="bg-muted px-1 rounded">department_coverage</code> structural rule over
+          department-grain metrics, and 11 from the{" "}
+          <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> rolling-baseline
+          rule). If these change unexpectedly, something has drifted — the canaries are how the
+          platform knows.
         </p>
       </section>
 
