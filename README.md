@@ -447,38 +447,62 @@ knot-shore-portal/
 └── vitest.config.ts
 ```
 
-## Testing
+## Testing approach
 
 ```bash
-pnpm test          # Run once (155 tests)
+pnpm test          # Run the full suite once (155 tests across 16 files)
 pnpm test:watch    # Watch mode
 ```
 
-Coverage emphasizes the pure shape transformers and infrastructure boundaries. Presentational components (charts, KPI cards, table rows) are not unit tested — recharts internals are fragile to assert against, and visual review catches rendering issues more reliably than DOM tests would.
+The suite is Vitest with the jsdom environment, `@testing-library/react` for component tests, and `@testing-library/jest-dom` matchers. The full run completes in about 25 seconds locally and is the same suite CI runs on every push. The detailed conventions live in [__TESTING_NOTES.md](__TESTING_NOTES.md); the summary below is the orientation a reader needs from the README.
 
-The 16 test files:
+### Categories of test
 
-| File | Tests | Coverage |
+Tests are graded into the three categories the platform's other repositories use:
+
+- **Business-correctness** — asserts a specific derived value that was computed independently of the implementation. A `shapeDashboardData` test that hand-reduces sample rows and asserts the shaper lands on the same total is business-correctness; a contract test that reconciles per-store sales against the full-window dashboard total is business-correctness.
+- **Structural** — asserts shape (a property is present, a value has the right type, a row count matches) but not specific values. Useful as an entry-level floor; not sufficient on its own for hot-path code.
+- **Ceremony** — runs code but verifies nothing beyond "no exception raised."
+
+The most recent test-quality pass landed the suite at 150 business-correctness, 3 structural, 0 ceremony out of 153 tests; the two follow-on commits (z-score rule, health envelope migration) added two more business-correctness tests, bringing the suite to 155. The structural tests that remain cover logging and metrics interface shape, where the data hot path is elsewhere; the rationale for leaving each one is in [__TESTING_NOTES.md](__TESTING_NOTES.md) under "Known weak areas".
+
+### Test naming and structure
+
+Each test file mirrors the source it covers. [lib/dashboard-data.ts](lib/dashboard-data.ts) is exercised by [tests/lib/dashboard-data.test.ts](tests/lib/dashboard-data.test.ts); [components/stores/StoresIndexClient.tsx](components/stores/StoresIndexClient.tsx) is exercised by [tests/components/StoresIndexClient.test.tsx](tests/components/StoresIndexClient.test.tsx). The file layout is the same shape as the source tree.
+
+Tests are short — typically five to fifteen lines including setup. The unit tests for the shape transformers use small inline fixtures defined at the top of the file rather than reading from disk; the contract test uses the bundled JSON fixtures because its job is precisely to assert the API's output. Component tests drive interaction through `fireEvent`; `@testing-library/user-event` is not a dependency.
+
+The 16 test files break down as:
+
+| File | Tests | What it covers |
 |---|---|---|
-| `tests/api/store-metrics.test.ts` | 3 | Route handler in offline mode (fixture path) and online mode (proxy path) |
-| `tests/components/DepartmentsIndexClient.test.tsx` | 15 | Default sort, re-sort, direction toggle, per-field defaults, card links |
-| `tests/components/ModeIndicator.test.tsx` | 3 | Mode-aware badge rendering (Demo Mode vs Live Data) |
-| `tests/components/StoresIndexClient.test.tsx` | 13 | Default sort, re-sort, direction toggle, per-field defaults, card links |
-| `tests/contract/api-portal-contract.test.ts` | 6 | API → portal contract: dashboard, stores, departments, exceptions, cross-grain and cross-endpoint reconciliation |
-| `tests/lib/api-mode.test.ts` | 4 | API_MODE resolver, default behavior, env var override |
-| `tests/lib/dashboard-data.test.ts` | 29 | Dashboard shape transformer (KPI aggregation, top-stores, trend, severity, PoP/YoY deltas, trade-area) |
-| `tests/lib/dashboard-periods.test.ts` | 13 | Calendar-month period derivation and `computeDelta` |
-| `tests/lib/department-data.test.ts` | 15 | Per-department drilldown shape transformer (totals, PoP/YoY deltas, trend) |
-| `tests/lib/departments-index-data.test.ts` | 8 | Departments index aggregation |
-| `tests/lib/exceptions-data.test.ts` | 20 | Exception filter applicator, severity sort, description synthesis |
-| `tests/lib/fixture-loader.test.ts` | 5 | JSON fixture imports and canonical value pinning |
-| `tests/lib/logger.test.ts` | 3 | pino configuration, child logger creation, request_id binding |
-| `tests/lib/metrics.test.ts` | 3 | prom-client Registry singleton, counter/histogram wiring |
-| `tests/lib/store-data.test.ts` | 9 | Store drilldown shape transformer (year-over-year alignment, dept mix) |
-| `tests/lib/stores-index-data.test.ts` | 6 | Stores index aggregation |
+| [tests/api/store-metrics.test.ts](tests/api/store-metrics.test.ts) | 3 | Route handler in offline mode (fixture path), online mode (proxy path), and online-mode-with-upstream-failure (fixture fallback marked `X-Data-Source: fallback`) |
+| [tests/components/DepartmentsIndexClient.test.tsx](tests/components/DepartmentsIndexClient.test.tsx) | 15 | Default sort, re-sort on new field, direction toggle, per-field defaults, card links to detail routes |
+| [tests/components/ModeIndicator.test.tsx](tests/components/ModeIndicator.test.tsx) | 3 | Mode-aware badge rendering (Demo Mode vs Live Data) |
+| [tests/components/StoresIndexClient.test.tsx](tests/components/StoresIndexClient.test.tsx) | 13 | Default sort, re-sort, direction toggle, per-field defaults, card links |
+| [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) | 6 | API → portal contract: dashboard, stores, departments, exceptions, cross-grain reconciliation, cross-endpoint reconciliation |
+| [tests/lib/api-mode.test.ts](tests/lib/api-mode.test.ts) | 4 | `API_MODE` resolver, default behavior, env var override |
+| [tests/lib/dashboard-data.test.ts](tests/lib/dashboard-data.test.ts) | 29 | Dashboard shape transformer: KPI aggregation, top-stores ranking, daily trend, severity breakdown, PoP and YoY deltas, trade-area summaries |
+| [tests/lib/dashboard-periods.test.ts](tests/lib/dashboard-periods.test.ts) | 13 | Calendar-month period derivation and `computeDelta` |
+| [tests/lib/department-data.test.ts](tests/lib/department-data.test.ts) | 15 | Per-department drilldown shape transformer (totals, PoP and YoY deltas, trend) |
+| [tests/lib/departments-index-data.test.ts](tests/lib/departments-index-data.test.ts) | 8 | Departments index aggregation |
+| [tests/lib/exceptions-data.test.ts](tests/lib/exceptions-data.test.ts) | 20 | `shapeExceptionsData` severity sort, rule-family description synthesis, `applyFilters` predicate composition |
+| [tests/lib/fixture-loader.test.ts](tests/lib/fixture-loader.test.ts) | 5 | JSON fixture imports pinning canonical dataset values (894 exceptions, 2944 store-days, eight stores, Health envelope) |
+| [tests/lib/logger.test.ts](tests/lib/logger.test.ts) | 3 | pino configuration, child logger creation, `request_id` binding |
+| [tests/lib/metrics.test.ts](tests/lib/metrics.test.ts) | 3 | prom-client Registry singleton, counter and histogram wiring |
+| [tests/lib/store-data.test.ts](tests/lib/store-data.test.ts) | 9 | Store drilldown shape transformer (year-over-year alignment, department mix) |
+| [tests/lib/stores-index-data.test.ts](tests/lib/stores-index-data.test.ts) | 6 | Stores index aggregation |
 | **Total** | **155** | |
 
-The split is deliberate: pure logic gets dense unit coverage; rendering gets visual review.
+### Fixture-driven testing and the contract chain
+
+The bundled JSON files in [fixtures/](fixtures/) (six of them: dashboard-summary, store-metrics, department-metrics, dim-stores, anomalies, health) are byte-identical captures of API responses. They serve two roles. At runtime in offline mode they are the data source the page server components consume. At test time they are the input the contract test exercises. A fixture change is verified by the same tests that catch a portal-side regression, and the contract test asserts the canonical totals (894 anomalies across five rule families; 2944 store-days across eight stores and 368 days; the dashboard window totals that the per-store and per-department aggregates reconcile back to).
+
+This file is the last link in a contract chain that starts at the sim engine. The ETL pins sim engine → ETL with `test_sim_engine_contract.py`, the API pins ETL → API with `test_etl_contract.py`, and this repository pins API → portal with [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts). A value asserted at one layer's contract test traces to the same value at the next; a fixture-out-of-date failure anywhere in the chain is the signal that the dataset moved and the layer below must catch up.
+
+### What is not tested
+
+No end-to-end browser tests run on this repo. There is no Playwright suite, no Cypress, no visual regression tooling, and no synthetic uptime monitor on the deployed instance. The about pages do not have individual test files; their content is reviewed in PR rather than asserted in code, on the rationale that asserting prose against a snapshot adds maintenance cost without catching anything a careful read would not. Chart components — KPI cards, recharts wrappers, card-shaped server components — are also not unit tested. The rendering is reviewed visually, and the data those components render is asserted at the shape-transformer layer, so a wrong number cannot escape to a chart without a test failing first.
 
 ## Tech stack
 
