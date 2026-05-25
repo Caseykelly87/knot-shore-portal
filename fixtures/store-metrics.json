@@ -542,7 +542,7 @@
     {
       "date": "2024-07-09",
       "store_id": 4,
-      "total_sales": 67394.0,
+      "total_sales": 67394,
       "transaction_count": 2390,
       "avg_basket_size": 28.198326359832635,
       "labor_cost_pct": 0.1255
@@ -982,7 +982,7 @@
     {
       "date": "2024-07-16",
       "store_id": 3,
-      "total_sales": 80100.0,
+      "total_sales": 80100,
       "transaction_count": 2091,
       "avg_basket_size": 38.30703012912482,
       "labor_cost_pct": 0.1094
@@ -1406,7 +1406,7 @@
     {
       "date": "2024-07-22",
       "store_id": 8,
-      "total_sales": 43989.0,
+      "total_sales": 43989,
       "transaction_count": 1428,
       "avg_basket_size": 30.804621848739497,
       "labor_cost_pct": 0.125
@@ -1662,7 +1662,7 @@
     {
       "date": "2024-07-26",
       "store_id": 8,
-      "total_sales": 57148.0,
+      "total_sales": 57148,
       "transaction_count": 1865,
       "avg_basket_size": 30.642359249329758,
       "labor_cost_pct": 0.1281
@@ -2462,7 +2462,7 @@
     {
       "date": "2024-08-08",
       "store_id": 4,
-      "total_sales": 72405.0,
+      "total_sales": 72405,
       "transaction_count": 2492,
       "avg_basket_size": 29.05497592295345,
       "labor_cost_pct": 0.1194
@@ -4542,7 +4542,7 @@
     {
       "date": "2024-09-09",
       "store_id": 8,
-      "total_sales": 47834.0,
+      "total_sales": 47834,
       "transaction_count": 1498,
       "avg_basket_size": 31.931909212283045,
       "labor_cost_pct": 0.1292
@@ -5326,7 +5326,7 @@
     {
       "date": "2024-09-22",
       "store_id": 2,
-      "total_sales": 131433.0,
+      "total_sales": 131433,
       "transaction_count": 3502,
       "avg_basket_size": 37.53083952027413,
       "labor_cost_pct": 0.1096
@@ -6830,7 +6830,7 @@
     {
       "date": "2024-10-15",
       "store_id": 6,
-      "total_sales": 59203.0,
+      "total_sales": 59203,
       "transaction_count": 2096,
       "avg_basket_size": 28.24570610687023,
       "labor_cost_pct": 0.1147
@@ -9470,7 +9470,7 @@
     {
       "date": "2024-11-25",
       "store_id": 8,
-      "total_sales": 47894.0,
+      "total_sales": 47894,
       "transaction_count": 1522,
       "avg_basket_size": 31.467805519053876,
       "labor_cost_pct": 0.127
@@ -9974,7 +9974,7 @@
     {
       "date": "2024-12-03",
       "store_id": 7,
-      "total_sales": 62676.0,
+      "total_sales": 62676,
       "transaction_count": 1896,
       "avg_basket_size": 33.05696202531646,
       "labor_cost_pct": 0.1262
@@ -10414,7 +10414,7 @@
     {
       "date": "2024-12-10",
       "store_id": 6,
-      "total_sales": 71563.0,
+      "total_sales": 71563,
       "transaction_count": 2619,
       "avg_basket_size": 27.32455135547919,
       "labor_cost_pct": 0.123
@@ -11398,7 +11398,7 @@
     {
       "date": "2024-12-26",
       "store_id": 1,
-      "total_sales": 104473.0,
+      "total_sales": 104473,
       "transaction_count": 2826,
       "avg_basket_size": 36.968506723283795,
       "labor_cost_pct": 0.1129
@@ -11838,7 +11838,7 @@
     {
       "date": "2025-07-01",
       "store_id": 8,
-      "total_sales": 50998.0,
+      "total_sales": 50998,
       "transaction_count": 1576,
       "avg_basket_size": 32.359137055837564,
       "labor_cost_pct": 0.1346
@@ -12094,7 +12094,7 @@
     {
       "date": "2025-07-05",
       "store_id": 8,
-      "total_sales": 68081.0,
+      "total_sales": 68081,
       "transaction_count": 2110,
       "avg_basket_size": 32.26587677725119,
       "labor_cost_pct": 0.1316
@@ -12966,7 +12966,7 @@
     {
       "date": "2025-07-19",
       "store_id": 5,
-      "total_sales": 64939.0,
+      "total_sales": 64939,
       "transaction_count": 2317,
       "avg_basket_size": 28.027190332326285,
       "labor_cost_pct": 0.1248
@@ -14750,7 +14750,7 @@
     {
       "date": "2025-08-16",
       "store_id": 4,
-      "total_sales": 74819.0,
+      "total_sales": 74819,
       "transaction_count": 2619,
       "avg_basket_size": 28.567773959526537,
       "labor_cost_pct": 0.1282
@@ -14926,7 +14926,7 @@
     {
       "date": "2025-08-19",
       "store_id": 2,
-      "total_sales": 102237.0,
+      "total_sales": 102237,
       "transaction_count": 2634,
       "avg_basket_size": 38.81435079726651,
       "labor_cost_pct": 0.1143
@@ -15838,7 +15838,7 @@
     {
       "date": "2025-09-02",
       "store_id": 4,
-      "total_sales": 67790.0,
+      "total_sales": 67790,
       "transaction_count": 2394,
       "avg_basket_size": 28.316624895572264,
       "labor_cost_pct": 0.1266
@@ -16814,7 +16814,7 @@
     {
       "date": "2025-09-17",
       "store_id": 6,
-      "total_sales": 62701.0,
+      "total_sales": 62701,
       "transaction_count": 2251,
       "avg_basket_size": 27.854731230564195,
       "labor_cost_pct": 0.1256
@@ -17542,7 +17542,7 @@
     {
       "date": "2025-09-29",
       "store_id": 1,
-      "total_sales": 82345.0,
+      "total_sales": 82345,
       "transaction_count": 2194,
       "avg_basket_size": 37.53190519598906,
       "labor_cost_pct": 0.1162
@@ -20382,7 +20382,7 @@
     {
       "date": "2025-11-12",
       "store_id": 4,
-      "total_sales": 63878.0,
+      "total_sales": 63878,
       "transaction_count": 2297,
       "avg_basket_size": 27.809316499782323,
       "labor_cost_pct": 0.1321
@@ -20830,7 +20830,7 @@
     {
       "date": "2025-11-19",
       "store_id": 4,
-      "total_sales": 70663.0,
+      "total_sales": 70663,
       "transaction_count": 2520,
       "avg_basket_size": 28.040873015873014,
       "labor_cost_pct": 0.133
@@ -22182,7 +22182,7 @@
     {
       "date": "2025-12-10",
       "store_id": 5,
-      "total_sales": 63269.0,
+      "total_sales": 63269,
       "transaction_count": 2274,
       "avg_basket_size": 27.82277924362357,
       "labor_cost_pct": 0.1296
@@ -22614,7 +22614,7 @@
     {
       "date": "2025-12-17",
       "store_id": 3,
-      "total_sales": 89644.0,
+      "total_sales": 89644,
       "transaction_count": 2361,
       "avg_basket_size": 37.96865734858111,
       "labor_cost_pct": 0.118
@@ -22886,7 +22886,7 @@
     {
       "date": "2025-12-21",
       "store_id": 5,
-      "total_sales": 71116.0,
+      "total_sales": 71116,
       "transaction_count": 2573,
       "avg_basket_size": 27.639331519626893,
       "labor_cost_pct": 0.1315
@@ -23446,7 +23446,7 @@
     {
       "date": "2025-12-30",
       "store_id": 3,
-      "total_sales": 85522.0,
+      "total_sales": 85522,
       "transaction_count": 2291,
       "avg_basket_size": 37.32955041466609,
       "labor_cost_pct": 0.1169

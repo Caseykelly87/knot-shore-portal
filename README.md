@@ -36,11 +36,11 @@ The route accepts numeric IDs 1 through 8. Invalid IDs render a `not-found` UI r
 
 ### Exception triage (`/exceptions`)
 
-Operations-focused interface for reviewing all 883 anomaly flags from the canonical detection run. Filter sidebar with severity, store, and rule filters; the filter state is URL-synced via `useSearchParams`, so a `/exceptions?severity=warning&store=3` link reproduces the same view, browser back/forward navigates filter history, and refresh preserves filters.
+Operations-focused interface for reviewing all 894 anomaly flags from the canonical detection run. Filter sidebar with severity, store, and rule filters; the filter state is URL-synced via `useSearchParams`, so a `/exceptions?severity=warning&store=3` link reproduces the same view, browser back/forward navigates filter history, and refresh preserves filters.
 
 The exception table sorts severity-first, then date-descending. Clicking a row opens a detail sheet showing the full anomaly record with a synthesized human-readable description (composed from `rule_id`, `actual_value`, and the expected band — the API doesn't provide a description field; the portal builds one client-side).
 
-The page fetches all anomalies once on load (paginated through the API's 200-row cap) and filters client-side. 883 rows is small enough that filter latency is imperceptible.
+The page fetches all anomalies once on load (paginated through the API's 200-row cap) and filters client-side. 894 rows is small enough that filter latency is imperceptible.
 
 ### Documentation hub (`/about`)
 
@@ -125,7 +125,7 @@ To refresh:
 2. From this repo: `pnpm tsx scripts/capture-fixtures.ts`
 3. Verify the captured files in `fixtures/`, commit them.
 
-The capture script paginates through the API's 200-row cap and assembles the full dataset (the portal needs all 883 anomalies in one fixture, but the API caps each request at 200 rows, so the script makes 5 calls and concatenates).
+The capture script paginates through the API's 200-row cap and assembles the full dataset (the portal needs all 894 anomalies in one fixture, but the API caps each request at 200 rows, so the script makes 5 calls and concatenates).
 
 ## Logging
 
@@ -322,7 +322,7 @@ knot-shore-portal/
 ## Testing
 
 ```bash
-pnpm test          # Run once (153 tests)
+pnpm test          # Run once (155 tests)
 pnpm test:watch    # Watch mode
 ```
 
@@ -342,13 +342,13 @@ The 16 test files:
 | `tests/lib/dashboard-periods.test.ts` | 13 | Calendar-month period derivation and `computeDelta` |
 | `tests/lib/department-data.test.ts` | 15 | Per-department drilldown shape transformer (totals, PoP/YoY deltas, trend) |
 | `tests/lib/departments-index-data.test.ts` | 8 | Departments index aggregation |
-| `tests/lib/exceptions-data.test.ts` | 18 | Exception filter applicator, severity sort, description synthesis |
+| `tests/lib/exceptions-data.test.ts` | 20 | Exception filter applicator, severity sort, description synthesis |
 | `tests/lib/fixture-loader.test.ts` | 5 | JSON fixture imports and canonical value pinning |
 | `tests/lib/logger.test.ts` | 3 | pino configuration, child logger creation, request_id binding |
 | `tests/lib/metrics.test.ts` | 3 | prom-client Registry singleton, counter/histogram wiring |
 | `tests/lib/store-data.test.ts` | 9 | Store drilldown shape transformer (year-over-year alignment, dept mix) |
 | `tests/lib/stores-index-data.test.ts` | 6 | Stores index aggregation |
-| **Total** | **153** | |
+| **Total** | **155** | |
 
 The split is deliberate: pure logic gets dense unit coverage; rendering gets visual review.
 
