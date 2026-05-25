@@ -29,11 +29,11 @@
   "exception_count_by_severity": [
     {
       "severity_level": "info",
-      "count": 482
+      "count": 485
     },
     {
       "severity_level": "warning",
-      "count": 40
+      "count": 42
     },
     {
       "severity_level": "critical",
@@ -518,7 +518,7 @@
     },
     {
       "date": "2025-10-04",
-      "total_sales": 716013.0,
+      "total_sales": 716013,
       "transaction_count": 21392
     },
     {
@@ -728,7 +728,7 @@
     },
     {
       "date": "2025-11-15",
-      "total_sales": 729666.0,
+      "total_sales": 729666,
       "transaction_count": 22033
     },
     {
@@ -798,7 +798,7 @@
     },
     {
       "date": "2025-11-29",
-      "total_sales": 668838.0,
+      "total_sales": 668838,
       "transaction_count": 20244
     },
     {

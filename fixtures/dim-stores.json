@@ -1,7 +1,7 @@
 [
   {
     "store_id": 1,
-    "store_name": "Knot Shore \u2014 Kirkwood",
+    "store_name": "Knot Shore — Kirkwood",
     "address": "10250 Manchester Rd",
     "city": "Kirkwood",
     "zip": "63122",
@@ -9,11 +9,11 @@
     "trade_area_profile": "suburban-family",
     "sqft": 45000,
     "open_date": "2009-04-15",
-    "base_daily_revenue": 95000.0
+    "base_daily_revenue": 95000
   },
   {
     "store_id": 2,
-    "store_name": "Knot Shore \u2014 Chesterfield",
+    "store_name": "Knot Shore — Chesterfield",
     "address": "18180 Chesterfield Airport Rd",
     "city": "Chesterfield",
     "zip": "63017",
@@ -21,11 +21,11 @@
     "trade_area_profile": "suburban-family",
     "sqft": 52000,
     "open_date": "2011-08-22",
-    "base_daily_revenue": 110000.0
+    "base_daily_revenue": 110000
   },
   {
     "store_id": 3,
-    "store_name": "Knot Shore \u2014 Oakville",
+    "store_name": "Knot Shore — Oakville",
     "address": "5740 Telegraph Rd",
     "city": "Oakville",
     "zip": "63129",
@@ -33,11 +33,11 @@
     "trade_area_profile": "suburban-family",
     "sqft": 42000,
     "open_date": "2013-03-10",
-    "base_daily_revenue": 85000.0
+    "base_daily_revenue": 85000
   },
   {
     "store_id": 4,
-    "store_name": "Knot Shore \u2014 Central West End",
+    "store_name": "Knot Shore — Central West End",
     "address": "4340 Lindell Blvd",
     "city": "St. Louis",
     "zip": "63108",
@@ -45,11 +45,11 @@
     "trade_area_profile": "urban-dense",
     "sqft": 28000,
     "open_date": "2007-11-05",
-    "base_daily_revenue": 68000.0
+    "base_daily_revenue": 68000
   },
   {
     "store_id": 5,
-    "store_name": "Knot Shore \u2014 Soulard",
+    "store_name": "Knot Shore — Soulard",
     "address": "1701 S 7th St",
     "city": "St. Louis",
     "zip": "63104",
@@ -57,11 +57,11 @@
     "trade_area_profile": "urban-dense",
     "sqft": 25000,
     "open_date": "2010-06-18",
-    "base_daily_revenue": 58000.0
+    "base_daily_revenue": 58000
   },
   {
     "store_id": 6,
-    "store_name": "Knot Shore \u2014 Tower Grove",
+    "store_name": "Knot Shore — Tower Grove",
     "address": "3200 S Grand Blvd",
     "city": "St. Louis",
     "zip": "63110",
@@ -69,11 +69,11 @@
     "trade_area_profile": "urban-dense",
     "sqft": 26000,
     "open_date": "2012-09-28",
-    "base_daily_revenue": 62000.0
+    "base_daily_revenue": 62000
   },
   {
     "store_id": 7,
-    "store_name": "Knot Shore \u2014 North County",
+    "store_name": "Knot Shore — North County",
     "address": "8200 W Florissant Ave",
     "city": "Jennings",
     "zip": "63136",
@@ -81,11 +81,11 @@
     "trade_area_profile": "value-market",
     "sqft": 35000,
     "open_date": "2015-02-14",
-    "base_daily_revenue": 55000.0
+    "base_daily_revenue": 55000
   },
   {
     "store_id": 8,
-    "store_name": "Knot Shore \u2014 South City",
+    "store_name": "Knot Shore — South City",
     "address": "4140 Gravois Ave",
     "city": "St. Louis",
     "zip": "63116",
@@ -93,6 +93,6 @@
     "trade_area_profile": "value-market",
     "sqft": 32000,
     "open_date": "2016-07-01",
-    "base_daily_revenue": 52000.0
+    "base_daily_revenue": 52000
   }
 ]

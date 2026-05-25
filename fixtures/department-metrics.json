@@ -340,7 +340,7 @@
       "date": "2024-07-01",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 7972.0,
+      "net_sales": 7972,
       "transactions": 291,
       "units_sold": 681,
       "gross_margin_pct": 0.3437
@@ -367,7 +367,7 @@
       "date": "2024-07-01",
       "store_id": 5,
       "department_id": 1,
-      "net_sales": 7800.0,
+      "net_sales": 7800,
       "transactions": 258,
       "units_sold": 834,
       "gross_margin_pct": 0.48
@@ -727,7 +727,7 @@
       "date": "2024-07-02",
       "store_id": 1,
       "department_id": 1,
-      "net_sales": 11315.0,
+      "net_sales": 11315,
       "transactions": 298,
       "units_sold": 909,
       "gross_margin_pct": 0.48
@@ -853,7 +853,7 @@
       "date": "2024-07-02",
       "store_id": 2,
       "department_id": 5,
-      "net_sales": 6163.0,
+      "net_sales": 6163,
       "transactions": 173,
       "units_sold": 252,
       "gross_margin_pct": 0.4063
@@ -1789,7 +1789,7 @@
       "date": "2024-07-03",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 4878.0,
+      "net_sales": 4878,
       "transactions": 189,
       "units_sold": 365,
       "gross_margin_pct": 0.3928
@@ -1969,7 +1969,7 @@
       "date": "2024-07-03",
       "store_id": 6,
       "department_id": 9,
-      "net_sales": 4570.0,
+      "net_sales": 4570,
       "transactions": 163,
       "units_sold": 357,
       "gross_margin_pct": 0.3928
@@ -2869,7 +2869,7 @@
       "date": "2024-07-04",
       "store_id": 8,
       "department_id": 9,
-      "net_sales": 3234.0,
+      "net_sales": 3234,
       "transactions": 101,
       "units_sold": 221,
       "gross_margin_pct": 0.3928
@@ -3238,7 +3238,7 @@
       "date": "2024-07-05",
       "store_id": 4,
       "department_id": 10,
-      "net_sales": 6933.0,
+      "net_sales": 6933,
       "transactions": 230,
       "units_sold": 413,
       "gross_margin_pct": 0.4128
@@ -4867,7 +4867,7 @@
       "date": "2024-07-07",
       "store_id": 7,
       "department_id": 1,
-      "net_sales": 8524.0,
+      "net_sales": 8524,
       "transactions": 303,
       "units_sold": 922,
       "gross_margin_pct": 0.48
@@ -5011,7 +5011,7 @@
       "date": "2024-07-07",
       "store_id": 8,
       "department_id": 7,
-      "net_sales": 18755.0,
+      "net_sales": 18755,
       "transactions": 574,
       "units_sold": 2519,
       "gross_margin_pct": 0.2659
@@ -6109,7 +6109,7 @@
       "date": "2024-07-09",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 4750.0,
+      "net_sales": 4750,
       "transactions": 169,
       "units_sold": 353,
       "gross_margin_pct": 0.3928
@@ -6370,7 +6370,7 @@
       "date": "2024-07-09",
       "store_id": 7,
       "department_id": 8,
-      "net_sales": 5997.0,
+      "net_sales": 5997,
       "transactions": 194,
       "units_sold": 404,
       "gross_margin_pct": 0.3437
@@ -6901,7 +6901,7 @@
       "date": "2024-07-10",
       "store_id": 5,
       "department_id": 7,
-      "net_sales": 11276.0,
+      "net_sales": 11276,
       "transactions": 443,
       "units_sold": 1873,
       "gross_margin_pct": 0.2659
@@ -7666,7 +7666,7 @@
       "date": "2024-07-11",
       "store_id": 6,
       "department_id": 2,
-      "net_sales": 6970.0,
+      "net_sales": 6970,
       "transactions": 263,
       "units_sold": 443,
       "gross_margin_pct": 0.3374
@@ -8539,7 +8539,7 @@
       "date": "2024-07-12",
       "store_id": 7,
       "department_id": 9,
-      "net_sales": 3751.0,
+      "net_sales": 3751,
       "transactions": 109,
       "units_sold": 227,
       "gross_margin_pct": 0.3928
@@ -8710,7 +8710,7 @@
       "date": "2024-07-13",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 13321.0,
+      "net_sales": 13321,
       "transactions": 370,
       "units_sold": 824,
       "gross_margin_pct": 0.3437
@@ -11014,7 +11014,7 @@
       "date": "2024-07-16",
       "store_id": 3,
       "department_id": 4,
-      "net_sales": 2956.0,
+      "net_sales": 2956,
       "transactions": 78,
       "units_sold": 139,
       "gross_margin_pct": 0.5459
@@ -11500,7 +11500,7 @@
       "date": "2024-07-16",
       "store_id": 8,
       "department_id": 8,
-      "net_sales": 4597.0,
+      "net_sales": 4597,
       "transactions": 155,
       "units_sold": 349,
       "gross_margin_pct": 0.3437
@@ -11590,7 +11590,7 @@
       "date": "2024-07-17",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 9463.0,
+      "net_sales": 9463,
       "transactions": 252,
       "units_sold": 550,
       "gross_margin_pct": 0.3437
@@ -11806,7 +11806,7 @@
       "date": "2024-07-17",
       "store_id": 4,
       "department_id": 2,
-      "net_sales": 6854.0,
+      "net_sales": 6854,
       "transactions": 253,
       "units_sold": 457,
       "gross_margin_pct": 0.3374
@@ -11815,7 +11815,7 @@
       "date": "2024-07-17",
       "store_id": 4,
       "department_id": 3,
-      "net_sales": 6207.0,
+      "net_sales": 6207,
       "transactions": 221,
       "units_sold": 565,
       "gross_margin_pct": 0.3225
@@ -12994,7 +12994,7 @@
       "date": "2024-07-19",
       "store_id": 1,
       "department_id": 5,
-      "net_sales": 5219.0,
+      "net_sales": 5219,
       "transactions": 137,
       "units_sold": 185,
       "gross_margin_pct": 0.4063
@@ -13228,7 +13228,7 @@
       "date": "2024-07-19",
       "store_id": 4,
       "department_id": 1,
-      "net_sales": 9459.0,
+      "net_sales": 9459,
       "transactions": 355,
       "units_sold": 1148,
       "gross_margin_pct": 0.48
@@ -14308,7 +14308,7 @@
       "date": "2024-07-20",
       "store_id": 8,
       "department_id": 1,
-      "net_sales": 7966.0,
+      "net_sales": 7966,
       "transactions": 243,
       "units_sold": 756,
       "gross_margin_pct": 0.48
@@ -15199,7 +15199,7 @@
       "date": "2024-07-22",
       "store_id": 1,
       "department_id": 10,
-      "net_sales": 6958.0,
+      "net_sales": 6958,
       "transactions": 205,
       "units_sold": 330,
       "gross_margin_pct": 0.4128
@@ -15316,7 +15316,7 @@
       "date": "2024-07-22",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 7101.0,
+      "net_sales": 7101,
       "transactions": 197,
       "units_sold": 501,
       "gross_margin_pct": 0.3225
@@ -15748,7 +15748,7 @@
       "date": "2024-07-22",
       "store_id": 8,
       "department_id": 1,
-      "net_sales": 4912.0,
+      "net_sales": 4912,
       "transactions": 152,
       "units_sold": 493,
       "gross_margin_pct": 0.48
@@ -16378,7 +16378,7 @@
       "date": "2024-07-23",
       "store_id": 7,
       "department_id": 1,
-      "net_sales": 5236.0,
+      "net_sales": 5236,
       "transactions": 155,
       "units_sold": 510,
       "gross_margin_pct": 0.48
@@ -16432,7 +16432,7 @@
       "date": "2024-07-23",
       "store_id": 7,
       "department_id": 7,
-      "net_sales": 13344.0,
+      "net_sales": 13344,
       "transactions": 389,
       "units_sold": 1835,
       "gross_margin_pct": 0.2659
@@ -16774,7 +16774,7 @@
       "date": "2024-07-24",
       "store_id": 3,
       "department_id": 5,
-      "net_sales": 3747.0,
+      "net_sales": 3747,
       "transactions": 102,
       "units_sold": 149,
       "gross_margin_pct": 0.4063
@@ -16990,7 +16990,7 @@
       "date": "2024-07-24",
       "store_id": 5,
       "department_id": 9,
-      "net_sales": 4209.0,
+      "net_sales": 4209,
       "transactions": 152,
       "units_sold": 322,
       "gross_margin_pct": 0.3928
@@ -17755,7 +17755,7 @@
       "date": "2024-07-25",
       "store_id": 6,
       "department_id": 4,
-      "net_sales": 2845.0,
+      "net_sales": 2845,
       "transactions": 102,
       "units_sold": 161,
       "gross_margin_pct": 0.5459
@@ -18502,7 +18502,7 @@
       "date": "2024-07-26",
       "store_id": 6,
       "department_id": 7,
-      "net_sales": 14434.0,
+      "net_sales": 14434,
       "transactions": 528,
       "units_sold": 2156,
       "gross_margin_pct": 0.2659
@@ -18988,7 +18988,7 @@
       "date": "2024-07-27",
       "store_id": 4,
       "department_id": 1,
-      "net_sales": 7789.0,
+      "net_sales": 7789,
       "transactions": 270,
       "units_sold": 838,
       "gross_margin_pct": 0.48
@@ -19213,7 +19213,7 @@
       "date": "2024-07-27",
       "store_id": 6,
       "department_id": 6,
-      "net_sales": 2872.0,
+      "net_sales": 2872,
       "transactions": 103,
       "units_sold": 216,
       "gross_margin_pct": 0.3728
@@ -19267,7 +19267,7 @@
       "date": "2024-07-27",
       "store_id": 7,
       "department_id": 2,
-      "net_sales": 8680.0,
+      "net_sales": 8680,
       "transactions": 270,
       "units_sold": 467,
       "gross_margin_pct": 0.3374
@@ -22210,7 +22210,7 @@
       "date": "2024-07-31",
       "store_id": 7,
       "department_id": 9,
-      "net_sales": 2967.0,
+      "net_sales": 2967,
       "transactions": 93,
       "units_sold": 182,
       "gross_margin_pct": 0.3928
@@ -23029,7 +23029,7 @@
       "date": "2024-08-02",
       "store_id": 1,
       "department_id": 1,
-      "net_sales": 14537.0,
+      "net_sales": 14537,
       "transactions": 401,
       "units_sold": 1312,
       "gross_margin_pct": 0.4808
@@ -23434,7 +23434,7 @@
       "date": "2024-08-02",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 3262.0,
+      "net_sales": 3262,
       "transactions": 111,
       "units_sold": 224,
       "gross_margin_pct": 0.3727
@@ -23650,7 +23650,7 @@
       "date": "2024-08-02",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 4959.0,
+      "net_sales": 4959,
       "transactions": 145,
       "units_sold": 245,
       "gross_margin_pct": 0.4127
@@ -24514,7 +24514,7 @@
       "date": "2024-08-04",
       "store_id": 1,
       "department_id": 6,
-      "net_sales": 6998.0,
+      "net_sales": 6998,
       "transactions": 176,
       "units_sold": 345,
       "gross_margin_pct": 0.3727
@@ -26548,7 +26548,7 @@
       "date": "2024-08-06",
       "store_id": 8,
       "department_id": 2,
-      "net_sales": 5733.0,
+      "net_sales": 5733,
       "transactions": 171,
       "units_sold": 329,
       "gross_margin_pct": 0.3361
@@ -26746,7 +26746,7 @@
       "date": "2024-08-07",
       "store_id": 2,
       "department_id": 4,
-      "net_sales": 3829.0,
+      "net_sales": 3829,
       "transactions": 99,
       "units_sold": 157,
       "gross_margin_pct": 0.5464
@@ -27691,7 +27691,7 @@
       "date": "2024-08-08",
       "store_id": 4,
       "department_id": 10,
-      "net_sales": 6235.0,
+      "net_sales": 6235,
       "transactions": 221,
       "units_sold": 376,
       "gross_margin_pct": 0.4127
@@ -28267,7 +28267,7 @@
       "date": "2024-08-09",
       "store_id": 3,
       "department_id": 4,
-      "net_sales": 3926.0,
+      "net_sales": 3926,
       "transactions": 107,
       "units_sold": 182,
       "gross_margin_pct": 0.5464
@@ -28807,7 +28807,7 @@
       "date": "2024-08-10",
       "store_id": 1,
       "department_id": 4,
-      "net_sales": 4417.0,
+      "net_sales": 4417,
       "transactions": 112,
       "units_sold": 194,
       "gross_margin_pct": 0.5464
@@ -29392,7 +29392,7 @@
       "date": "2024-08-10",
       "store_id": 7,
       "department_id": 9,
-      "net_sales": 4425.0,
+      "net_sales": 4425,
       "transactions": 128,
       "units_sold": 258,
       "gross_margin_pct": 0.3927
@@ -30751,7 +30751,7 @@
       "date": "2024-08-12",
       "store_id": 6,
       "department_id": 10,
-      "net_sales": 5310.0,
+      "net_sales": 5310,
       "transactions": 170,
       "units_sold": 284,
       "gross_margin_pct": 0.4127
@@ -32074,7 +32074,7 @@
       "date": "2024-08-14",
       "store_id": 5,
       "department_id": 7,
-      "net_sales": 11139.0,
+      "net_sales": 11139,
       "transactions": 380,
       "units_sold": 1805,
       "gross_margin_pct": 0.2664
@@ -32254,7 +32254,7 @@
       "date": "2024-08-14",
       "store_id": 7,
       "department_id": 7,
-      "net_sales": 13342.0,
+      "net_sales": 13342,
       "transactions": 426,
       "units_sold": 1870,
       "gross_margin_pct": 0.2664
@@ -33946,7 +33946,7 @@
       "date": "2024-08-17",
       "store_id": 2,
       "department_id": 5,
-      "net_sales": 7920.0,
+      "net_sales": 7920,
       "transactions": 210,
       "units_sold": 312,
       "gross_margin_pct": 0.4057
@@ -34000,7 +34000,7 @@
       "date": "2024-08-17",
       "store_id": 3,
       "department_id": 1,
-      "net_sales": 13666.0,
+      "net_sales": 13666,
       "transactions": 321,
       "units_sold": 976,
       "gross_margin_pct": 0.4808
@@ -35017,7 +35017,7 @@
       "date": "2024-08-18",
       "store_id": 6,
       "department_id": 3,
-      "net_sales": 6571.0,
+      "net_sales": 6571,
       "transactions": 229,
       "units_sold": 583,
       "gross_margin_pct": 0.3219
@@ -35323,7 +35323,7 @@
       "date": "2024-08-19",
       "store_id": 1,
       "department_id": 7,
-      "net_sales": 18138.0,
+      "net_sales": 18138,
       "transactions": 492,
       "units_sold": 2221,
       "gross_margin_pct": 0.2664
@@ -35665,7 +35665,7 @@
       "date": "2024-08-19",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 2825.0,
+      "net_sales": 2825,
       "transactions": 90,
       "units_sold": 194,
       "gross_margin_pct": 0.3727
@@ -35998,7 +35998,7 @@
       "date": "2024-08-20",
       "store_id": 1,
       "department_id": 3,
-      "net_sales": 8305.0,
+      "net_sales": 8305,
       "transactions": 219,
       "units_sold": 532,
       "gross_margin_pct": 0.3219
@@ -36079,7 +36079,7 @@
       "date": "2024-08-20",
       "store_id": 2,
       "department_id": 2,
-      "net_sales": 13180.0,
+      "net_sales": 13180,
       "transactions": 360,
       "units_sold": 674,
       "gross_margin_pct": 0.3361
@@ -36592,7 +36592,7 @@
       "date": "2024-08-20",
       "store_id": 7,
       "department_id": 9,
-      "net_sales": 2760.0,
+      "net_sales": 2760,
       "transactions": 79,
       "units_sold": 163,
       "gross_margin_pct": 0.3927
@@ -36880,7 +36880,7 @@
       "date": "2024-08-21",
       "store_id": 3,
       "department_id": 1,
-      "net_sales": 10711.0,
+      "net_sales": 10711,
       "transactions": 260,
       "units_sold": 814,
       "gross_margin_pct": 0.4808
@@ -38509,7 +38509,7 @@
       "date": "2024-08-23",
       "store_id": 5,
       "department_id": 2,
-      "net_sales": 7024.0,
+      "net_sales": 7024,
       "transactions": 258,
       "units_sold": 436,
       "gross_margin_pct": 0.3361
@@ -38554,7 +38554,7 @@
       "date": "2024-08-23",
       "store_id": 5,
       "department_id": 7,
-      "net_sales": 12654.0,
+      "net_sales": 12654,
       "transactions": 455,
       "units_sold": 2224,
       "gross_margin_pct": 0.2664
@@ -38653,7 +38653,7 @@
       "date": "2024-08-23",
       "store_id": 6,
       "department_id": 8,
-      "net_sales": 7442.0,
+      "net_sales": 7442,
       "transactions": 279,
       "units_sold": 597,
       "gross_margin_pct": 0.3444
@@ -40165,7 +40165,7 @@
       "date": "2024-08-25",
       "store_id": 7,
       "department_id": 6,
-      "net_sales": 4855.0,
+      "net_sales": 4855,
       "transactions": 154,
       "units_sold": 317,
       "gross_margin_pct": 0.3727
@@ -42208,7 +42208,7 @@
       "date": "2024-08-28",
       "store_id": 6,
       "department_id": 5,
-      "net_sales": 6361.0,
+      "net_sales": 6361,
       "transactions": 223,
       "units_sold": 294,
       "gross_margin_pct": 0.4057
@@ -42784,7 +42784,7 @@
       "date": "2024-08-29",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 4221.0,
+      "net_sales": 4221,
       "transactions": 140,
       "units_sold": 287,
       "gross_margin_pct": 0.3927
@@ -43279,7 +43279,7 @@
       "date": "2024-08-30",
       "store_id": 2,
       "department_id": 4,
-      "net_sales": 4656.0,
+      "net_sales": 4656,
       "transactions": 126,
       "units_sold": 197,
       "gross_margin_pct": 0.5464
@@ -43387,7 +43387,7 @@
       "date": "2024-08-30",
       "store_id": 3,
       "department_id": 6,
-      "net_sales": 6179.0,
+      "net_sales": 6179,
       "transactions": 161,
       "units_sold": 299,
       "gross_margin_pct": 0.3727
@@ -44629,7 +44629,7 @@
       "date": "2024-09-01",
       "store_id": 1,
       "department_id": 4,
-      "net_sales": 4801.0,
+      "net_sales": 4801,
       "transactions": 113,
       "units_sold": 192,
       "gross_margin_pct": 0.5461
@@ -45394,7 +45394,7 @@
       "date": "2024-09-02",
       "store_id": 1,
       "department_id": 9,
-      "net_sales": 4157.0,
+      "net_sales": 4157,
       "transactions": 112,
       "units_sold": 228,
       "gross_margin_pct": 0.3919
@@ -45853,7 +45853,7 @@
       "date": "2024-09-02",
       "store_id": 6,
       "department_id": 10,
-      "net_sales": 4899.0,
+      "net_sales": 4899,
       "transactions": 186,
       "units_sold": 320,
       "gross_margin_pct": 0.4119
@@ -46276,7 +46276,7 @@
       "date": "2024-09-03",
       "store_id": 3,
       "department_id": 7,
-      "net_sales": 19886.0,
+      "net_sales": 19886,
       "transactions": 518,
       "units_sold": 2140,
       "gross_margin_pct": 0.2661
@@ -48346,7 +48346,7 @@
       "date": "2024-09-06",
       "store_id": 2,
       "department_id": 7,
-      "net_sales": 29868.0,
+      "net_sales": 29868,
       "transactions": 762,
       "units_sold": 3454,
       "gross_margin_pct": 0.2661
@@ -48427,7 +48427,7 @@
       "date": "2024-09-06",
       "store_id": 3,
       "department_id": 6,
-      "net_sales": 6222.0,
+      "net_sales": 6222,
       "transactions": 160,
       "units_sold": 326,
       "gross_margin_pct": 0.3719
@@ -48931,7 +48931,7 @@
       "date": "2024-09-07",
       "store_id": 1,
       "department_id": 2,
-      "net_sales": 14902.0,
+      "net_sales": 14902,
       "transactions": 416,
       "units_sold": 760,
       "gross_margin_pct": 0.3339
@@ -48994,7 +48994,7 @@
       "date": "2024-09-07",
       "store_id": 1,
       "department_id": 9,
-      "net_sales": 6357.0,
+      "net_sales": 6357,
       "transactions": 164,
       "units_sold": 329,
       "gross_margin_pct": 0.3919
@@ -49084,7 +49084,7 @@
       "date": "2024-09-07",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 7149.0,
+      "net_sales": 7149,
       "transactions": 179,
       "units_sold": 352,
       "gross_margin_pct": 0.3919
@@ -49777,7 +49777,7 @@
       "date": "2024-09-08",
       "store_id": 2,
       "department_id": 6,
-      "net_sales": 9065.0,
+      "net_sales": 9065,
       "transactions": 271,
       "units_sold": 561,
       "gross_margin_pct": 0.3719
@@ -50020,7 +50020,7 @@
       "date": "2024-09-08",
       "store_id": 5,
       "department_id": 3,
-      "net_sales": 5682.0,
+      "net_sales": 5682,
       "transactions": 210,
       "units_sold": 527,
       "gross_margin_pct": 0.3218
@@ -50065,7 +50065,7 @@
       "date": "2024-09-08",
       "store_id": 5,
       "department_id": 8,
-      "net_sales": 7086.0,
+      "net_sales": 7086,
       "transactions": 245,
       "units_sold": 575,
       "gross_margin_pct": 0.3443
@@ -52801,7 +52801,7 @@
       "date": "2024-09-12",
       "store_id": 4,
       "department_id": 3,
-      "net_sales": 6116.0,
+      "net_sales": 6116,
       "transactions": 212,
       "units_sold": 561,
       "gross_margin_pct": 0.3218
@@ -52855,7 +52855,7 @@
       "date": "2024-09-12",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 4460.0,
+      "net_sales": 4460,
       "transactions": 163,
       "units_sold": 350,
       "gross_margin_pct": 0.3919
@@ -55096,7 +55096,7 @@
       "date": "2024-09-15",
       "store_id": 5,
       "department_id": 8,
-      "net_sales": 6498.0,
+      "net_sales": 6498,
       "transactions": 219,
       "units_sold": 491,
       "gross_margin_pct": 0.3443
@@ -56275,7 +56275,7 @@
       "date": "2024-09-17",
       "store_id": 2,
       "department_id": 10,
-      "net_sales": 7995.0,
+      "net_sales": 7995,
       "transactions": 199,
       "units_sold": 367,
       "gross_margin_pct": 0.4119
@@ -56806,7 +56806,7 @@
       "date": "2024-09-17",
       "store_id": 8,
       "department_id": 9,
-      "net_sales": 2339.0,
+      "net_sales": 2339,
       "transactions": 72,
       "units_sold": 154,
       "gross_margin_pct": 0.3919
@@ -57643,7 +57643,7 @@
       "date": "2024-09-19",
       "store_id": 2,
       "department_id": 2,
-      "net_sales": 15246.0,
+      "net_sales": 15246,
       "transactions": 395,
       "units_sold": 732,
       "gross_margin_pct": 0.3339
@@ -57967,7 +57967,7 @@
       "date": "2024-09-19",
       "store_id": 5,
       "department_id": 8,
-      "net_sales": 5395.0,
+      "net_sales": 5395,
       "transactions": 187,
       "units_sold": 378,
       "gross_margin_pct": 0.3443
@@ -58480,7 +58480,7 @@
       "date": "2024-09-20",
       "store_id": 3,
       "department_id": 5,
-      "net_sales": 5648.0,
+      "net_sales": 5648,
       "transactions": 144,
       "units_sold": 202,
       "gross_margin_pct": 0.405
@@ -59488,7 +59488,7 @@
       "date": "2024-09-21",
       "store_id": 6,
       "department_id": 7,
-      "net_sales": 15839.0,
+      "net_sales": 15839,
       "transactions": 643,
       "units_sold": 3016,
       "gross_margin_pct": 0.2661
@@ -60442,7 +60442,7 @@
       "date": "2024-09-23",
       "store_id": 1,
       "department_id": 3,
-      "net_sales": 8429.0,
+      "net_sales": 8429,
       "transactions": 210,
       "units_sold": 540,
       "gross_margin_pct": 0.3218
@@ -62638,7 +62638,7 @@
       "date": "2024-09-26",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 8802.0,
+      "net_sales": 8802,
       "transactions": 219,
       "units_sold": 509,
       "gross_margin_pct": 0.3443
@@ -63079,7 +63079,7 @@
       "date": "2024-09-26",
       "store_id": 6,
       "department_id": 7,
-      "net_sales": 15121.0,
+      "net_sales": 15121,
       "transactions": 577,
       "units_sold": 2713,
       "gross_margin_pct": 0.2661
@@ -63619,7 +63619,7 @@
       "date": "2024-09-27",
       "store_id": 4,
       "department_id": 7,
-      "net_sales": 17396.0,
+      "net_sales": 17396,
       "transactions": 650,
       "units_sold": 2912,
       "gross_margin_pct": 0.2661
@@ -63736,7 +63736,7 @@
       "date": "2024-09-27",
       "store_id": 5,
       "department_id": 10,
-      "net_sales": 5643.0,
+      "net_sales": 5643,
       "transactions": 202,
       "units_sold": 360,
       "gross_margin_pct": 0.4119
@@ -64141,7 +64141,7 @@
       "date": "2024-09-28",
       "store_id": 2,
       "department_id": 5,
-      "net_sales": 7651.0,
+      "net_sales": 7651,
       "transactions": 202,
       "units_sold": 270,
       "gross_margin_pct": 0.405
@@ -64177,7 +64177,7 @@
       "date": "2024-09-28",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 6829.0,
+      "net_sales": 6829,
       "transactions": 187,
       "units_sold": 367,
       "gross_margin_pct": 0.3919
@@ -65167,7 +65167,7 @@
       "date": "2024-09-29",
       "store_id": 5,
       "department_id": 9,
-      "net_sales": 3997.0,
+      "net_sales": 3997,
       "transactions": 142,
       "units_sold": 281,
       "gross_margin_pct": 0.3919
@@ -65860,7 +65860,7 @@
       "date": "2024-09-30",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 3202.0,
+      "net_sales": 3202,
       "transactions": 121,
       "units_sold": 266,
       "gross_margin_pct": 0.3719
@@ -66373,7 +66373,7 @@
       "date": "2024-10-01",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 7904.0,
+      "net_sales": 7904,
       "transactions": 209,
       "units_sold": 542,
       "gross_margin_pct": 0.3203
@@ -66517,7 +66517,7 @@
       "date": "2024-10-01",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 3980.0,
+      "net_sales": 3980,
       "transactions": 145,
       "units_sold": 283,
       "gross_margin_pct": 0.3915
@@ -66706,7 +66706,7 @@
       "date": "2024-10-01",
       "store_id": 6,
       "department_id": 10,
-      "net_sales": 5610.0,
+      "net_sales": 5610,
       "transactions": 200,
       "units_sold": 343,
       "gross_margin_pct": 0.4115
@@ -67147,7 +67147,7 @@
       "date": "2024-10-02",
       "store_id": 3,
       "department_id": 9,
-      "net_sales": 3963.0,
+      "net_sales": 3963,
       "transactions": 118,
       "units_sold": 239,
       "gross_margin_pct": 0.3915
@@ -67813,7 +67813,7 @@
       "date": "2024-10-03",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 7109.0,
+      "net_sales": 7109,
       "transactions": 181,
       "units_sold": 458,
       "gross_margin_pct": 0.3203
@@ -68497,7 +68497,7 @@
       "date": "2024-10-04",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 4326.0,
+      "net_sales": 4326,
       "transactions": 110,
       "units_sold": 226,
       "gross_margin_pct": 0.3915
@@ -69037,7 +69037,7 @@
       "date": "2024-10-04",
       "store_id": 8,
       "department_id": 9,
-      "net_sales": 2049.0,
+      "net_sales": 2049,
       "transactions": 66,
       "units_sold": 124,
       "gross_margin_pct": 0.3915
@@ -70072,7 +70072,7 @@
       "date": "2024-10-06",
       "store_id": 4,
       "department_id": 4,
-      "net_sales": 3599.0,
+      "net_sales": 3599,
       "transactions": 146,
       "units_sold": 235,
       "gross_margin_pct": 0.5444
@@ -70954,7 +70954,7 @@
       "date": "2024-10-07",
       "store_id": 6,
       "department_id": 2,
-      "net_sales": 7810.0,
+      "net_sales": 7810,
       "transactions": 264,
       "units_sold": 470,
       "gross_margin_pct": 0.3363
@@ -72448,7 +72448,7 @@
       "date": "2024-10-09",
       "store_id": 6,
       "department_id": 8,
-      "net_sales": 6077.0,
+      "net_sales": 6077,
       "transactions": 207,
       "units_sold": 411,
       "gross_margin_pct": 0.3431
@@ -72547,7 +72547,7 @@
       "date": "2024-10-09",
       "store_id": 7,
       "department_id": 9,
-      "net_sales": 2589.0,
+      "net_sales": 2589,
       "transactions": 84,
       "units_sold": 185,
       "gross_margin_pct": 0.3915
@@ -72817,7 +72817,7 @@
       "date": "2024-10-10",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 4978.0,
+      "net_sales": 4978,
       "transactions": 144,
       "units_sold": 255,
       "gross_margin_pct": 0.3915
@@ -73123,7 +73123,7 @@
       "date": "2024-10-10",
       "store_id": 6,
       "department_id": 3,
-      "net_sales": 5976.0,
+      "net_sales": 5976,
       "transactions": 214,
       "units_sold": 533,
       "gross_margin_pct": 0.3203
@@ -73645,7 +73645,7 @@
       "date": "2024-10-11",
       "store_id": 3,
       "department_id": 10,
-      "net_sales": 7446.0,
+      "net_sales": 7446,
       "transactions": 221,
       "units_sold": 395,
       "gross_margin_pct": 0.4115
@@ -74293,7 +74293,7 @@
       "date": "2024-10-12",
       "store_id": 3,
       "department_id": 2,
-      "net_sales": 15480.0,
+      "net_sales": 15480,
       "transactions": 421,
       "units_sold": 772,
       "gross_margin_pct": 0.3363
@@ -75580,7 +75580,7 @@
       "date": "2024-10-14",
       "store_id": 1,
       "department_id": 5,
-      "net_sales": 5100.0,
+      "net_sales": 5100,
       "transactions": 148,
       "units_sold": 207,
       "gross_margin_pct": 0.4045
@@ -76813,7 +76813,7 @@
       "date": "2024-10-15",
       "store_id": 7,
       "department_id": 2,
-      "net_sales": 6521.0,
+      "net_sales": 6521,
       "transactions": 211,
       "units_sold": 366,
       "gross_margin_pct": 0.3363
@@ -78028,7 +78028,7 @@
       "date": "2024-10-17",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 3852.0,
+      "net_sales": 3852,
       "transactions": 123,
       "units_sold": 239,
       "gross_margin_pct": 0.3915
@@ -78118,7 +78118,7 @@
       "date": "2024-10-17",
       "store_id": 5,
       "department_id": 9,
-      "net_sales": 3301.0,
+      "net_sales": 3301,
       "transactions": 110,
       "units_sold": 215,
       "gross_margin_pct": 0.3915
@@ -78964,7 +78964,7 @@
       "date": "2024-10-18",
       "store_id": 7,
       "department_id": 3,
-      "net_sales": 7173.0,
+      "net_sales": 7173,
       "transactions": 216,
       "units_sold": 525,
       "gross_margin_pct": 0.3203
@@ -79279,7 +79279,7 @@
       "date": "2024-10-19",
       "store_id": 2,
       "department_id": 8,
-      "net_sales": 10879.0,
+      "net_sales": 10879,
       "transactions": 279,
       "units_sold": 631,
       "gross_margin_pct": 0.3431
@@ -80035,7 +80035,7 @@
       "date": "2024-10-20",
       "store_id": 3,
       "department_id": 2,
-      "net_sales": 13441.0,
+      "net_sales": 13441,
       "transactions": 346,
       "units_sold": 560,
       "gross_margin_pct": 0.3363
@@ -81304,7 +81304,7 @@
       "date": "2024-10-22",
       "store_id": 1,
       "department_id": 3,
-      "net_sales": 9038.0,
+      "net_sales": 9038,
       "transactions": 228,
       "units_sold": 545,
       "gross_margin_pct": 0.3203
@@ -82528,7 +82528,7 @@
       "date": "2024-10-23",
       "store_id": 6,
       "department_id": 9,
-      "net_sales": 3527.0,
+      "net_sales": 3527,
       "transactions": 119,
       "units_sold": 236,
       "gross_margin_pct": 0.3915
@@ -83320,7 +83320,7 @@
       "date": "2024-10-24",
       "store_id": 7,
       "department_id": 7,
-      "net_sales": 16664.0,
+      "net_sales": 16664,
       "transactions": 517,
       "units_sold": 2496,
       "gross_margin_pct": 0.2644
@@ -84427,7 +84427,7 @@
       "date": "2024-10-26",
       "store_id": 3,
       "department_id": 10,
-      "net_sales": 8120.0,
+      "net_sales": 8120,
       "transactions": 200,
       "units_sold": 327,
       "gross_margin_pct": 0.4115
@@ -85462,7 +85462,7 @@
       "date": "2024-10-27",
       "store_id": 7,
       "department_id": 5,
-      "net_sales": 3268.0,
+      "net_sales": 3268,
       "transactions": 106,
       "units_sold": 159,
       "gross_margin_pct": 0.4045
@@ -85633,7 +85633,7 @@
       "date": "2024-10-28",
       "store_id": 1,
       "department_id": 4,
-      "net_sales": 3466.0,
+      "net_sales": 3466,
       "transactions": 94,
       "units_sold": 148,
       "gross_margin_pct": 0.5444
@@ -87667,7 +87667,7 @@
       "date": "2024-10-30",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 3744.0,
+      "net_sales": 3744,
       "transactions": 126,
       "units_sold": 188,
       "gross_margin_pct": 0.4115
@@ -89719,7 +89719,7 @@
       "date": "2024-11-02",
       "store_id": 6,
       "department_id": 8,
-      "net_sales": 6390.0,
+      "net_sales": 6390,
       "transactions": 231,
       "units_sold": 566,
       "gross_margin_pct": 0.3421
@@ -89773,7 +89773,7 @@
       "date": "2024-11-02",
       "store_id": 7,
       "department_id": 4,
-      "net_sales": 2624.0,
+      "net_sales": 2624,
       "transactions": 86,
       "units_sold": 141,
       "gross_margin_pct": 0.5471
@@ -90538,7 +90538,7 @@
       "date": "2024-11-03",
       "store_id": 7,
       "department_id": 8,
-      "net_sales": 6100.0,
+      "net_sales": 6100,
       "transactions": 189,
       "units_sold": 407,
       "gross_margin_pct": 0.3421
@@ -91276,7 +91276,7 @@
       "date": "2024-11-04",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 3603.0,
+      "net_sales": 3603,
       "transactions": 120,
       "units_sold": 207,
       "gross_margin_pct": 0.4114
@@ -92851,7 +92851,7 @@
       "date": "2024-11-07",
       "store_id": 1,
       "department_id": 5,
-      "net_sales": 6233.0,
+      "net_sales": 6233,
       "transactions": 166,
       "units_sold": 238,
       "gross_margin_pct": 0.4039
@@ -93463,7 +93463,7 @@
       "date": "2024-11-07",
       "store_id": 8,
       "department_id": 3,
-      "net_sales": 5594.0,
+      "net_sales": 5594,
       "transactions": 175,
       "units_sold": 428,
       "gross_margin_pct": 0.3209
@@ -94039,7 +94039,7 @@
       "date": "2024-11-08",
       "store_id": 6,
       "department_id": 7,
-      "net_sales": 19171.0,
+      "net_sales": 19171,
       "transactions": 693,
       "units_sold": 3056,
       "gross_margin_pct": 0.2671
@@ -95038,7 +95038,7 @@
       "date": "2024-11-10",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 9105.0,
+      "net_sales": 9105,
       "transactions": 246,
       "units_sold": 527,
       "gross_margin_pct": 0.3421
@@ -96010,7 +96010,7 @@
       "date": "2024-11-11",
       "store_id": 4,
       "department_id": 6,
-      "net_sales": 4343.0,
+      "net_sales": 4343,
       "transactions": 174,
       "units_sold": 355,
       "gross_margin_pct": 0.3714
@@ -96613,7 +96613,7 @@
       "date": "2024-11-12",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 7983.0,
+      "net_sales": 7983,
       "transactions": 202,
       "units_sold": 490,
       "gross_margin_pct": 0.3209
@@ -96694,7 +96694,7 @@
       "date": "2024-11-12",
       "store_id": 4,
       "department_id": 2,
-      "net_sales": 9339.0,
+      "net_sales": 9339,
       "transactions": 304,
       "units_sold": 550,
       "gross_margin_pct": 0.3343
@@ -96910,7 +96910,7 @@
       "date": "2024-11-12",
       "store_id": 6,
       "department_id": 6,
-      "net_sales": 4028.0,
+      "net_sales": 4028,
       "transactions": 150,
       "units_sold": 298,
       "gross_margin_pct": 0.3714
@@ -98476,7 +98476,7 @@
       "date": "2024-11-14",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 3707.0,
+      "net_sales": 3707,
       "transactions": 107,
       "units_sold": 171,
       "gross_margin_pct": 0.4114
@@ -99214,7 +99214,7 @@
       "date": "2024-11-15",
       "store_id": 8,
       "department_id": 2,
-      "net_sales": 9390.0,
+      "net_sales": 9390,
       "transactions": 299,
       "units_sold": 549,
       "gross_margin_pct": 0.3343
@@ -100681,7 +100681,7 @@
       "date": "2024-11-17",
       "store_id": 8,
       "department_id": 5,
-      "net_sales": 3278.0,
+      "net_sales": 3278,
       "transactions": 97,
       "units_sold": 129,
       "gross_margin_pct": 0.4039
@@ -100825,7 +100825,7 @@
       "date": "2024-11-18",
       "store_id": 2,
       "department_id": 1,
-      "net_sales": 6857.0,
+      "net_sales": 6857,
       "transactions": 193,
       "units_sold": 580,
       "gross_margin_pct": 0.4779
@@ -103030,7 +103030,7 @@
       "date": "2024-11-21",
       "store_id": 2,
       "department_id": 6,
-      "net_sales": 8679.0,
+      "net_sales": 8679,
       "transactions": 219,
       "units_sold": 439,
       "gross_margin_pct": 0.3714
@@ -103363,7 +103363,7 @@
       "date": "2024-11-21",
       "store_id": 6,
       "department_id": 3,
-      "net_sales": 5886.0,
+      "net_sales": 5886,
       "transactions": 199,
       "units_sold": 533,
       "gross_margin_pct": 0.3209
@@ -103390,7 +103390,7 @@
       "date": "2024-11-21",
       "store_id": 6,
       "department_id": 6,
-      "net_sales": 4194.0,
+      "net_sales": 4194,
       "transactions": 155,
       "units_sold": 303,
       "gross_margin_pct": 0.3714
@@ -103453,7 +103453,7 @@
       "date": "2024-11-21",
       "store_id": 7,
       "department_id": 3,
-      "net_sales": 6031.0,
+      "net_sales": 6031,
       "transactions": 180,
       "units_sold": 452,
       "gross_margin_pct": 0.3209
@@ -104686,7 +104686,7 @@
       "date": "2024-11-23",
       "store_id": 4,
       "department_id": 10,
-      "net_sales": 6838.0,
+      "net_sales": 6838,
       "transactions": 240,
       "units_sold": 419,
       "gross_margin_pct": 0.4114
@@ -105064,7 +105064,7 @@
       "date": "2024-11-24",
       "store_id": 1,
       "department_id": 2,
-      "net_sales": 18734.0,
+      "net_sales": 18734,
       "transactions": 473,
       "units_sold": 780,
       "gross_margin_pct": 0.3343
@@ -105397,7 +105397,7 @@
       "date": "2024-11-24",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 4277.0,
+      "net_sales": 4277,
       "transactions": 144,
       "units_sold": 294,
       "gross_margin_pct": 0.3914
@@ -106090,7 +106090,7 @@
       "date": "2024-11-25",
       "store_id": 4,
       "department_id": 6,
-      "net_sales": 4233.0,
+      "net_sales": 4233,
       "transactions": 147,
       "units_sold": 266,
       "gross_margin_pct": 0.3714
@@ -109762,7 +109762,7 @@
       "date": "2024-11-30",
       "store_id": 5,
       "department_id": 4,
-      "net_sales": 3798.0,
+      "net_sales": 3798,
       "transactions": 154,
       "units_sold": 243,
       "gross_margin_pct": 0.5471
@@ -111895,7 +111895,7 @@
       "date": "2024-12-03",
       "store_id": 5,
       "department_id": 3,
-      "net_sales": 5547.0,
+      "net_sales": 5547,
       "transactions": 177,
       "units_sold": 456,
       "gross_margin_pct": 0.3205
@@ -112759,7 +112759,7 @@
       "date": "2024-12-04",
       "store_id": 6,
       "department_id": 9,
-      "net_sales": 3612.0,
+      "net_sales": 3612,
       "transactions": 115,
       "units_sold": 244,
       "gross_margin_pct": 0.391
@@ -112786,7 +112786,7 @@
       "date": "2024-12-04",
       "store_id": 7,
       "department_id": 2,
-      "net_sales": 9501.0,
+      "net_sales": 9501,
       "transactions": 286,
       "units_sold": 527,
       "gross_margin_pct": 0.3332
@@ -112993,7 +112993,7 @@
       "date": "2024-12-05",
       "store_id": 1,
       "department_id": 5,
-      "net_sales": 6470.0,
+      "net_sales": 6470,
       "transactions": 185,
       "units_sold": 267,
       "gross_margin_pct": 0.4032
@@ -114460,7 +114460,7 @@
       "date": "2024-12-07",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 10313.0,
+      "net_sales": 10313,
       "transactions": 267,
       "units_sold": 569,
       "gross_margin_pct": 0.3431
@@ -115135,7 +115135,7 @@
       "date": "2024-12-08",
       "store_id": 1,
       "department_id": 4,
-      "net_sales": 5904.0,
+      "net_sales": 5904,
       "transactions": 170,
       "units_sold": 282,
       "gross_margin_pct": 0.5458
@@ -117691,7 +117691,7 @@
       "date": "2024-12-11",
       "store_id": 5,
       "department_id": 8,
-      "net_sales": 5694.0,
+      "net_sales": 5694,
       "transactions": 231,
       "units_sold": 476,
       "gross_margin_pct": 0.3431
@@ -119797,7 +119797,7 @@
       "date": "2024-12-14",
       "store_id": 5,
       "department_id": 2,
-      "net_sales": 9467.0,
+      "net_sales": 9467,
       "transactions": 338,
       "units_sold": 605,
       "gross_margin_pct": 0.3332
@@ -120418,7 +120418,7 @@
       "date": "2024-12-15",
       "store_id": 4,
       "department_id": 1,
-      "net_sales": 7451.0,
+      "net_sales": 7451,
       "transactions": 289,
       "units_sold": 927,
       "gross_margin_pct": 0.4785
@@ -122452,7 +122452,7 @@
       "date": "2024-12-18",
       "store_id": 2,
       "department_id": 7,
-      "net_sales": 32996.0,
+      "net_sales": 32996,
       "transactions": 910,
       "units_sold": 3938,
       "gross_margin_pct": 0.2658
@@ -123550,7 +123550,7 @@
       "date": "2024-12-19",
       "store_id": 6,
       "department_id": 9,
-      "net_sales": 3565.0,
+      "net_sales": 3565,
       "transactions": 126,
       "units_sold": 239,
       "gross_margin_pct": 0.391
@@ -124027,7 +124027,7 @@
       "date": "2024-12-20",
       "store_id": 4,
       "department_id": 2,
-      "net_sales": 12287.0,
+      "net_sales": 12287,
       "transactions": 432,
       "units_sold": 784,
       "gross_margin_pct": 0.3332
@@ -126142,7 +126142,7 @@
       "date": "2024-12-23",
       "store_id": 3,
       "department_id": 6,
-      "net_sales": 5955.0,
+      "net_sales": 5955,
       "transactions": 159,
       "units_sold": 344,
       "gross_margin_pct": 0.371
@@ -128734,7 +128734,7 @@
       "date": "2024-12-26",
       "store_id": 8,
       "department_id": 5,
-      "net_sales": 2700.0,
+      "net_sales": 2700,
       "transactions": 79,
       "units_sold": 108,
       "gross_margin_pct": 0.4032
@@ -128770,7 +128770,7 @@
       "date": "2024-12-26",
       "store_id": 8,
       "department_id": 9,
-      "net_sales": 2267.0,
+      "net_sales": 2267,
       "transactions": 81,
       "units_sold": 166,
       "gross_margin_pct": 0.391
@@ -129112,7 +129112,7 @@
       "date": "2024-12-27",
       "store_id": 4,
       "department_id": 7,
-      "net_sales": 20123.0,
+      "net_sales": 20123,
       "transactions": 682,
       "units_sold": 3193,
       "gross_margin_pct": 0.2658
@@ -130066,7 +130066,7 @@
       "date": "2024-12-28",
       "store_id": 7,
       "department_id": 3,
-      "net_sales": 8255.0,
+      "net_sales": 8255,
       "transactions": 236,
       "units_sold": 587,
       "gross_margin_pct": 0.3205
@@ -131623,7 +131623,7 @@
       "date": "2024-12-30",
       "store_id": 8,
       "department_id": 6,
-      "net_sales": 4250.0,
+      "net_sales": 4250,
       "transactions": 121,
       "units_sold": 242,
       "gross_margin_pct": 0.371
@@ -132100,7 +132100,7 @@
       "date": "2024-12-31",
       "store_id": 5,
       "department_id": 10,
-      "net_sales": 5215.0,
+      "net_sales": 5215,
       "transactions": 195,
       "units_sold": 300,
       "gross_margin_pct": 0.411
@@ -133162,7 +133162,7 @@
       "date": "2025-07-02",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 9347.0,
+      "net_sales": 9347,
       "transactions": 246,
       "units_sold": 551,
       "gross_margin_pct": 0.3363
@@ -133225,7 +133225,7 @@
       "date": "2025-07-02",
       "store_id": 2,
       "department_id": 5,
-      "net_sales": 6518.0,
+      "net_sales": 6518,
       "transactions": 179,
       "units_sold": 254,
       "gross_margin_pct": 0.3979
@@ -133432,7 +133432,7 @@
       "date": "2025-07-02",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 8523.0,
+      "net_sales": 8523,
       "transactions": 298,
       "units_sold": 652,
       "gross_margin_pct": 0.3363
@@ -134620,7 +134620,7 @@
       "date": "2025-07-04",
       "store_id": 1,
       "department_id": 10,
-      "net_sales": 9126.0,
+      "net_sales": 9126,
       "transactions": 246,
       "units_sold": 386,
       "gross_margin_pct": 0.4069
@@ -135115,7 +135115,7 @@
       "date": "2025-07-04",
       "store_id": 7,
       "department_id": 5,
-      "net_sales": 3552.0,
+      "net_sales": 3552,
       "transactions": 112,
       "units_sold": 164,
       "gross_margin_pct": 0.3979
@@ -136861,7 +136861,7 @@
       "date": "2025-07-07",
       "store_id": 3,
       "department_id": 1,
-      "net_sales": 11140.0,
+      "net_sales": 11140,
       "transactions": 262,
       "units_sold": 898,
       "gross_margin_pct": 0.4796
@@ -137599,7 +137599,7 @@
       "date": "2025-07-08",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 8653.0,
+      "net_sales": 8653,
       "transactions": 235,
       "units_sold": 604,
       "gross_margin_pct": 0.3196
@@ -137725,7 +137725,7 @@
       "date": "2025-07-08",
       "store_id": 4,
       "department_id": 7,
-      "net_sales": 14996.0,
+      "net_sales": 14996,
       "transactions": 560,
       "units_sold": 2647,
       "gross_margin_pct": 0.2638
@@ -138022,7 +138022,7 @@
       "date": "2025-07-08",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 3782.0,
+      "net_sales": 3782,
       "transactions": 108,
       "units_sold": 194,
       "gross_margin_pct": 0.4069
@@ -138904,7 +138904,7 @@
       "date": "2025-07-10",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 10060.0,
+      "net_sales": 10060,
       "transactions": 279,
       "units_sold": 618,
       "gross_margin_pct": 0.3363
@@ -138949,7 +138949,7 @@
       "date": "2025-07-10",
       "store_id": 2,
       "department_id": 3,
-      "net_sales": 11135.0,
+      "net_sales": 11135,
       "transactions": 276,
       "units_sold": 669,
       "gross_margin_pct": 0.3196
@@ -139912,7 +139912,7 @@
       "date": "2025-07-11",
       "store_id": 5,
       "department_id": 1,
-      "net_sales": 8638.0,
+      "net_sales": 8638,
       "transactions": 322,
       "units_sold": 1036,
       "gross_margin_pct": 0.4796
@@ -140632,7 +140632,7 @@
       "date": "2025-07-12",
       "store_id": 5,
       "department_id": 1,
-      "net_sales": 8081.0,
+      "net_sales": 8081,
       "transactions": 270,
       "units_sold": 886,
       "gross_margin_pct": 0.4796
@@ -141271,7 +141271,7 @@
       "date": "2025-07-13",
       "store_id": 4,
       "department_id": 2,
-      "net_sales": 8777.0,
+      "net_sales": 8777,
       "transactions": 302,
       "units_sold": 555,
       "gross_margin_pct": 0.3267
@@ -141874,7 +141874,7 @@
       "date": "2025-07-14",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 5465.0,
+      "net_sales": 5465,
       "transactions": 142,
       "units_sold": 285,
       "gross_margin_pct": 0.3869
@@ -142189,7 +142189,7 @@
       "date": "2025-07-14",
       "store_id": 6,
       "department_id": 4,
-      "net_sales": 2644.0,
+      "net_sales": 2644,
       "transactions": 96,
       "units_sold": 165,
       "gross_margin_pct": 0.5438
@@ -144106,7 +144106,7 @@
       "date": "2025-07-17",
       "store_id": 3,
       "department_id": 7,
-      "net_sales": 20191.0,
+      "net_sales": 20191,
       "transactions": 485,
       "units_sold": 2095,
       "gross_margin_pct": 0.2638
@@ -144682,7 +144682,7 @@
       "date": "2025-07-18",
       "store_id": 2,
       "department_id": 1,
-      "net_sales": 18558.0,
+      "net_sales": 18558,
       "transactions": 526,
       "units_sold": 1711,
       "gross_margin_pct": 0.4796
@@ -145888,7 +145888,7 @@
       "date": "2025-07-19",
       "store_id": 7,
       "department_id": 5,
-      "net_sales": 2367.0,
+      "net_sales": 2367,
       "transactions": 81,
       "units_sold": 104,
       "gross_margin_pct": 0.3979
@@ -146023,7 +146023,7 @@
       "date": "2025-07-19",
       "store_id": 8,
       "department_id": 10,
-      "net_sales": 4466.0,
+      "net_sales": 4466,
       "transactions": 150,
       "units_sold": 265,
       "gross_margin_pct": 0.4069
@@ -146905,7 +146905,7 @@
       "date": "2025-07-21",
       "store_id": 2,
       "department_id": 8,
-      "net_sales": 10228.0,
+      "net_sales": 10228,
       "transactions": 272,
       "units_sold": 587,
       "gross_margin_pct": 0.3363
@@ -147733,7 +147733,7 @@
       "date": "2025-07-22",
       "store_id": 3,
       "department_id": 10,
-      "net_sales": 6244.0,
+      "net_sales": 6244,
       "transactions": 169,
       "units_sold": 322,
       "gross_margin_pct": 0.4069
@@ -148381,7 +148381,7 @@
       "date": "2025-07-23",
       "store_id": 3,
       "department_id": 2,
-      "net_sales": 10318.0,
+      "net_sales": 10318,
       "transactions": 267,
       "units_sold": 504,
       "gross_margin_pct": 0.3267
@@ -149200,7 +149200,7 @@
       "date": "2025-07-24",
       "store_id": 4,
       "department_id": 3,
-      "net_sales": 6167.0,
+      "net_sales": 6167,
       "transactions": 211,
       "units_sold": 541,
       "gross_margin_pct": 0.3196
@@ -150721,7 +150721,7 @@
       "date": "2025-07-26",
       "store_id": 5,
       "department_id": 3,
-      "net_sales": 6102.0,
+      "net_sales": 6102,
       "transactions": 196,
       "units_sold": 503,
       "gross_margin_pct": 0.3196
@@ -150865,7 +150865,7 @@
       "date": "2025-07-26",
       "store_id": 6,
       "department_id": 9,
-      "net_sales": 4963.0,
+      "net_sales": 4963,
       "transactions": 184,
       "units_sold": 391,
       "gross_margin_pct": 0.3869
@@ -151288,7 +151288,7 @@
       "date": "2025-07-27",
       "store_id": 3,
       "department_id": 6,
-      "net_sales": 6166.0,
+      "net_sales": 6166,
       "transactions": 165,
       "units_sold": 339,
       "gross_margin_pct": 0.3669
@@ -151783,7 +151783,7 @@
       "date": "2025-07-28",
       "store_id": 1,
       "department_id": 1,
-      "net_sales": 12364.0,
+      "net_sales": 12364,
       "transactions": 295,
       "units_sold": 973,
       "gross_margin_pct": 0.4796
@@ -152125,7 +152125,7 @@
       "date": "2025-07-28",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 4290.0,
+      "net_sales": 4290,
       "transactions": 148,
       "units_sold": 308,
       "gross_margin_pct": 0.3869
@@ -153862,7 +153862,7 @@
       "date": "2025-07-30",
       "store_id": 8,
       "department_id": 2,
-      "net_sales": 6052.0,
+      "net_sales": 6052,
       "transactions": 183,
       "units_sold": 333,
       "gross_margin_pct": 0.3267
@@ -155401,7 +155401,7 @@
       "date": "2025-08-02",
       "store_id": 1,
       "department_id": 3,
-      "net_sales": 11139.0,
+      "net_sales": 11139,
       "transactions": 305,
       "units_sold": 783,
       "gross_margin_pct": 0.3194
@@ -155581,7 +155581,7 @@
       "date": "2025-08-02",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 9817.0,
+      "net_sales": 9817,
       "transactions": 274,
       "units_sold": 688,
       "gross_margin_pct": 0.3194
@@ -155689,7 +155689,7 @@
       "date": "2025-08-02",
       "store_id": 4,
       "department_id": 5,
-      "net_sales": 7699.0,
+      "net_sales": 7699,
       "transactions": 298,
       "units_sold": 415,
       "gross_margin_pct": 0.3973
@@ -156508,7 +156508,7 @@
       "date": "2025-08-03",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 3714.0,
+      "net_sales": 3714,
       "transactions": 138,
       "units_sold": 281,
       "gross_margin_pct": 0.3661
@@ -156670,7 +156670,7 @@
       "date": "2025-08-03",
       "store_id": 7,
       "department_id": 4,
-      "net_sales": 2265.0,
+      "net_sales": 2265,
       "transactions": 74,
       "units_sold": 118,
       "gross_margin_pct": 0.544
@@ -156994,7 +156994,7 @@
       "date": "2025-08-04",
       "store_id": 2,
       "department_id": 10,
-      "net_sales": 8343.0,
+      "net_sales": 8343,
       "transactions": 220,
       "units_sold": 359,
       "gross_margin_pct": 0.4061
@@ -157075,7 +157075,7 @@
       "date": "2025-08-04",
       "store_id": 3,
       "department_id": 9,
-      "net_sales": 4630.0,
+      "net_sales": 4630,
       "transactions": 127,
       "units_sold": 233,
       "gross_margin_pct": 0.3861
@@ -157858,7 +157858,7 @@
       "date": "2025-08-05",
       "store_id": 4,
       "department_id": 7,
-      "net_sales": 14541.0,
+      "net_sales": 14541,
       "transactions": 560,
       "units_sold": 2591,
       "gross_margin_pct": 0.264
@@ -158317,7 +158317,7 @@
       "date": "2025-08-06",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 8553.0,
+      "net_sales": 8553,
       "transactions": 206,
       "units_sold": 502,
       "gross_margin_pct": 0.335
@@ -161602,7 +161602,7 @@
       "date": "2025-08-10",
       "store_id": 6,
       "department_id": 2,
-      "net_sales": 7452.0,
+      "net_sales": 7452,
       "transactions": 268,
       "units_sold": 482,
       "gross_margin_pct": 0.3246
@@ -162061,7 +162061,7 @@
       "date": "2025-08-11",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 7190.0,
+      "net_sales": 7190,
       "transactions": 188,
       "units_sold": 459,
       "gross_margin_pct": 0.3194
@@ -162349,7 +162349,7 @@
       "date": "2025-08-11",
       "store_id": 6,
       "department_id": 5,
-      "net_sales": 5829.0,
+      "net_sales": 5829,
       "transactions": 202,
       "units_sold": 275,
       "gross_margin_pct": 0.3973
@@ -163420,7 +163420,7 @@
       "date": "2025-08-13",
       "store_id": 2,
       "department_id": 5,
-      "net_sales": 6688.0,
+      "net_sales": 6688,
       "transactions": 174,
       "units_sold": 258,
       "gross_margin_pct": 0.3973
@@ -163564,7 +163564,7 @@
       "date": "2025-08-13",
       "store_id": 4,
       "department_id": 1,
-      "net_sales": 8429.0,
+      "net_sales": 8429,
       "transactions": 314,
       "units_sold": 955,
       "gross_margin_pct": 0.4771
@@ -163753,7 +163753,7 @@
       "date": "2025-08-13",
       "store_id": 6,
       "department_id": 2,
-      "net_sales": 7024.0,
+      "net_sales": 7024,
       "transactions": 234,
       "units_sold": 448,
       "gross_margin_pct": 0.3246
@@ -165796,7 +165796,7 @@
       "date": "2025-08-16",
       "store_id": 4,
       "department_id": 9,
-      "net_sales": 5544.0,
+      "net_sales": 5544,
       "transactions": 191,
       "units_sold": 398,
       "gross_margin_pct": 0.3861
@@ -165976,7 +165976,7 @@
       "date": "2025-08-16",
       "store_id": 6,
       "department_id": 9,
-      "net_sales": 4628.0,
+      "net_sales": 4628,
       "transactions": 158,
       "units_sold": 295,
       "gross_margin_pct": 0.3861
@@ -166678,7 +166678,7 @@
       "date": "2025-08-17",
       "store_id": 6,
       "department_id": 7,
-      "net_sales": 15674.0,
+      "net_sales": 15674,
       "transactions": 595,
       "units_sold": 2814,
       "gross_margin_pct": 0.264
@@ -169549,7 +169549,7 @@
       "date": "2025-08-21",
       "store_id": 6,
       "department_id": 5,
-      "net_sales": 6229.0,
+      "net_sales": 6229,
       "transactions": 226,
       "units_sold": 327,
       "gross_margin_pct": 0.3973
@@ -170287,7 +170287,7 @@
       "date": "2025-08-22",
       "store_id": 6,
       "department_id": 7,
-      "net_sales": 14465.0,
+      "net_sales": 14465,
       "transactions": 495,
       "units_sold": 2329,
       "gross_margin_pct": 0.264
@@ -170737,7 +170737,7 @@
       "date": "2025-08-23",
       "store_id": 3,
       "department_id": 7,
-      "net_sales": 23455.0,
+      "net_sales": 23455,
       "transactions": 594,
       "units_sold": 2871,
       "gross_margin_pct": 0.264
@@ -171124,7 +171124,7 @@
       "date": "2025-08-23",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 4757.0,
+      "net_sales": 4757,
       "transactions": 168,
       "units_sold": 294,
       "gross_margin_pct": 0.4061
@@ -171232,7 +171232,7 @@
       "date": "2025-08-24",
       "store_id": 1,
       "department_id": 2,
-      "net_sales": 15683.0,
+      "net_sales": 15683,
       "transactions": 396,
       "units_sold": 688,
       "gross_margin_pct": 0.3246
@@ -172051,7 +172051,7 @@
       "date": "2025-08-25",
       "store_id": 2,
       "department_id": 3,
-      "net_sales": 9656.0,
+      "net_sales": 9656,
       "transactions": 262,
       "units_sold": 663,
       "gross_margin_pct": 0.3194
@@ -172348,7 +172348,7 @@
       "date": "2025-08-25",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 3021.0,
+      "net_sales": 3021,
       "transactions": 106,
       "units_sold": 194,
       "gross_margin_pct": 0.3661
@@ -172663,7 +172663,7 @@
       "date": "2025-08-26",
       "store_id": 1,
       "department_id": 2,
-      "net_sales": 12262.0,
+      "net_sales": 12262,
       "transactions": 293,
       "units_sold": 507,
       "gross_margin_pct": 0.3246
@@ -173437,7 +173437,7 @@
       "date": "2025-08-27",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 9307.0,
+      "net_sales": 9307,
       "transactions": 253,
       "units_sold": 590,
       "gross_margin_pct": 0.335
@@ -173662,7 +173662,7 @@
       "date": "2025-08-27",
       "store_id": 4,
       "department_id": 3,
-      "net_sales": 5747.0,
+      "net_sales": 5747,
       "transactions": 207,
       "units_sold": 494,
       "gross_margin_pct": 0.3194
@@ -173869,7 +173869,7 @@
       "date": "2025-08-27",
       "store_id": 6,
       "department_id": 6,
-      "net_sales": 2981.0,
+      "net_sales": 2981,
       "transactions": 109,
       "units_sold": 209,
       "gross_margin_pct": 0.3661
@@ -173977,7 +173977,7 @@
       "date": "2025-08-27",
       "store_id": 7,
       "department_id": 8,
-      "net_sales": 5164.0,
+      "net_sales": 5164,
       "transactions": 183,
       "units_sold": 407,
       "gross_margin_pct": 0.335
@@ -175084,7 +175084,7 @@
       "date": "2025-08-29",
       "store_id": 4,
       "department_id": 1,
-      "net_sales": 9283.0,
+      "net_sales": 9283,
       "transactions": 338,
       "units_sold": 1065,
       "gross_margin_pct": 0.4771
@@ -175336,7 +175336,7 @@
       "date": "2025-08-29",
       "store_id": 6,
       "department_id": 9,
-      "net_sales": 4425.0,
+      "net_sales": 4425,
       "transactions": 151,
       "units_sold": 330,
       "gross_margin_pct": 0.3861
@@ -175642,7 +175642,7 @@
       "date": "2025-08-30",
       "store_id": 2,
       "department_id": 3,
-      "net_sales": 12812.0,
+      "net_sales": 12812,
       "transactions": 354,
       "units_sold": 854,
       "gross_margin_pct": 0.3194
@@ -177208,7 +177208,7 @@
       "date": "2025-09-01",
       "store_id": 3,
       "department_id": 7,
-      "net_sales": 20648.0,
+      "net_sales": 20648,
       "transactions": 565,
       "units_sold": 2595,
       "gross_margin_pct": 0.2628
@@ -178756,7 +178756,7 @@
       "date": "2025-09-03",
       "store_id": 4,
       "department_id": 10,
-      "net_sales": 6134.0,
+      "net_sales": 6134,
       "transactions": 244,
       "units_sold": 416,
       "gross_margin_pct": 0.4054
@@ -179161,7 +179161,7 @@
       "date": "2025-09-04",
       "store_id": 1,
       "department_id": 5,
-      "net_sales": 5687.0,
+      "net_sales": 5687,
       "transactions": 152,
       "units_sold": 220,
       "gross_margin_pct": 0.397
@@ -179359,7 +179359,7 @@
       "date": "2025-09-04",
       "store_id": 3,
       "department_id": 7,
-      "net_sales": 20957.0,
+      "net_sales": 20957,
       "transactions": 627,
       "units_sold": 2633,
       "gross_margin_pct": 0.2628
@@ -179575,7 +179575,7 @@
       "date": "2025-09-04",
       "store_id": 6,
       "department_id": 1,
-      "net_sales": 7784.0,
+      "net_sales": 7784,
       "transactions": 276,
       "units_sold": 950,
       "gross_margin_pct": 0.476
@@ -179746,7 +179746,7 @@
       "date": "2025-09-04",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 4159.0,
+      "net_sales": 4159,
       "transactions": 123,
       "units_sold": 225,
       "gross_margin_pct": 0.4054
@@ -179917,7 +179917,7 @@
       "date": "2025-09-05",
       "store_id": 1,
       "department_id": 9,
-      "net_sales": 5656.0,
+      "net_sales": 5656,
       "transactions": 136,
       "units_sold": 295,
       "gross_margin_pct": 0.3854
@@ -180016,7 +180016,7 @@
       "date": "2025-09-05",
       "store_id": 2,
       "department_id": 10,
-      "net_sales": 10556.0,
+      "net_sales": 10556,
       "transactions": 293,
       "units_sold": 500,
       "gross_margin_pct": 0.4054
@@ -183607,7 +183607,7 @@
       "date": "2025-09-10",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 5195.0,
+      "net_sales": 5195,
       "transactions": 134,
       "units_sold": 278,
       "gross_margin_pct": 0.3854
@@ -184354,7 +184354,7 @@
       "date": "2025-09-11",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 8372.0,
+      "net_sales": 8372,
       "transactions": 224,
       "units_sold": 587,
       "gross_margin_pct": 0.3203
@@ -185686,7 +185686,7 @@
       "date": "2025-09-13",
       "store_id": 2,
       "department_id": 2,
-      "net_sales": 19203.0,
+      "net_sales": 19203,
       "transactions": 517,
       "units_sold": 992,
       "gross_margin_pct": 0.3233
@@ -187792,7 +187792,7 @@
       "date": "2025-09-16",
       "store_id": 1,
       "department_id": 6,
-      "net_sales": 6051.0,
+      "net_sales": 6051,
       "transactions": 156,
       "units_sold": 310,
       "gross_margin_pct": 0.3654
@@ -188764,7 +188764,7 @@
       "date": "2025-09-17",
       "store_id": 4,
       "department_id": 4,
-      "net_sales": 3534.0,
+      "net_sales": 3534,
       "transactions": 128,
       "units_sold": 202,
       "gross_margin_pct": 0.5428
@@ -188899,7 +188899,7 @@
       "date": "2025-09-17",
       "store_id": 5,
       "department_id": 9,
-      "net_sales": 3535.0,
+      "net_sales": 3535,
       "transactions": 121,
       "units_sold": 240,
       "gross_margin_pct": 0.3854
@@ -189133,7 +189133,7 @@
       "date": "2025-09-17",
       "store_id": 8,
       "department_id": 5,
-      "net_sales": 2415.0,
+      "net_sales": 2415,
       "transactions": 70,
       "units_sold": 107,
       "gross_margin_pct": 0.397
@@ -190645,7 +190645,7 @@
       "date": "2025-09-20",
       "store_id": 1,
       "department_id": 3,
-      "net_sales": 11684.0,
+      "net_sales": 11684,
       "transactions": 293,
       "units_sold": 737,
       "gross_margin_pct": 0.3203
@@ -192238,7 +192238,7 @@
       "date": "2025-09-22",
       "store_id": 2,
       "department_id": 10,
-      "net_sales": 7881.0,
+      "net_sales": 7881,
       "transactions": 216,
       "units_sold": 377,
       "gross_margin_pct": 0.4054
@@ -192382,7 +192382,7 @@
       "date": "2025-09-22",
       "store_id": 4,
       "department_id": 6,
-      "net_sales": 3497.0,
+      "net_sales": 3497,
       "transactions": 125,
       "units_sold": 252,
       "gross_margin_pct": 0.3654
@@ -193930,7 +193930,7 @@
       "date": "2025-09-24",
       "store_id": 5,
       "department_id": 8,
-      "net_sales": 6036.0,
+      "net_sales": 6036,
       "transactions": 213,
       "units_sold": 470,
       "gross_margin_pct": 0.3333
@@ -193966,7 +193966,7 @@
       "date": "2025-09-24",
       "store_id": 6,
       "department_id": 2,
-      "net_sales": 7340.0,
+      "net_sales": 7340,
       "transactions": 269,
       "units_sold": 498,
       "gross_margin_pct": 0.3233
@@ -194137,7 +194137,7 @@
       "date": "2025-09-24",
       "store_id": 8,
       "department_id": 1,
-      "net_sales": 5099.0,
+      "net_sales": 5099,
       "transactions": 170,
       "units_sold": 573,
       "gross_margin_pct": 0.476
@@ -194929,7 +194929,7 @@
       "date": "2025-09-25",
       "store_id": 8,
       "department_id": 9,
-      "net_sales": 2624.0,
+      "net_sales": 2624,
       "transactions": 81,
       "units_sold": 149,
       "gross_margin_pct": 0.3854
@@ -195064,7 +195064,7 @@
       "date": "2025-09-26",
       "store_id": 2,
       "department_id": 4,
-      "net_sales": 5128.0,
+      "net_sales": 5128,
       "transactions": 126,
       "units_sold": 212,
       "gross_margin_pct": 0.5428
@@ -195253,7 +195253,7 @@
       "date": "2025-09-26",
       "store_id": 4,
       "department_id": 5,
-      "net_sales": 7580.0,
+      "net_sales": 7580,
       "transactions": 301,
       "units_sold": 408,
       "gross_margin_pct": 0.397
@@ -196000,7 +196000,7 @@
       "date": "2025-09-27",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 8038.0,
+      "net_sales": 8038,
       "transactions": 293,
       "units_sold": 620,
       "gross_margin_pct": 0.3333
@@ -196207,7 +196207,7 @@
       "date": "2025-09-27",
       "store_id": 7,
       "department_id": 1,
-      "net_sales": 7127.0,
+      "net_sales": 7127,
       "transactions": 216,
       "units_sold": 718,
       "gross_margin_pct": 0.476
@@ -197017,7 +197017,7 @@
       "date": "2025-09-28",
       "store_id": 8,
       "department_id": 1,
-      "net_sales": 7283.0,
+      "net_sales": 7283,
       "transactions": 226,
       "units_sold": 761,
       "gross_margin_pct": 0.476
@@ -197287,7 +197287,7 @@
       "date": "2025-09-29",
       "store_id": 3,
       "department_id": 1,
-      "net_sales": 9532.0,
+      "net_sales": 9532,
       "transactions": 285,
       "units_sold": 889,
       "gross_margin_pct": 0.476
@@ -197980,7 +197980,7 @@
       "date": "2025-09-30",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 5158.0,
+      "net_sales": 5158,
       "transactions": 135,
       "units_sold": 270,
       "gross_margin_pct": 0.3854
@@ -197998,7 +197998,7 @@
       "date": "2025-09-30",
       "store_id": 3,
       "department_id": 1,
-      "net_sales": 10026.0,
+      "net_sales": 10026,
       "transactions": 262,
       "units_sold": 770,
       "gross_margin_pct": 0.476
@@ -198277,7 +198277,7 @@
       "date": "2025-09-30",
       "store_id": 6,
       "department_id": 2,
-      "net_sales": 7605.0,
+      "net_sales": 7605,
       "transactions": 266,
       "units_sold": 483,
       "gross_margin_pct": 0.3233
@@ -199861,7 +199861,7 @@
       "date": "2025-10-02",
       "store_id": 7,
       "department_id": 8,
-      "net_sales": 5084.0,
+      "net_sales": 5084,
       "transactions": 156,
       "units_sold": 340,
       "gross_margin_pct": 0.3333
@@ -200185,7 +200185,7 @@
       "date": "2025-10-03",
       "store_id": 3,
       "department_id": 4,
-      "net_sales": 4015.0,
+      "net_sales": 4015,
       "transactions": 102,
       "units_sold": 157,
       "gross_margin_pct": 0.5428
@@ -200230,7 +200230,7 @@
       "date": "2025-10-03",
       "store_id": 3,
       "department_id": 9,
-      "net_sales": 4979.0,
+      "net_sales": 4979,
       "transactions": 126,
       "units_sold": 242,
       "gross_margin_pct": 0.3854
@@ -200689,7 +200689,7 @@
       "date": "2025-10-03",
       "store_id": 8,
       "department_id": 10,
-      "net_sales": 4741.0,
+      "net_sales": 4741,
       "transactions": 136,
       "units_sold": 235,
       "gross_margin_pct": 0.4054
@@ -201310,7 +201310,7 @@
       "date": "2025-10-04",
       "store_id": 7,
       "department_id": 9,
-      "net_sales": 3721.0,
+      "net_sales": 3721,
       "transactions": 116,
       "units_sold": 225,
       "gross_margin_pct": 0.3854
@@ -202696,7 +202696,7 @@
       "date": "2025-10-06",
       "store_id": 7,
       "department_id": 3,
-      "net_sales": 5506.0,
+      "net_sales": 5506,
       "transactions": 182,
       "units_sold": 456,
       "gross_margin_pct": 0.3203
@@ -203263,7 +203263,7 @@
       "date": "2025-10-07",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 3561.0,
+      "net_sales": 3561,
       "transactions": 137,
       "units_sold": 282,
       "gross_margin_pct": 0.3654
@@ -203623,7 +203623,7 @@
       "date": "2025-10-08",
       "store_id": 1,
       "department_id": 6,
-      "net_sales": 6761.0,
+      "net_sales": 6761,
       "transactions": 168,
       "units_sold": 366,
       "gross_margin_pct": 0.3654
@@ -203641,7 +203641,7 @@
       "date": "2025-10-08",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 7052.0,
+      "net_sales": 7052,
       "transactions": 192,
       "units_sold": 402,
       "gross_margin_pct": 0.3333
@@ -204532,7 +204532,7 @@
       "date": "2025-10-09",
       "store_id": 3,
       "department_id": 7,
-      "net_sales": 21056.0,
+      "net_sales": 21056,
       "transactions": 539,
       "units_sold": 2328,
       "gross_margin_pct": 0.2628
@@ -204811,7 +204811,7 @@
       "date": "2025-10-09",
       "store_id": 6,
       "department_id": 8,
-      "net_sales": 5638.0,
+      "net_sales": 5638,
       "transactions": 211,
       "units_sold": 439,
       "gross_margin_pct": 0.3333
@@ -205099,7 +205099,7 @@
       "date": "2025-10-10",
       "store_id": 1,
       "department_id": 10,
-      "net_sales": 8573.0,
+      "net_sales": 8573,
       "transactions": 201,
       "units_sold": 364,
       "gross_margin_pct": 0.4054
@@ -205234,7 +205234,7 @@
       "date": "2025-10-10",
       "store_id": 3,
       "department_id": 5,
-      "net_sales": 5934.0,
+      "net_sales": 5934,
       "transactions": 177,
       "units_sold": 235,
       "gross_margin_pct": 0.397
@@ -205558,7 +205558,7 @@
       "date": "2025-10-10",
       "store_id": 7,
       "department_id": 1,
-      "net_sales": 6303.0,
+      "net_sales": 6303,
       "transactions": 197,
       "units_sold": 626,
       "gross_margin_pct": 0.476
@@ -205774,7 +205774,7 @@
       "date": "2025-10-11",
       "store_id": 1,
       "department_id": 5,
-      "net_sales": 6653.0,
+      "net_sales": 6653,
       "transactions": 181,
       "units_sold": 254,
       "gross_margin_pct": 0.397
@@ -206323,7 +206323,7 @@
       "date": "2025-10-11",
       "store_id": 7,
       "department_id": 6,
-      "net_sales": 5423.0,
+      "net_sales": 5423,
       "transactions": 178,
       "units_sold": 326,
       "gross_margin_pct": 0.3654
@@ -207754,7 +207754,7 @@
       "date": "2025-10-13",
       "store_id": 7,
       "department_id": 5,
-      "net_sales": 2354.0,
+      "net_sales": 2354,
       "transactions": 72,
       "units_sold": 102,
       "gross_margin_pct": 0.397
@@ -210040,7 +210040,7 @@
       "date": "2025-10-17",
       "store_id": 1,
       "department_id": 1,
-      "net_sales": 11854.0,
+      "net_sales": 11854,
       "transactions": 349,
       "units_sold": 1142,
       "gross_margin_pct": 0.476
@@ -211489,7 +211489,7 @@
       "date": "2025-10-19",
       "store_id": 1,
       "department_id": 2,
-      "net_sales": 16513.0,
+      "net_sales": 16513,
       "transactions": 433,
       "units_sold": 767,
       "gross_margin_pct": 0.3233
@@ -212578,7 +212578,7 @@
       "date": "2025-10-20",
       "store_id": 5,
       "department_id": 3,
-      "net_sales": 4612.0,
+      "net_sales": 4612,
       "transactions": 162,
       "units_sold": 432,
       "gross_margin_pct": 0.3203
@@ -213064,7 +213064,7 @@
       "date": "2025-10-21",
       "store_id": 2,
       "department_id": 7,
-      "net_sales": 27071.0,
+      "net_sales": 27071,
       "transactions": 688,
       "units_sold": 3361,
       "gross_margin_pct": 0.2628
@@ -213253,7 +213253,7 @@
       "date": "2025-10-21",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 6602.0,
+      "net_sales": 6602,
       "transactions": 240,
       "units_sold": 496,
       "gross_margin_pct": 0.3333
@@ -213838,7 +213838,7 @@
       "date": "2025-10-22",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 6997.0,
+      "net_sales": 6997,
       "transactions": 194,
       "units_sold": 487,
       "gross_margin_pct": 0.3203
@@ -213910,7 +213910,7 @@
       "date": "2025-10-22",
       "store_id": 4,
       "department_id": 1,
-      "net_sales": 7611.0,
+      "net_sales": 7611,
       "transactions": 270,
       "units_sold": 918,
       "gross_margin_pct": 0.476
@@ -214045,7 +214045,7 @@
       "date": "2025-10-22",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 3465.0,
+      "net_sales": 3465,
       "transactions": 130,
       "units_sold": 265,
       "gross_margin_pct": 0.3654
@@ -215908,7 +215908,7 @@
       "date": "2025-10-25",
       "store_id": 2,
       "department_id": 3,
-      "net_sales": 13371.0,
+      "net_sales": 13371,
       "transactions": 329,
       "units_sold": 867,
       "gross_margin_pct": 0.3203
@@ -218293,7 +218293,7 @@
       "date": "2025-10-28",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 6592.0,
+      "net_sales": 6592,
       "transactions": 244,
       "units_sold": 537,
       "gross_margin_pct": 0.3333
@@ -218446,7 +218446,7 @@
       "date": "2025-10-28",
       "store_id": 6,
       "department_id": 5,
-      "net_sales": 5902.0,
+      "net_sales": 5902,
       "transactions": 220,
       "units_sold": 296,
       "gross_margin_pct": 0.397
@@ -220183,7 +220183,7 @@
       "date": "2025-10-31",
       "store_id": 1,
       "department_id": 9,
-      "net_sales": 5167.0,
+      "net_sales": 5167,
       "transactions": 137,
       "units_sold": 260,
       "gross_margin_pct": 0.3854
@@ -221443,7 +221443,7 @@
       "date": "2025-11-01",
       "store_id": 7,
       "department_id": 10,
-      "net_sales": 4964.0,
+      "net_sales": 4964,
       "transactions": 167,
       "units_sold": 280,
       "gross_margin_pct": 0.4058
@@ -221695,7 +221695,7 @@
       "date": "2025-11-02",
       "store_id": 2,
       "department_id": 8,
-      "net_sales": 10641.0,
+      "net_sales": 10641,
       "transactions": 274,
       "units_sold": 653,
       "gross_margin_pct": 0.3332
@@ -224530,7 +224530,7 @@
       "date": "2025-11-06",
       "store_id": 2,
       "department_id": 3,
-      "net_sales": 11152.0,
+      "net_sales": 11152,
       "transactions": 278,
       "units_sold": 612,
       "gross_margin_pct": 0.3241
@@ -225790,7 +225790,7 @@
       "date": "2025-11-07",
       "store_id": 8,
       "department_id": 3,
-      "net_sales": 7740.0,
+      "net_sales": 7740,
       "transactions": 229,
       "units_sold": 559,
       "gross_margin_pct": 0.3241
@@ -226222,7 +226222,7 @@
       "date": "2025-11-08",
       "store_id": 5,
       "department_id": 1,
-      "net_sales": 6776.0,
+      "net_sales": 6776,
       "transactions": 260,
       "units_sold": 835,
       "gross_margin_pct": 0.4777
@@ -226339,7 +226339,7 @@
       "date": "2025-11-08",
       "store_id": 6,
       "department_id": 4,
-      "net_sales": 3169.0,
+      "net_sales": 3169,
       "transactions": 106,
       "units_sold": 161,
       "gross_margin_pct": 0.5432
@@ -226627,7 +226627,7 @@
       "date": "2025-11-09",
       "store_id": 1,
       "department_id": 6,
-      "net_sales": 9006.0,
+      "net_sales": 9006,
       "transactions": 243,
       "units_sold": 496,
       "gross_margin_pct": 0.3658
@@ -226870,7 +226870,7 @@
       "date": "2025-11-09",
       "store_id": 4,
       "department_id": 3,
-      "net_sales": 7135.0,
+      "net_sales": 7135,
       "transactions": 251,
       "units_sold": 659,
       "gross_margin_pct": 0.3241
@@ -227320,7 +227320,7 @@
       "date": "2025-11-10",
       "store_id": 1,
       "department_id": 3,
-      "net_sales": 9496.0,
+      "net_sales": 9496,
       "transactions": 259,
       "units_sold": 678,
       "gross_margin_pct": 0.3241
@@ -229867,7 +229867,7 @@
       "date": "2025-11-13",
       "store_id": 5,
       "department_id": 6,
-      "net_sales": 3769.0,
+      "net_sales": 3769,
       "transactions": 137,
       "units_sold": 283,
       "gross_margin_pct": 0.3658
@@ -234106,7 +234106,7 @@
       "date": "2025-11-19",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 5989.0,
+      "net_sales": 5989,
       "transactions": 219,
       "units_sold": 473,
       "gross_margin_pct": 0.3332
@@ -234196,7 +234196,7 @@
       "date": "2025-11-19",
       "store_id": 5,
       "department_id": 8,
-      "net_sales": 5091.0,
+      "net_sales": 5091,
       "transactions": 207,
       "units_sold": 471,
       "gross_margin_pct": 0.3332
@@ -236473,7 +236473,7 @@
       "date": "2025-11-22",
       "store_id": 7,
       "department_id": 1,
-      "net_sales": 5755.0,
+      "net_sales": 5755,
       "transactions": 179,
       "units_sold": 560,
       "gross_margin_pct": 0.4777
@@ -237121,7 +237121,7 @@
       "date": "2025-11-23",
       "store_id": 6,
       "department_id": 3,
-      "net_sales": 6399.0,
+      "net_sales": 6399,
       "transactions": 244,
       "units_sold": 644,
       "gross_margin_pct": 0.3241
@@ -238147,7 +238147,7 @@
       "date": "2025-11-25",
       "store_id": 1,
       "department_id": 7,
-      "net_sales": 17888.0,
+      "net_sales": 17888,
       "transactions": 477,
       "units_sold": 1894,
       "gross_margin_pct": 0.2632
@@ -238273,7 +238273,7 @@
       "date": "2025-11-25",
       "store_id": 3,
       "department_id": 1,
-      "net_sales": 8191.0,
+      "net_sales": 8191,
       "transactions": 208,
       "units_sold": 697,
       "gross_margin_pct": 0.4777
@@ -238300,7 +238300,7 @@
       "date": "2025-11-25",
       "store_id": 3,
       "department_id": 4,
-      "net_sales": 2903.0,
+      "net_sales": 2903,
       "transactions": 73,
       "units_sold": 115,
       "gross_margin_pct": 0.5432
@@ -241243,7 +241243,7 @@
       "date": "2025-11-29",
       "store_id": 4,
       "department_id": 2,
-      "net_sales": 10709.0,
+      "net_sales": 10709,
       "transactions": 376,
       "units_sold": 671,
       "gross_margin_pct": 0.3246
@@ -241297,7 +241297,7 @@
       "date": "2025-11-29",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 6319.0,
+      "net_sales": 6319,
       "transactions": 234,
       "units_sold": 516,
       "gross_margin_pct": 0.3332
@@ -241702,7 +241702,7 @@
       "date": "2025-11-30",
       "store_id": 1,
       "department_id": 3,
-      "net_sales": 12193.0,
+      "net_sales": 12193,
       "transactions": 316,
       "units_sold": 805,
       "gross_margin_pct": 0.3241
@@ -243691,7 +243691,7 @@
       "date": "2025-12-02",
       "store_id": 7,
       "department_id": 4,
-      "net_sales": 2180.0,
+      "net_sales": 2180,
       "transactions": 69,
       "units_sold": 102,
       "gross_margin_pct": 0.5427
@@ -243835,7 +243835,7 @@
       "date": "2025-12-02",
       "store_id": 8,
       "department_id": 10,
-      "net_sales": 3971.0,
+      "net_sales": 3971,
       "transactions": 118,
       "units_sold": 209,
       "gross_margin_pct": 0.4045
@@ -244060,7 +244060,7 @@
       "date": "2025-12-03",
       "store_id": 3,
       "department_id": 5,
-      "net_sales": 5299.0,
+      "net_sales": 5299,
       "transactions": 135,
       "units_sold": 199,
       "gross_margin_pct": 0.3944
@@ -245581,7 +245581,7 @@
       "date": "2025-12-05",
       "store_id": 4,
       "department_id": 4,
-      "net_sales": 5166.0,
+      "net_sales": 5166,
       "transactions": 205,
       "units_sold": 292,
       "gross_margin_pct": 0.5427
@@ -245617,7 +245617,7 @@
       "date": "2025-12-05",
       "store_id": 4,
       "department_id": 8,
-      "net_sales": 4825.0,
+      "net_sales": 4825,
       "transactions": 177,
       "units_sold": 380,
       "gross_margin_pct": 0.3325
@@ -246211,7 +246211,7 @@
       "date": "2025-12-06",
       "store_id": 3,
       "department_id": 4,
-      "net_sales": 5546.0,
+      "net_sales": 5546,
       "transactions": 137,
       "units_sold": 224,
       "gross_margin_pct": 0.5427
@@ -246832,7 +246832,7 @@
       "date": "2025-12-07",
       "store_id": 2,
       "department_id": 3,
-      "net_sales": 14087.0,
+      "net_sales": 14087,
       "transactions": 360,
       "units_sold": 911,
       "gross_margin_pct": 0.3223
@@ -247039,7 +247039,7 @@
       "date": "2025-12-07",
       "store_id": 4,
       "department_id": 6,
-      "net_sales": 5819.0,
+      "net_sales": 5819,
       "transactions": 213,
       "units_sold": 421,
       "gross_margin_pct": 0.3645
@@ -247516,7 +247516,7 @@
       "date": "2025-12-08",
       "store_id": 1,
       "department_id": 9,
-      "net_sales": 3956.0,
+      "net_sales": 3956,
       "transactions": 103,
       "units_sold": 198,
       "gross_margin_pct": 0.3845
@@ -247597,7 +247597,7 @@
       "date": "2025-12-08",
       "store_id": 2,
       "department_id": 8,
-      "net_sales": 5411.0,
+      "net_sales": 5411,
       "transactions": 146,
       "units_sold": 313,
       "gross_margin_pct": 0.3325
@@ -251251,7 +251251,7 @@
       "date": "2025-12-13",
       "store_id": 3,
       "department_id": 3,
-      "net_sales": 8968.0,
+      "net_sales": 8968,
       "transactions": 235,
       "units_sold": 573,
       "gross_margin_pct": 0.3223
@@ -253339,7 +253339,7 @@
       "date": "2025-12-16",
       "store_id": 2,
       "department_id": 5,
-      "net_sales": 6571.0,
+      "net_sales": 6571,
       "transactions": 183,
       "units_sold": 284,
       "gross_margin_pct": 0.3944
@@ -253996,7 +253996,7 @@
       "date": "2025-12-17",
       "store_id": 1,
       "department_id": 8,
-      "net_sales": 7113.0,
+      "net_sales": 7113,
       "transactions": 186,
       "units_sold": 413,
       "gross_margin_pct": 0.3325
@@ -254833,7 +254833,7 @@
       "date": "2025-12-18",
       "store_id": 3,
       "department_id": 1,
-      "net_sales": 8960.0,
+      "net_sales": 8960,
       "transactions": 221,
       "units_sold": 717,
       "gross_margin_pct": 0.4776
@@ -255094,7 +255094,7 @@
       "date": "2025-12-18",
       "store_id": 5,
       "department_id": 10,
-      "net_sales": 4877.0,
+      "net_sales": 4877,
       "transactions": 183,
       "units_sold": 323,
       "gross_margin_pct": 0.4045
@@ -256084,7 +256084,7 @@
       "date": "2025-12-19",
       "store_id": 8,
       "department_id": 10,
-      "net_sales": 3823.0,
+      "net_sales": 3823,
       "transactions": 118,
       "units_sold": 208,
       "gross_margin_pct": 0.4045
@@ -257128,7 +257128,7 @@
       "date": "2025-12-21",
       "store_id": 4,
       "department_id": 6,
-      "net_sales": 5149.0,
+      "net_sales": 5149,
       "transactions": 190,
       "units_sold": 348,
       "gross_margin_pct": 0.3645
@@ -258163,7 +258163,7 @@
       "date": "2025-12-22",
       "store_id": 8,
       "department_id": 1,
-      "net_sales": 4376.0,
+      "net_sales": 4376,
       "transactions": 134,
       "units_sold": 403,
       "gross_margin_pct": 0.4776
@@ -259081,7 +259081,7 @@
       "date": "2025-12-24",
       "store_id": 2,
       "department_id": 3,
-      "net_sales": 6896.0,
+      "net_sales": 6896,
       "transactions": 187,
       "units_sold": 454,
       "gross_margin_pct": 0.3223
@@ -259351,7 +259351,7 @@
       "date": "2025-12-24",
       "store_id": 5,
       "department_id": 3,
-      "net_sales": 3403.0,
+      "net_sales": 3403,
       "transactions": 131,
       "units_sold": 349,
       "gross_margin_pct": 0.3223
@@ -259459,7 +259459,7 @@
       "date": "2025-12-24",
       "store_id": 6,
       "department_id": 5,
-      "net_sales": 6571.0,
+      "net_sales": 6571,
       "transactions": 223,
       "units_sold": 310,
       "gross_margin_pct": 0.3944
@@ -259576,7 +259576,7 @@
       "date": "2025-12-24",
       "store_id": 7,
       "department_id": 8,
-      "net_sales": 2926.0,
+      "net_sales": 2926,
       "transactions": 82,
       "units_sold": 170,
       "gross_margin_pct": 0.3325
@@ -259720,7 +259720,7 @@
       "date": "2025-12-25",
       "store_id": 1,
       "department_id": 4,
-      "net_sales": 4748.0,
+      "net_sales": 4748,
       "transactions": 119,
       "units_sold": 201,
       "gross_margin_pct": 0.5427
@@ -259855,7 +259855,7 @@
       "date": "2025-12-25",
       "store_id": 2,
       "department_id": 9,
-      "net_sales": 5226.0,
+      "net_sales": 5226,
       "transactions": 137,
       "units_sold": 287,
       "gross_margin_pct": 0.3845
@@ -259963,7 +259963,7 @@
       "date": "2025-12-25",
       "store_id": 4,
       "department_id": 1,
-      "net_sales": 6308.0,
+      "net_sales": 6308,
       "transactions": 211,
       "units_sold": 678,
       "gross_margin_pct": 0.4776
@@ -260890,7 +260890,7 @@
       "date": "2025-12-26",
       "store_id": 6,
       "department_id": 4,
-      "net_sales": 4641.0,
+      "net_sales": 4641,
       "transactions": 148,
       "units_sold": 245,
       "gross_margin_pct": 0.5427
@@ -261016,7 +261016,7 @@
       "date": "2025-12-26",
       "store_id": 7,
       "department_id": 8,
-      "net_sales": 3575.0,
+      "net_sales": 3575,
       "transactions": 111,
       "units_sold": 250,
       "gross_margin_pct": 0.3325
@@ -262816,7 +262816,7 @@
       "date": "2025-12-29",
       "store_id": 3,
       "department_id": 8,
-      "net_sales": 6117.0,
+      "net_sales": 6117,
       "transactions": 176,
       "units_sold": 401,
       "gross_margin_pct": 0.3325
@@ -264427,7 +264427,7 @@
       "date": "2025-12-31",
       "store_id": 5,
       "department_id": 7,
-      "net_sales": 17426.0,
+      "net_sales": 17426,
       "transactions": 586,
       "units_sold": 2561,
       "gross_margin_pct": 0.2627
