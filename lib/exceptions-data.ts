@@ -8,7 +8,7 @@
  * the type definitions without pulling in next/headers.
  *
  * Filtering happens client-side via applyFilters; the dataset is
- * small enough (883 rows) that re-filtering on every keystroke is
+ * small enough (894 rows) that re-filtering on every keystroke is
  * imperceptible.
  */
 
@@ -75,10 +75,14 @@ const SEVERITY_ORDER: Record<string, number> = {
 // Rule format families. The catalog matches the upstream rule_ids the API
 // emits: revenue_band and avg_ticket_band carry dollar values, labor_pct_band
 // carries a fraction, transactions_band carries an integer count, and
-// yoy_comp carries a year-over-year ratio. Default branch is currency.
+// yoy_comp carries a year-over-year ratio. The z-score rule carries
+// dollars in actual_value and the rolling-mean baseline in expected_low,
+// but reads off a different sentence shape (no upper/lower band), so it
+// routes through its own description branch. Default branch is currency.
 const PERCENT_RULES = new Set(["labor_pct_band"]);
 const COUNT_RULES = new Set(["transactions_band"]);
 const RATIO_RULES = new Set(["yoy_comp"]);
+const ZSCORE_RULES = new Set(["revenue_zscore_28d"]);
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -108,6 +112,12 @@ function formatValueForRule(ruleId: string, value: number): string {
 }
 
 function synthesizeDescription(row: AnomalyFlagRaw): string {
+  if (ZSCORE_RULES.has(row.rule_id)) {
+    const actual = formatCurrency(row.actual_value);
+    const baseline = formatCurrency(row.expected_low);
+    const zMagnitude = row.severity_score.toFixed(2);
+    return `Actual ${actual} (${zMagnitude}σ from 28-day baseline ${baseline})`;
+  }
   const actual = formatValueForRule(row.rule_id, row.actual_value);
   const low = formatValueForRule(row.rule_id, row.expected_low);
   const high = formatValueForRule(row.rule_id, row.expected_high);
