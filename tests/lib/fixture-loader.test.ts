@@ -77,10 +77,16 @@ describe("fixture loaders", () => {
   });
 
   it("loadHealthFixture reports the offline-mode health envelope", () => {
+    // Business-correctness: pins the captured envelope's shape and
+    // values to the API repo's contract. The captured fixture is taken
+    // with the API in its own fixture-backed mode, so grocery reports
+    // healthy/offline while the macro pipeline is unavailable; the
+    // top-level rolls that up to degraded with a 200 upstream status.
     const data = loadHealthFixture();
-    expect(data.data_source).toBe("fixtures");
     expect(data.status).toBe("degraded");
-    expect(data.db).toBe("unavailable");
     expect(data.version).toBe("1.0.0");
+    expect(data.grocery_pipeline.status).toBe("healthy");
+    expect(data.grocery_pipeline.mode).toBe("offline");
+    expect(data.macro_pipeline.status).toBe("unavailable");
   });
 });
