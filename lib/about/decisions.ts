@@ -187,9 +187,9 @@ export const DECISIONS: DecisionCategory[] = [
         decision:
           "The portal has no login, no session management, no per-user state.",
         rationale:
-          "Stakeholder dashboards in this scale of company are typically deployed behind a corporate VPN or reverse proxy that handles auth. Building auth into the application layer would multiply complexity without serving a need.",
+          "The deployment pattern this targets is internal analytics tooling at 50-200 users, served inside a corporate network or behind a reverse-proxy auth boundary like NGINX with auth_request, Cloudflare Access, or an OAuth2 proxy like oauth2-proxy. At that scale and shape, application-layer auth is the wrong layer: every other internal tool in the same network already has identity, sessions, password reset, and SSO integration solved at the proxy, so duplicating that work in this app adds a second identity store to maintain for no gain in posture. The data model doesn't pull in the other direction either. Every endpoint serves the same data to every caller — no per-user state, no row-level security, no auth-driven content differentiation that an auth layer would need to drive.",
         cost:
-          "The portal is not multi-tenant-safe. Deployment must include an [auth boundary at the infrastructure layer](/about/operations#authentication).",
+          "The portal is not multi-tenant-safe. Deployment must include an [auth boundary at the infrastructure layer](/about/operations#authentication). Reverse-proxy auth also requires consuming whatever principal header the proxy injects (typically `X-Forwarded-User` or `X-Forwarded-Email`) and surfacing it in structured logs alongside `X-Request-ID`. That wiring isn't in the platform today — the request middleware propagates correlation IDs but doesn't capture a principal. Adding it would be a small middleware extension at the moment of first proxied deployment, not architectural work.",
         revisitWhen: "If the portal needs to serve external users or per-user customization.",
       },
       {
