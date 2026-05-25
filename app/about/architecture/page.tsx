@@ -8,7 +8,7 @@ export const metadata = {
 
 const PLATFORM_FLOW_DIAGRAM = `
 graph LR
-  subgraph Sim["Sim engine"]
+  subgraph Sim["Simulation engine"]
     SE[knot-shore-grocery-simulation-engine]
     SE_OUT[CSV files<br/>daily/MM/DD/YYYY/]
     SE --> SE_OUT
@@ -379,7 +379,7 @@ export default function ArchitecturePage() {
               href="/about/sim-engine"
               className="hover:text-foreground transition-colors underline"
             >
-              Sim engine
+              Simulation engine
             </Link>{" "}
             — synthetic data generation, determinism, anomaly injection
           </li>

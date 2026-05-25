@@ -29,7 +29,7 @@ const PAGES = [
   },
   {
     href: "/about/sim-engine",
-    title: "Sim engine",
+    title: "Simulation engine",
     description:
       "The synthetic data generator — determinism, anomaly injection, paired-year generation, key code structure.",
     available: true,

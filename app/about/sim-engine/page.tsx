@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MermaidDiagram } from "@/components/about/MermaidDiagram";
 
 export const metadata = {
-  title: "Sim engine — Knot Shore Portal",
+  title: "Simulation engine — Knot Shore Portal",
   description:
     "Architecture overview of the sim engine: determinism, anomaly injection, paired-year generation.",
 };
@@ -30,9 +30,9 @@ export default function SimEnginePage() {
           <Link href="/about" className="hover:text-foreground transition-colors">
             About
           </Link>{" "}
-          / Sim engine
+          / Simulation engine
         </p>
-        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Sim engine</h1>
+        <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Simulation engine</h1>
         <p className="text-lg text-muted-foreground">
           The synthetic data generator for the platform. Produces deterministic store and
           department-level retail data with injected anomalies and ground-truth labels.
