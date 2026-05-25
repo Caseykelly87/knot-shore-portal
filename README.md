@@ -188,6 +188,24 @@ There is no automated accessibility check in CI. Chart components from recharts 
 
 The honest summary: the portal is keyboard-navigable and uses semantic structure for the surfaces a triager would interact with, but it has not been audited against WCAG 2.2 AA as a deliberate program. Treating it that way would be a separate piece of work.
 
+## Design system
+
+The portal's visual language is a small set of brand color tokens and a three-typeface stack. There is no Figma file backing this; the tokens live in code, and the components consume them through Tailwind utilities and shadcn-derived primitives.
+
+### Tokens
+
+The Tailwind config at [tailwind.config.ts](tailwind.config.ts) defines the brand palette as five named tokens — `brand.deep-navy` (#1C2B3A), `brand.shore-rust` (#C05E35), `brand.kelp-green` (#3D6B52), `brand.sea-glass` (#7FAAA0), and `brand.salt-white` (#F5F0E8) — plus the severity-specific tokens (`severity.critical`, `severity.warning`, `severity.info` and their `-strong` variants) used for the exception badges. The semantic tokens that shadcn primitives consume (`primary`, `secondary`, `muted`, `accent`, `destructive`, `border`, `ring`, `background`, `foreground`, `card`, `popover`) are CSS custom properties defined in [app/globals.css](app/globals.css) and read into the Tailwind config as `hsl(var(--token))` references.
+
+The typography stack uses three Google Fonts loaded via [`next/font/google`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) in [app/layout.tsx](app/layout.tsx): Playfair Display for display headings (`font-display`), Libre Baskerville for serif body copy on the about pages (`font-serif`), and DM Sans for UI chrome and dashboard text (`font-sans`). `next/font` self-hosts the fonts at build time, so there is no third-party request for typography after the page loads.
+
+### Primitives
+
+[components/ui/](components/ui/) holds the shadcn-derived primitives: `button`, `card`, `sheet`, `input`, `select`, `popover`, `badge`, `skeleton`. Each is a copy of the standard shadcn template with the brand's tokens applied through the Tailwind config; the underlying interaction primitives are Radix-based. There is no `dialog` or `dropdown-menu` primitive in the directory because no surface in the portal needed one yet — the shadcn convention of "copy it in when you need it" means the primitive directory grows with the surface area rather than being installed in bulk.
+
+### Where the design system lives in code
+
+If a reviewer wants to read the design system top-to-bottom: start at [tailwind.config.ts](tailwind.config.ts) for the brand color and font tokens, [app/globals.css](app/globals.css) for the semantic tokens and any base styles, then [components/ui/](components/ui/) for the primitives. Brand colors are referenced as `text-brand-deep-navy`, `bg-brand-salt-white`, and so on; severity colors as `text-severity-critical`. Components do not redefine these locally.
+
 ## Quick start
 
 The portal supports two demo paths. Both are first-class operational modes.
