@@ -60,6 +60,58 @@ The portal hosts the platform's reader-grade documentation at `/about`. After `p
 
 Each page is a static React Server Component — no auth, no API calls, just content. The mermaid diagrams render via a small client component that lazy-loads mermaid from `cdn.jsdelivr.net` on mount; no npm package added.
 
+## Frontend architecture
+
+The portal is a Next.js 14 application using the App Router, written in TypeScript with strict mode on, styled with Tailwind, and built with `pnpm`. The codebase is small enough to read in a single sitting, and most of its real complexity lives in two places: the data layer that abstracts over the operating mode, and the exception triage page's client-side filter handling. The rest is conventional server-component rendering against pre-shaped data.
+
+### App Router and rendering modes
+
+Every route is a server component by default. The root layout at [app/layout.tsx](app/layout.tsx) wraps the page tree with the navigation chrome and the footer mode indicator; route segments under it render server-side and ship HTML directly to the browser. Client components are introduced by an explicit `"use client"` directive where interactivity needs the DOM — charts via recharts, popovers and sheets via Radix-derived primitives, sort controls on the index pages, and the URL-synced filter sidebar on `/exceptions`.
+
+The route segments and how each one renders:
+
+- `/` (daily dashboard) — server component that awaits `fetchDashboardData()` once per request. In offline mode the fetcher resolves via a dynamic JSON import and the page is statically prerendered at build time. In online mode the same fetcher proxies the upstream API and the page is dynamic per request.
+- `/stores` and `/stores/[id]` — server components rendering pre-computed per-store data. The drilldown reads its `id` from `params`; invalid IDs render [app/stores/[id]/not-found.tsx](app/stores/[id]/not-found.tsx) instead of throwing.
+- `/departments` and `/departments/[id]` — same shape as stores: a server-rendered index plus a per-department drilldown.
+- `/exceptions` — server component that fetches all 894 anomaly rows once, then renders a client-side filter shell. Filtering happens client-side; the URL is the single source of state.
+- `/about/*` — eight static documentation pages (`architecture`, `decisions`, `lessons`, `operations`, `sim-engine`, `etl`, `api`, `portal`) plus an index. Each is a server component returning JSX from typed constants under `lib/about/`. No data fetching, no client state.
+- `/api/*` — route handlers, not pages. Each one inspects `getApiMode()` and either reads from `fixtures/` or proxies to `API_BASE_URL`, with structured logging and prom-client metric updates on every call.
+
+The full lesson behind the rendering split lives at `/about/lessons` under "The Vercel deploy bug that became an architectural improvement". The short version: an earlier shape used `next/headers` to construct a self-fetch URL inside each server fetcher, which broke under Vercel's partial-prerender path. The fix restructured each fetcher so the offline branch reads JSON directly via dynamic `import()` and never calls `headers()`. The dashboard and `/exceptions` pages flipped from `ƒ (Dynamic)` to `○ (Static)` in the production build output as a side effect.
+
+### Data fetching layer
+
+The `lib/*-data.ts` modules are the data layer. Each module exposes a server-side fetcher (`fetchDashboardData`, `fetchStoreData`, `fetchExceptionsData`, and so on) that returns a TypeScript-typed shape mirroring the API's Pydantic response schemas, plus pure shape transformers that operate on the raw API output. Pages call the fetcher and receive a fully-shaped object; the shape transformer is what unit tests exercise.
+
+Two patterns hold across all of them. The first is that fetchers are mode-agnostic at the call site: a page awaits `fetchStoreData(storeId)`, and the fetcher branches internally on `getApiMode()` to decide whether to dynamic-`import()` a fixture or to issue an HTTP request. Pages and components never know which branch ran. The contract test at [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) verifies that the offline shapes match what the online API returns. The second is that pure transforms stay separate from IO. The fetcher's IO step returns raw API rows; a synchronous shape function runs over those rows and produces the typed dashboard / store / department / exceptions shape the page consumes. The transformers have no IO of their own, which is what lets the unit tests assert specific derived values without spinning up a fixture loader.
+
+The [lib/exceptions-data.ts](lib/exceptions-data.ts) and [lib/exceptions-data-server.ts](lib/exceptions-data-server.ts) split encodes a server/client boundary that took a build failure to surface. The first version of `exceptions-data.ts` imported `headers` from `next/headers` for request-correlation forwarding; that pulled a server-only dependency into a module the filter sidebar (a client component) imported. The build failed with the standard Next.js "you're importing a component that needs `next/headers`" diagnostic. The split that emerged: `exceptions-data.ts` is pure — types, filter predicates, the shape function — and safe to import from either side of the server/client boundary. `exceptions-data-server.ts` is server-only and holds the fetcher that uses `headers()`. The full write-up is at `/about/lessons` under "The next/headers error that revealed the server/client boundary".
+
+### Client islands
+
+Pages are server-rendered with small client islands where interactivity needs them. The islands are:
+
+- **Charts.** Every recharts component is a client component. The dashboard's `SalesTrendChart` and `TopStoresChart`, the store drilldown's `YearOverYearChart`, `DepartmentMixChart`, and `TopDepartmentsChart`, and the department drilldown's `DepartmentTrendChart` and `DepartmentByStoreChart` all sit under `"use client"`. They receive pre-computed data arrays as props from the server components above them; no chart fetches anything itself.
+- **Sort controls.** [components/stores/StoresIndexClient.tsx](components/stores/StoresIndexClient.tsx) and [components/departments/DepartmentsIndexClient.tsx](components/departments/DepartmentsIndexClient.tsx) own sort state in `useState`. Sort is in component state rather than URL state because a column sort is a local preference, not the kind of view someone would share via link.
+- **The exceptions filter shell.** [components/exceptions/ExceptionsContent.tsx](components/exceptions/ExceptionsContent.tsx), [FilterSidebar.tsx](components/exceptions/FilterSidebar.tsx), [ExceptionTable.tsx](components/exceptions/ExceptionTable.tsx), and [ExceptionDetailSheet.tsx](components/exceptions/ExceptionDetailSheet.tsx) are client components that share filter state through the `useExceptionsFilters` hook described in the next section.
+- **The mermaid loader.** [components/about/MermaidDiagram.tsx](components/about/MermaidDiagram.tsx) is a client component that lazy-loads the mermaid library from `cdn.jsdelivr.net` on mount. Only `/about/architecture` renders one, so the bundle never loads on any other route.
+- **The mode indicator.** [components/ModeIndicator.tsx](components/ModeIndicator.tsx) displays "Demo Mode" or "Live Data" based on `getApiMode()`. It is a client component so the layout (a server component) does not need to thread the mode value through props.
+
+### Component organization
+
+Components are grouped by feature surface, not by component type. The directories are:
+
+- [components/dashboard/](components/dashboard/) — surfaces specific to `/` (KPI cards, the sales-trend chart, the top-stores chart, the severity card, the window indicator, the trade-area comparison)
+- [components/store-drilldown/](components/store-drilldown/) — surfaces specific to `/stores/[id]`
+- [components/stores/](components/stores/) — the stores index
+- [components/departments/](components/departments/) — both the departments index and the per-department drilldown
+- [components/exceptions/](components/exceptions/) — the filter sidebar, table, and detail sheet
+- [components/about/](components/about/) — the mermaid diagram loader (the only client component the about pages need)
+- [components/ui/](components/ui/) — shadcn-derived primitives (button, card, sheet, input, select, popover, badge, skeleton)
+- [components/TopNav.tsx](components/TopNav.tsx) and [components/ModeIndicator.tsx](components/ModeIndicator.tsx) — chrome shared across all pages
+
+The split between `stores/` and `store-drilldown/` looks redundant at first read; it isn't. `stores/` holds the index view's single client component for the sortable table, and `store-drilldown/` holds the per-store charts and cards that the dynamic `[id]` route assembles. The two surfaces share no component code, and the directory split makes that explicit. Components reach across feature directories only through `components/ui/`. There is no shared "charts" or "tables" catch-all — the year-over-year chart on a store page and the sales-trend chart on the dashboard look similar but are different components with different data shapes.
+
 ## Quick start
 
 The portal supports two demo paths. Both are first-class operational modes.
