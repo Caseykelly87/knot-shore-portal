@@ -3,7 +3,7 @@ import { shapeExceptionsData, applyFilters } from "@/lib/exceptions-data";
 
 describe("shapeExceptionsData", () => {
   const sampleAnomalies = {
-    total: 5,
+    total: 7,
     limit: 200,
     offset: 0,
     items: [
@@ -62,6 +62,28 @@ describe("shapeExceptionsData", () => {
         severity_score: 0.45,
         severity_level: "info",
       },
+      {
+        date: "2025-09-20",
+        store_id: 5,
+        rule_id: "revenue_zscore_28d",
+        actual_value: 88000,
+        expected_low: 72000,
+        expected_high: 72000,
+        distance_from_band: 16000,
+        severity_score: 2.71,
+        severity_level: "warning",
+      },
+      {
+        date: "2024-09-24",
+        store_id: 4,
+        rule_id: "revenue_zscore_28d",
+        actual_value: 50215.27,
+        expected_low: 70707.48392857143,
+        expected_high: 70707.48392857143,
+        distance_from_band: 20492.21392857143,
+        severity_score: 4.01693390549636,
+        severity_level: "critical",
+      },
     ],
   };
 
@@ -75,7 +97,7 @@ describe("shapeExceptionsData", () => {
 
   it("returns all rows from the input", () => {
     const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
-    expect(shaped.rows).toHaveLength(5);
+    expect(shaped.rows).toHaveLength(7);
   });
 
   it("attaches store_name to each row from dim_stores", () => {
@@ -94,14 +116,18 @@ describe("shapeExceptionsData", () => {
     const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
     expect(shaped.rows[0].severity).toBe("critical");
     expect(shaped.rows[0].date).toBe("2025-12-01");
-    expect(shaped.rows[1].severity).toBe("warning");
-    expect(shaped.rows[1].date).toBe("2025-09-15");
+    expect(shaped.rows[1].severity).toBe("critical");
+    expect(shaped.rows[1].date).toBe("2024-09-24");
     expect(shaped.rows[2].severity).toBe("warning");
-    expect(shaped.rows[2].date).toBe("2025-08-05");
-    expect(shaped.rows[3].severity).toBe("info");
-    expect(shaped.rows[3].date).toBe("2025-11-10");
-    expect(shaped.rows[4].severity).toBe("info");
-    expect(shaped.rows[4].date).toBe("2025-07-20");
+    expect(shaped.rows[2].date).toBe("2025-09-20");
+    expect(shaped.rows[3].severity).toBe("warning");
+    expect(shaped.rows[3].date).toBe("2025-09-15");
+    expect(shaped.rows[4].severity).toBe("warning");
+    expect(shaped.rows[4].date).toBe("2025-08-05");
+    expect(shaped.rows[5].severity).toBe("info");
+    expect(shaped.rows[5].date).toBe("2025-11-10");
+    expect(shaped.rows[6].severity).toBe("info");
+    expect(shaped.rows[6].date).toBe("2025-07-20");
   });
 
   it("synthesizes description for revenue_band rules (currency formatting)", () => {
@@ -134,6 +160,34 @@ describe("shapeExceptionsData", () => {
     expect(yoyRow?.description).toBe("Actual 1.05x (expected 0.95x–1.15x)");
   });
 
+  it("synthesizes description for revenue_zscore_28d rules (currency plus z-magnitude)", () => {
+    // Business-correctness: the z-score rule carries the rolling-mean
+    // baseline in expected_low and the z-score magnitude in
+    // severity_score. The description has to surface all three numeric
+    // facts (actual, z-magnitude, baseline) for an analyst to triage
+    // the flag without re-opening the raw row.
+    const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
+    const zRow = shaped.rows.find(
+      (r) => r.ruleId === "revenue_zscore_28d" && r.date === "2025-09-20",
+    );
+    expect(zRow?.description).toBe("Actual $88,000 (2.71σ from 28-day baseline $72,000)");
+  });
+
+  it("formats the critical-severity z-score row with two-decimal magnitude and zero-fraction currency", () => {
+    // Business-correctness: pins the description of the only
+    // critical-severity row in the canonical set (store 4, 2024-09-24).
+    // The raw severity_score is 4.01693... and the raw expected_low is
+    // 70707.48392...; the rendered description must round magnitude to
+    // two decimals and currency to whole dollars per the file's local
+    // formatter conventions.
+    const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
+    const critRow = shaped.rows.find(
+      (r) => r.ruleId === "revenue_zscore_28d" && r.date === "2024-09-24",
+    );
+    expect(critRow?.severity).toBe("critical");
+    expect(critRow?.description).toBe("Actual $50,215 (4.02σ from 28-day baseline $70,707)");
+  });
+
   it("returns metadata about the dataset", () => {
     const shaped = shapeExceptionsData(sampleAnomalies, sampleDimStores);
     expect(shaped.uniqueSeverities).toEqual(["critical", "info", "warning"]);
@@ -141,6 +195,7 @@ describe("shapeExceptionsData", () => {
       "avg_ticket_band",
       "labor_pct_band",
       "revenue_band",
+      "revenue_zscore_28d",
       "transactions_band",
       "yoy_comp",
     ]);
