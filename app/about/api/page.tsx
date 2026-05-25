@@ -110,19 +110,44 @@ def resolved_store_metrics_path(self) -> str:
         <p>
           A production deployment would set all four paths as environment variables pointing at
           a mounted canonical volume; <code className="bg-muted px-1 rounded">/health</code>{" "}
-          would report{" "}
-          <code className="bg-muted px-1 rounded">&quot;grocery_data_source&quot;: &quot;live&quot;</code>;
-          an operator would{" "}
+          would then report{" "}
+          <code className="bg-muted px-1 rounded">grocery_pipeline.mode: &quot;online&quot;</code>{" "}
+          alongside its{" "}
+          <code className="bg-muted px-1 rounded">canonical_path</code>. An operator would{" "}
           <Link
             href="/about/operations#alerting-on-operational-signals"
             className="underline hover:text-foreground"
           >
             alert
           </Link>{" "}
-          if <code className="bg-muted px-1 rounded">/health</code> ever reported{" "}
-          <code className="bg-muted px-1 rounded">&quot;fixtures&quot;</code> unexpectedly
-          (the canonical sign of a misconfigured deployment that silently fell back).
+          if the same deployment ever flipped back to{" "}
+          <code className="bg-muted px-1 rounded">mode: &quot;offline&quot;</code> — the
+          canonical sign of a misconfigured deployment that silently fell back to bundled
+          fixtures.
         </p>
+        <p>
+          The current envelope is pipeline-split. Top-level{" "}
+          <code className="bg-muted px-1 rounded">status</code> is{" "}
+          <code className="bg-muted px-1 rounded">healthy</code>,{" "}
+          <code className="bg-muted px-1 rounded">degraded</code>, or{" "}
+          <code className="bg-muted px-1 rounded">unhealthy</code> (HTTP 200 for the first two,
+          503 for the third) with per-pipeline objects underneath:
+        </p>
+        <pre className="bg-muted p-3 rounded text-sm overflow-x-auto">
+          <code>{`{
+  "status": "healthy" | "degraded" | "unhealthy",
+  "version": "1.0.0",
+  "grocery_pipeline": {
+    "status": "healthy" | "unavailable",
+    "mode": "online" | "offline",
+    "canonical_path": "app/fixtures"
+  },
+  "macro_pipeline": {
+    "status": "healthy" | "unavailable",
+    "reason": "string when unavailable"
+  }
+}`}</code>
+        </pre>
         <p>
           The bundled fixtures themselves are byte-identical to the ETL repo&apos;s canonical
           parquets — same file size, same SHA-256, same row count. The integrity is verifiable
@@ -178,7 +203,7 @@ def resolved_store_metrics_path(self) -> str:
           <EndpointRow
             method="GET"
             path="/health"
-            body="Liveness check. Returns status: ok plus the grocery_data_source label (live/fixtures)."
+            body="Pipeline-split liveness check. Returns top-level status (healthy/degraded/unhealthy) plus per-pipeline objects: grocery (status, mode online/offline, canonical_path) and macro (status, reason when unavailable). HTTP 200 for healthy or degraded, 503 for unhealthy."
           />
           <EndpointRow
             method="GET"
