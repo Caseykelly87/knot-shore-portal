@@ -32,9 +32,11 @@ describe("fixture loaders", () => {
 
   it("loadAnomaliesFixture serves the canonical anomaly-flags set", () => {
     const data = loadAnomaliesFixture();
-    // 883 anomaly flags — the canonical count carried from the API.
-    expect(data.total).toBe(883);
-    expect(data.items).toHaveLength(883);
+    // 894 anomaly flags — the canonical count carried from the API
+    // after the revenue_zscore_28d rule joined the band and structural
+    // rules in the detection layer.
+    expect(data.total).toBe(894);
+    expect(data.items).toHaveLength(894);
     expect(data.items[0]).toMatchObject({
       date: "2024-07-05",
       store_id: 7,
@@ -67,8 +69,11 @@ describe("fixture loaders", () => {
       data.exception_count_by_severity.map((e) => [e.severity_level, e.count]),
     );
     // All three levels are always present; the recent window carries
-    // 482 info and 40 warning flags and no criticals.
-    expect(counts).toEqual({ info: 482, warning: 40, critical: 0 });
+    // 485 info and 42 warning flags. The full canonical now carries one
+    // critical-severity row from the revenue_zscore_28d rule, but it
+    // falls on 2024-09-24 — outside the H2 2025 recent window — so the
+    // pre-aggregated summary still reports zero criticals here.
+    expect(counts).toEqual({ info: 485, warning: 42, critical: 0 });
   });
 
   it("loadHealthFixture reports the offline-mode health envelope", () => {
