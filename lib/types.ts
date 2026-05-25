@@ -60,11 +60,18 @@ export interface DashboardSummary {
   daily_sales_trend: DailySalesPoint[];
 }
 
+export interface HealthPipeline {
+  status: string;
+  mode?: string;
+  canonical_path?: string;
+  reason?: string;
+}
+
 export interface Health {
   status: string;
   version: string;
-  db: string;
-  data_source: string;
+  grocery_pipeline: HealthPipeline;
+  macro_pipeline: HealthPipeline;
 }
 
 export interface DimStore {
