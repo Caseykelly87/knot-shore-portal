@@ -10,7 +10,7 @@ export const metadata = {
 const ETL_FLOW_DIAGRAM = `
 graph LR
   subgraph Source
-    SE[Sim engine output<br/>daily/MM/DD/YYYY/]
+    SE[Simulation engine output<br/>daily/MM/DD/YYYY/]
   end
 
   subgraph Adapter["src/sim_ingest.py"]
