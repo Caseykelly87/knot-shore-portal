@@ -54,8 +54,10 @@ The portal hosts the platform's reader-grade documentation at `/about`. After `p
 
 - `/about` — index of all documentation pages
 - `/about/architecture` — platform-wide architectural narrative with a mermaid data-flow diagram
-- `/about/decisions` — index of 29 architectural decisions in 6 categories (architecture, data integrity, deliberate non-features, API design, portal frontend, engineering practices). Each entry has the same shape: title, what was decided, rationale, cost, when to revisit.
-- `/about/sim-engine` — sim engine deep-dive: determinism, anomaly injection, paired-year mechanics
+- `/about/decisions` — 30 architectural decisions in 6 categories (Architecture, Data integrity, Deliberate non-features, API design, Portal frontend, Engineering practices). Each entry has the same shape: title, what was decided, rationale, cost, when to revisit.
+- `/about/lessons` — engineering lessons: bugs that took longer than expected, gotchas that revealed a boundary worth documenting, refactors that cleaned up earlier mistakes
+- `/about/operations` — running, deploying, and observing the platform in either operating mode
+- `/about/sim-engine` — simulation engine deep-dive: determinism, anomaly injection, paired-year mechanics
 - `/about/etl` — ETL deep-dive: source-adapter / transform separation, canonical fixtures, detection rules, the macro pipeline
 - `/about/api` — API deep-dive: dual-mode operation, endpoint catalog, schema discipline, observability stack
 - `/about/portal` — portal deep-dive: server-component data flow, URL-synced state, the next/headers boundary, charts
@@ -122,7 +124,7 @@ The portal has no React Context, no Zustand, no Redux, and no state library of a
 
 The exceptions filter set is the only nontrivial client state in the portal, and it lives entirely in the URL. [lib/use-exceptions-filters.ts](lib/use-exceptions-filters.ts) is a hook that reads filter values from `useSearchParams()` on every render and exposes an `updateFilters()` callback that pushes a new URL via `router.push()`. There is no internal `useState`; the URL is the source of truth.
 
-This shape gives three things for free. A URL like `/exceptions?severity=warning&store=3` reproduces the filtered view exactly, so a link can be shared. Browser back and forward navigate filter history because each `router.push()` adds a history entry. A page refresh preserves the filters because they were never in component memory. The trade-off is that filter changes go through Next's routing layer rather than a synchronous setState, so there is a small added latency per change; for a four-field filter on a 894-row table the latency is not perceptible.
+This shape gives three things for free. A URL like `/exceptions?severity=warning&store=3` reproduces the filtered view exactly, so a link can be shared. Browser back and forward navigate filter history because each `router.push()` adds a history entry. A page refresh preserves the filters because they were never in component memory. The trade-off is that filter changes go through Next's routing layer rather than a synchronous setState, so there is a small added latency per change; for a four-field filter on an 894-row table the latency is not perceptible.
 
 The filters themselves are narrow: a date range, one or more severities, an optional store ID, and an optional rule ID. The rendered table depends on those fields plus the static row set that the server component fetched once. Nothing else feeds into what renders, so nothing else needs to be state.
 
@@ -561,7 +563,7 @@ The portal has two production deployment targets that share the same Next.js app
 
 ### Public deployment (Vercel)
 
-The Vercel deployment is the URL linked from external surfaces (portfolios, résumés, presentations). Initial setup happens once in the Vercel UI:
+The Vercel deployment is the public URL for the demo. Initial setup happens once in the Vercel UI:
 
 1. Sign in to [vercel.com](https://vercel.com).
 2. Click **Add New → Project** and authorize the GitHub integration if prompted.
