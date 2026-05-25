@@ -166,6 +166,28 @@ Two design notes worth flagging. The `<script>` tag is only appended after the c
 
 Nothing in this section has a Lighthouse score or a Real User Monitoring number behind it. The portal has no instrumentation for browser-side performance and no synthetic-monitoring suite. The claims above are derivable from reading the build output and the bundle composition; a true performance review would need numbers the codebase does not currently produce.
 
+## Accessibility
+
+Accessibility on the portal is more about discipline than instrumentation. There is no automated a11y testing in CI, no axe or pa11y dependency, and no formal audit. What does exist is a consistent use of semantic HTML and the Radix-derived primitives that come with keyboard and screen-reader behavior already wired in.
+
+### Semantic markup
+
+The exception table uses `<table>`, `<thead>`, `<tbody>`, and `<th>` elements rather than divs, so a screen reader announces it as a table with column headers. The filter sidebar uses `<label>` elements for each filter group. Page headings step down in order (`<h1>` per page, `<h2>` per major section, no skipped levels). The mode indicator carries an explicit `aria-label` (`Data source: Live Data` or `Data source: Demo Mode`) so the badge is announced as state rather than read as a stray word.
+
+### Keyboard interaction
+
+The interactive primitives the portal uses for filtering and overlays are Radix-derived (`Sheet`, `Select`, `Popover`). Each ships with keyboard interaction built in: arrow keys move focus inside a select, Escape closes a sheet, focus is trapped inside a sheet while it is open, and focus returns to the trigger when the sheet closes. The portal does not override or rebind any of those behaviors. Sort buttons on the index tables carry `aria-pressed` so the active column is exposed as state, and the up/down chevrons are `aria-hidden` so they do not get read as text content.
+
+### Color and contrast
+
+The Tailwind config defines the brand palette as Deep Navy (#1C2B3A), Shore Rust (#C05E35), Kelp Green (#3D6B52), Sea Glass (#7FAAA0), and Salt White (#F5F0E8), with separate severity tokens (`severity-critical`, `severity-warning`, `severity-info` and their `-strong` variants) for the exception severity badges. The body and heading colors against the page background are WCAG AA at standard sizes; the severity badges use the `-strong` variants when sitting on the lighter `sea-glass` background so the contrast still clears AA.
+
+### Where this falls short
+
+There is no automated accessibility check in CI. Chart components from recharts render SVG and do not produce table-grade structure underneath; a screen-reader user listening to the dashboard's sales trend chart hears the chart as a graphic, not as a series of values. Focus styles on a few of the custom-styled buttons rely on the Tailwind `ring` utility, which is visible but not as obviously the system focus ring; this has not been spot-checked against high-contrast OS themes. The about pages have no `lang` attribute set per page (the document-level `lang="en"` covers them, but per-section language tagging would help a screen reader in a mixed-language deployment, which this codebase does not target).
+
+The honest summary: the portal is keyboard-navigable and uses semantic structure for the surfaces a triager would interact with, but it has not been audited against WCAG 2.2 AA as a deliberate program. Treating it that way would be a separate piece of work.
+
 ## Quick start
 
 The portal supports two demo paths. Both are first-class operational modes.
