@@ -134,6 +134,38 @@ The dashboard's date window works similarly. The page reads its window from the 
 
 The architectural decision to skip a state library is recorded under "Portal frontend" at `/about/decisions`. The short version: the platform's interactivity is filter-shaped, the filter sets are narrow, the data sets are bounded, and the URL already does what a client store would do — without the hydration boundary, the import weight, or the extra place a stale value can live. Adding a state library would buy nothing the current shape lacks. The cost noted in the decision body is that adding genuinely client-resident state (a drag-and-drop reordering of dashboard cards, say) would need to introduce one; the team would have to make that call when the requirement appeared.
 
+## Performance
+
+The portal serves three first-class user surfaces (dashboard, store drilldown, exceptions) plus a documentation hub. The performance posture is not the result of profile-and-tune; it is the result of architectural choices that keep the client bundle small and the render path direct. The headline facts: pages ship server-rendered HTML, charts receive pre-computed data rather than fetching client-side, the dashboard and `/exceptions` pages are statically prerendered, and the largest third-party dependency on the about pages is lazy-loaded outside the critical path.
+
+### Server components first
+
+Most of what reaches the browser is HTML, not JavaScript. The dashboard, store drilldown, department index and drilldown, exceptions, and every about page are server components at the top level. Client components are scoped to interactive surfaces — charts, sort controls, the filter sidebar, the mermaid loader, the mode indicator — so the JavaScript bundle ships only what those surfaces need.
+
+The KPI cards on the dashboard, the trade-area comparison, the dashboard window indicator, and the store header are all server components: they receive numbers, they format and render them, and they never become interactive. None of them appear in the client bundle.
+
+### Charts receive pre-computed data
+
+Every recharts component is a client component (recharts needs the DOM and a layout-aware container), but no chart fetches anything itself. The year-over-year chart on `/stores/[id]`, the sales trend chart on `/`, the top-stores chart, the department mix chart, the department trend and per-store charts — each receives a fully-shaped data prop from the server component above it. The shape function that derives those arrays runs server-side, inside the page's `await` of the fetcher.
+
+This matters for two reasons. First, no chart triggers a separate request after page mount, so time-to-interactive is not gated on a follow-up fetch. Second, the same shape function is unit-tested directly: the chart is the rendering of a value that the test asserts, rather than a thin wrapper around an in-component fetch.
+
+### Static prerender on offline
+
+In offline mode, the dashboard and `/exceptions` pages produce a `○ (Static)` line in the production build output. The fetcher reaches a dynamic `import()` of a JSON fixture, which Next can resolve at build time; no `headers()` call, no `searchParams` access, no other dynamic API touches the request path. The HTML is generated once at `pnpm build` and served from the CDN edge per request.
+
+The route that switched from dynamic to static was the Vercel deploy lesson described under Frontend architecture. The before-state had the server fetcher calling `headers()` to construct a self-fetch URL; that call forced Next into the dynamic-render path even when no per-request information was actually needed. Removing it dropped the page back to static. The dashboard is the most-visited demo URL, and serving it from the edge with no server function invocation per request matters for cold-start latency on a Vercel free tier.
+
+### Mermaid lazy-loaded from CDN
+
+The architecture page renders a mermaid data-flow diagram. The mermaid library is roughly 400KB minified and is not in the portal's npm dependencies; it is loaded at runtime from `cdn.jsdelivr.net` by [components/about/MermaidDiagram.tsx](components/about/MermaidDiagram.tsx) on mount. Pages that do not render a mermaid diagram (every route outside `/about/architecture`) never trigger the load.
+
+Two design notes worth flagging. The `<script>` tag is only appended after the component mounts, and the loader checks for an existing tag before adding a new one, so a page with multiple mermaid blocks does not download the library twice. The fallback if the CDN is unreachable is a styled error message rather than a crash; the diagram is documentation, and a broken diagram should not break the page that hosts it.
+
+### Where the perf posture has not been measured
+
+Nothing in this section has a Lighthouse score or a Real User Monitoring number behind it. The portal has no instrumentation for browser-side performance and no synthetic-monitoring suite. The claims above are derivable from reading the build output and the bundle composition; a true performance review would need numbers the codebase does not currently produce.
+
 ## Quick start
 
 The portal supports two demo paths. Both are first-class operational modes.
