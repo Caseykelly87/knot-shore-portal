@@ -112,6 +112,28 @@ Components are grouped by feature surface, not by component type. The directorie
 
 The split between `stores/` and `store-drilldown/` looks redundant at first read; it isn't. `stores/` holds the index view's single client component for the sortable table, and `store-drilldown/` holds the per-store charts and cards that the dynamic `[id]` route assembles. The two surfaces share no component code, and the directory split makes that explicit. Components reach across feature directories only through `components/ui/`. There is no shared "charts" or "tables" catch-all — the year-over-year chart on a store page and the sales-trend chart on the dashboard look similar but are different components with different data shapes.
 
+## State management
+
+The portal has no React Context, no Zustand, no Redux, and no state library of any kind. Every piece of state that lives longer than a single render is either in the URL or derived from a request parameter the server component reads. The interactivity surface is small enough that this works without contortion, and skipping a state library cuts hydration boundaries, prop-drilling alternatives, and client bundle weight.
+
+### The URL as state
+
+The exceptions filter set is the only nontrivial client state in the portal, and it lives entirely in the URL. [lib/use-exceptions-filters.ts](lib/use-exceptions-filters.ts) is a hook that reads filter values from `useSearchParams()` on every render and exposes an `updateFilters()` callback that pushes a new URL via `router.push()`. There is no internal `useState`; the URL is the source of truth.
+
+This shape gives three things for free. A URL like `/exceptions?severity=warning&store=3` reproduces the filtered view exactly, so a link can be shared. Browser back and forward navigate filter history because each `router.push()` adds a history entry. A page refresh preserves the filters because they were never in component memory. The trade-off is that filter changes go through Next's routing layer rather than a synchronous setState, so there is a small added latency per change; for a four-field filter on a 894-row table the latency is not perceptible.
+
+The filters themselves are narrow: a date range, one or more severities, an optional store ID, and an optional rule ID. The rendered table depends on those fields plus the static row set that the server component fetched once. Nothing else feeds into what renders, so nothing else needs to be state.
+
+### Server-derived state
+
+For routes parameterized on a segment — `/stores/[id]`, `/departments/[id]` — the URL segment IS the state. The server component reads `params.id`, validates it, and renders accordingly. There is no client-side store-id state object that synchronizes with the URL; the URL is read directly inside an `async` server component and that read is the only source.
+
+The dashboard's date window works similarly. The page reads its window from the API's `/dashboard-summary` response (which carries the canonical demo dates as part of the payload) rather than from a client-managed date range. A future date-range picker on the dashboard would extend the same pattern: encode the range in `searchParams`, read it server-side, pass it into the fetcher.
+
+### Why no global state library
+
+The architectural decision to skip a state library is recorded under "Portal frontend" at `/about/decisions`. The short version: the platform's interactivity is filter-shaped, the filter sets are narrow, the data sets are bounded, and the URL already does what a client store would do — without the hydration boundary, the import weight, or the extra place a stale value can live. Adding a state library would buy nothing the current shape lacks. The cost noted in the decision body is that adding genuinely client-resident state (a drag-and-drop reordering of dashboard cards, say) would need to introduce one; the team would have to make that call when the requirement appeared.
+
 ## Quick start
 
 The portal supports two demo paths. Both are first-class operational modes.
