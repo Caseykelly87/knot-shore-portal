@@ -6,6 +6,8 @@ Next.js 14 application that renders stakeholder dashboards for the Knot Shore Gr
 
 The portal supports two operational modes: offline (default, serves bundled JSON fixtures) and online (proxies to a running upstream API). Both modes are first-class production paths; neither is a degraded fallback. A clone-and-run demo against fixtures looks the same as a live deployment against an API.
 
+This README is written to do two things at once. As an operator's guide it covers how to run the portal locally in either mode, how to read its logs and metrics, and how to deploy it. As a frontend-engineering overview it describes how the App Router code is organized, where state lives, what the performance posture is, what the testing approach is, and where the design system lives in code. A reader who only wants to run the app can skip from [Quick start](#quick-start) to the end. A reader reviewing the codebase as an artifact can read [Frontend architecture](#frontend-architecture) through [Engineering practices](#engineering-practices) and then click into [`/about/decisions`](app/about/decisions/page.tsx), [`/about/lessons`](app/about/lessons/page.tsx), and [`/about/architecture`](app/about/architecture/page.tsx) for the deeper reasoning.
+
 ## The platform
 
 ```
@@ -521,6 +523,30 @@ This file is the last link in a contract chain that starts at the sim engine. Th
 ### What is not tested
 
 No end-to-end browser tests run on this repo. There is no Playwright suite, no Cypress, no visual regression tooling, and no synthetic uptime monitor on the deployed instance. The about pages do not have individual test files; their content is reviewed in PR rather than asserted in code, on the rationale that asserting prose against a snapshot adds maintenance cost without catching anything a careful read would not. Chart components — KPI cards, recharts wrappers, card-shaped server components — are also not unit tested. The rendering is reviewed visually, and the data those components render is asserted at the shape-transformer layer, so a wrong number cannot escape to a chart without a test failing first.
+
+## Engineering practices
+
+### TypeScript and the contract surface
+
+[tsconfig.json](tsconfig.json) has `"strict": true` and the codebase compiles cleanly under it. [lib/types.ts](lib/types.ts) mirrors the API's Pydantic response schemas one-for-one: the `Store`, `StoreMetric`, `DepartmentMetric`, `Anomaly`, `Health`, and `DashboardSummary` types match the field names, optionality, and types the API serves. The contract test at [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) verifies the types stay aligned with what the API actually returns; a schema drift surfaces there before it reaches a runtime error in a page.
+
+### Linting and formatting
+
+`pnpm lint` runs ESLint via `next lint` against the Next.js default config. No Prettier configuration is committed; the codebase is consistent enough by editor convention that adding a formatter would be more churn than payoff for the current contributor count. If a future contributor wants to add one, [`prettier` with `prettier-plugin-tailwindcss`](https://github.com/tailwindlabs/prettier-plugin-tailwindcss) is the canonical pairing for a Tailwind codebase.
+
+### Git discipline
+
+Commits follow the Conventional Commits format (`feat(scope):`, `fix(scope):`, `test(scope):`, `docs(scope):`, `refactor(scope):`, `chore(scope):`). Feature work happens on a branch named `feature/<descriptive>` or `fix/<descriptive>`, opened against `dev`. The `dev` branch is the default integration target; `main` advances when `dev` is cut for release. Commit subjects are in imperative voice and stay under 72 characters; bodies explain why rather than restating the diff.
+
+### The about pages as engineering artifact
+
+The most useful pointer this README can give a reviewer is to the `/about` pages. They are part of the codebase, deployed alongside it, and they hold the reasoning that does not fit in code comments or commit bodies. Three of them are worth a reader's time even on a short skim:
+
+- [`/about/architecture`](app/about/architecture/page.tsx) — the platform-wide architectural narrative, with a mermaid data-flow diagram and per-layer responsibilities across the simulation engine, ETL, API, and this portal.
+- [`/about/decisions`](app/about/decisions/page.tsx) — 30 architectural decisions across six categories (Architecture, Data integrity, Deliberate non-features, API design, Portal frontend, Engineering practices). Each entry has the same shape: title, what was decided, rationale, cost, when to revisit. The "Portal frontend" category is the one a frontend reviewer will spend the most time in.
+- [`/about/lessons`](app/about/lessons/page.tsx) — engineering lessons from building the platform: bugs that took longer than they should have, gotchas that revealed a boundary worth documenting, and refactors that cleaned up an architectural mistake. The `next/headers` boundary story and the Vercel-deploy-static-prerender story are both there.
+
+These pages exist to make the codebase legible to readers without the author's full context. If a reviewer reads three things in this repo, the README would point them at those three.
 
 ## Tech stack
 
