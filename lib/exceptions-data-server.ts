@@ -19,8 +19,10 @@ import {
   shapeExceptionsData,
   type ExceptionsData,
   type AnomaliesEnvelope,
+  type AnomalyFlagRaw,
   type DimStoreRaw,
 } from "@/lib/exceptions-data";
+import { fetchPaginated } from "@/lib/pagination";
 
 interface RawExceptionsInputs {
   anomalies: AnomaliesEnvelope;
@@ -41,49 +43,24 @@ async function loadRawExceptionsInputs(): Promise<RawExceptionsInputs> {
 
   const base = getBaseUrl();
 
-  const [anomaliesRes, dimStoresRes] = await Promise.all([
-    fetch(`${base}/api/anomalies?limit=200`, { cache: "no-store" }),
+  const [anomaliesEnvelope, dimStoresRes] = await Promise.all([
+    fetchPaginated<AnomalyFlagRaw>(base, "/api/anomalies"),
     fetch(`${base}/api/dim-stores`, { cache: "no-store" }),
   ]);
 
-  if (!anomaliesRes.ok || !dimStoresRes.ok) {
-    throw new Error(
-      `Exceptions data fetch failed: anomalies=${anomaliesRes.status} dimStores=${dimStoresRes.status}`,
-    );
+  if (!dimStoresRes.ok) {
+    throw new Error(`Exceptions data fetch failed: dimStores=${dimStoresRes.status}`);
   }
 
-  const [page1, dimStores] = await Promise.all([
-    anomaliesRes.json() as Promise<AnomaliesEnvelope>,
-    dimStoresRes.json() as Promise<DimStoreRaw[]>,
-  ]);
-
-  // Online mode respects pagination, so fan out additional fetches for
-  // pages 2..N when the first page didn't cover total.
-  let allItems = page1.items;
-
-  if (page1.items.length < page1.total) {
-    const remainingPages: Promise<AnomaliesEnvelope>[] = [];
-    for (let offset = page1.items.length; offset < page1.total; offset += 200) {
-      remainingPages.push(
-        fetch(`${base}/api/anomalies?limit=200&offset=${offset}`, { cache: "no-store" }).then((r) => {
-          if (!r.ok) throw new Error(`Pagination fetch failed at offset=${offset}: ${r.status}`);
-          return r.json();
-        }),
-      );
-    }
-    const additionalPages = await Promise.all(remainingPages);
-    for (const page of additionalPages) {
-      allItems = allItems.concat(page.items);
-    }
-  }
+  const dimStores = (await dimStoresRes.json()) as DimStoreRaw[];
 
   return {
     anomalies: {
-      total: page1.total,
-      limit: page1.limit,
+      total: anomaliesEnvelope.total,
+      limit: anomaliesEnvelope.limit ?? anomaliesEnvelope.items.length,
       offset: 0,
-      items: allItems,
-    },
+      items: anomaliesEnvelope.items,
+    } satisfies AnomaliesEnvelope,
     dimStores,
   };
 }
