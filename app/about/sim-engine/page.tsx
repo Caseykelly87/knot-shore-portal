@@ -384,6 +384,42 @@ rng = np.random.default_rng(date_seed)`}</code>
         </p>
       </section>
 
+      <section className="space-y-4" id="schema-deferred">
+        <h2 className="text-2xl font-semibold tracking-tight">Schema additions deferred</h2>
+        <p>
+          Two columns sit just outside the current store-day schema:{" "}
+          <code className="bg-muted px-1 rounded">labor_hours</code> and{" "}
+          <code className="bg-muted px-1 rounded">active_drawers</code>. Both are reasonable
+          additions to the sim engine&apos;s daily output and to the ETL&apos;s canonical
+          schema; neither is in scope today.
+        </p>
+        <p>
+          <code className="bg-muted px-1 rounded">labor_hours</code> would pair with the
+          existing <code className="bg-muted px-1 rounded">labor_cost</code> column. Together
+          they make scheduling-vs-actual variance detectable as a new signal: a store whose
+          hours track demand while cost overshoots suggests overtime drift; the reverse
+          suggests understaffing. The sim engine would generate hours deterministically from a
+          per-store staffing model parameterized similarly to the existing trade-area profiles,
+          the ETL schema would absorb the new column, and the band-rules layer would gain a
+          labor-hours rule that fires alongside the existing labor-cost-pct band.
+        </p>
+        <p>
+          <code className="bg-muted px-1 rounded">active_drawers</code> would carry the count of
+          registers open per store-day. Paired with{" "}
+          <code className="bg-muted px-1 rounded">transactions</code>, it makes
+          lane-utilization patterns visible: low drawers against high transactions points at
+          a bottleneck; high drawers against low transactions points at excess capacity. The
+          detection layer would gain a structural rule on the ratio, in the same shape as the
+          existing department_coverage rule.
+        </p>
+        <p>
+          Both are bounded extensions — schema columns, deterministic generators, one rule each
+          — rather than reshapes of the existing data model. They stay deferred because the
+          current schema already supports the operational questions the dashboards answer.
+          These are second-order capabilities, not first-order ones.
+        </p>
+      </section>
+
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>

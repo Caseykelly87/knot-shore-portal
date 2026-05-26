@@ -384,6 +384,74 @@ export default function PortalPage() {
         </p>
       </section>
 
+      <section className="space-y-4" id="engineering-deferred">
+        <h2 className="text-2xl font-semibold tracking-tight">Engineering items deferred</h2>
+        <p>
+          A handful of small items surfaced during the most recent code review and sit below
+          the line because each is genuinely small. None of them changes behavior the user
+          sees; documenting them keeps the picture accurate for a future reader.
+        </p>
+        <ul className="list-disc list-outside ml-5 space-y-3 text-sm">
+          <li>
+            <strong>
+              <code className="bg-muted px-1 rounded">lib/api-mode.ts</code> comment is out of
+              step with its body.
+            </strong>{" "}
+            The header comment claims the mode is read once at module load; the implementation
+            reads <code className="bg-muted px-1 rounded">process.env.API_MODE</code> on every
+            call. Either cache the value at module-load time (matches the comment, costs
+            nothing) or rewrite the comment to match the call-time read. Trivial either way.
+          </li>
+          <li>
+            <strong>
+              <code className="bg-muted px-1 rounded">scripts/capture-fixtures.ts</code> assumes
+              a JSON body on every response.
+            </strong>{" "}
+            The script deliberately lets a 503 status through to surface upstream issues
+            clearly, then calls <code className="bg-muted px-1 rounded">.json()</code> on the
+            response — which would throw without a useful message if the upstream returned 503
+            with an HTML body. A defensive content-type check before the JSON parse would print
+            the raw body for diagnosis instead.
+          </li>
+          <li>
+            <strong>
+              <code className="bg-muted px-1 rounded">pino-pretty</code> is loaded via{" "}
+              <code className="bg-muted px-1 rounded">require()</code> with an inline
+              eslint-disable.
+            </strong>{" "}
+            The pattern is correct for a dev-only transport that should not be bundled into
+            production, but it leaves an inline disable at the top of the logger module.
+            Isolating the <code className="bg-muted px-1 rounded">require()</code> in a thin{" "}
+            <code className="bg-muted px-1 rounded">logger-pretty-transport.ts</code> module
+            would push the disable to a single file the rest of the code-base does not see.
+            Cosmetic, but it cleans up the logger&apos;s top-of-file.
+          </li>
+          <li>
+            <strong>
+              <code className="bg-muted px-1 rounded">dim-stores</code> fetches duplicated
+              across three data modules.
+            </strong>{" "}
+            <code className="bg-muted px-1 rounded">lib/store-data.ts</code>,{" "}
+            <code className="bg-muted px-1 rounded">lib/dashboard-data.ts</code>, and{" "}
+            <code className="bg-muted px-1 rounded">lib/exceptions-data-server.ts</code> each
+            contain a small inline fetch for{" "}
+            <code className="bg-muted px-1 rounded">/api/dim-stores</code>. Three copies is the
+            rule-of-three threshold called out in{" "}
+            <Link
+              href="/about/lessons#rule-of-three-caught-late"
+              className="underline hover:text-foreground"
+            >
+              Rule of three caught late
+            </Link>
+            ; the judgment call here is that the three copies are short enough and divergent
+            enough in surrounding usage that a fourth callsite is the right trigger for
+            extraction, not the third. If a fourth appears, it gets folded into a shared{" "}
+            <code className="bg-muted px-1 rounded">fetchJson&lt;T&gt;</code> helper alongside
+            the existing proxy-route and pagination extractions.
+          </li>
+        </ul>
+      </section>
+
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>

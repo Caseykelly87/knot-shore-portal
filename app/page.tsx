@@ -22,6 +22,15 @@ export default async function DashboardPage() {
         />
       </header>
 
+      <p className="max-w-3xl text-muted-foreground">
+        This page is the start-of-day view for operations leads and regional managers across the
+        eight Knot Shore Grocery stores. It shows period-level revenue and transaction totals
+        against prior-period and year-over-year baselines, the leading stores by revenue, the
+        exception severity breakdown, and a trade-area comparison. From here a viewer decides
+        which stores need a closer look, which exceptions are worth triaging today, and which
+        trade-area patterns are worth pursuing further.
+      </p>
+
       <KPICardsRow data={data} />
       <SalesTrendChart data={data.dailyTrend} />
 

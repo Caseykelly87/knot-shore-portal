@@ -110,6 +110,30 @@ const SECTIONS: OperationsSection[] = [
         ),
       },
       {
+        heading: "Principal-header middleware wiring",
+        body: (
+          <p>
+            The API already threads <code className="bg-muted px-1 rounded">X-Request-ID</code>{" "}
+            through every layer via request-correlation middleware; the same middleware shape is
+            the extension point that would capture the authenticated principal at the first
+            proxied deployment. Reverse-proxy auth (the simpler option above) terminates the
+            auth check at the proxy and forwards the result as a header like{" "}
+            <code className="bg-muted px-1 rounded">X-Forwarded-User</code>; an API middleware
+            reads that header into a request-scoped context object that downstream handlers and
+            log lines can rely on. This pairs with the{" "}
+            <Link
+              href="/about/decisions#no-user-authentication"
+              className="underline hover:text-foreground"
+            >
+              No user authentication
+            </Link>{" "}
+            decision card — that card explains why nothing in the platform reads a principal
+            today, and the middleware shape above is the specific surface that absorbs one when
+            it&apos;s added.
+          </p>
+        ),
+      },
+      {
         heading: "Authorization",
         body: (
           <p>
@@ -184,6 +208,35 @@ const SECTIONS: OperationsSection[] = [
         ),
       },
       {
+        heading: "Log aggregation",
+        body: (
+          <p>
+            Both Python repos and the portal already emit structured JSON logs; production
+            needs somewhere for those lines to be queryable. Loki paired with the same Grafana
+            that scrapes the metrics is the lowest-friction path; Datadog or an existing ELK
+            stack are equally fine choices, and the structured shape of the log lines is the
+            same either way. The runbook content that goes alongside is concrete: what to do
+            when <code className="bg-muted px-1 rounded">upstream_unreachable</code> spikes,
+            what to check when the canonical regeneration falls behind schedule, and how to
+            confirm whether a portal route is silently degrading to its fallback fixture.
+          </p>
+        ),
+      },
+      {
+        heading: "OpenTelemetry traces",
+        body: (
+          <p>
+            Structured logs and Prometheus metrics cover two legs of the observability triad;
+            traces would cover the third. The spans worth wiring first are the request path
+            through the request-correlation middleware, the upstream fetch from each{" "}
+            <code className="bg-muted px-1 rounded">/api/*</code> route handler when the portal
+            runs in online mode, and the data-layer transformations on the API side. With those
+            three in place, a slow page render can be attributed to a specific upstream hop
+            rather than guessed at from log timestamps.
+          </p>
+        ),
+      },
+      {
         heading: "Alerting on operational signals",
         body: (
           <p>
@@ -233,6 +286,22 @@ const SECTIONS: OperationsSection[] = [
       </p>
     ),
     considerations: [
+      {
+        heading: "A coverage gate in CI",
+        body: (
+          <p>
+            The CI workflows currently run lint, type-check, and the test suites but apply no
+            coverage threshold. Adding{" "}
+            <code className="bg-muted px-1 rounded">--coverage --coverage.thresholds.lines=80</code>{" "}
+            to the portal&apos;s vitest invocation and the equivalent{" "}
+            <code className="bg-muted px-1 rounded">--cov-fail-under=80</code> to the Python
+            repos&apos; pytest invocations would catch regressions on lines that are currently
+            exercised. Coverage percentage is a poor metric on its own — the threshold catches
+            drops, not gaps — but the gate is cheap to install and cheap to maintain, and the
+            alternative is discovering uncovered code only after a regression lands.
+          </p>
+        ),
+      },
       {
         heading: "Environment promotion",
         body: (

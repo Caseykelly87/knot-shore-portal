@@ -442,6 +442,64 @@ export default function EtlPage() {
           <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code>.
         </p>
       </section>
+
+      <section className="space-y-4" id="detection-roadmap">
+        <h2 className="text-2xl font-semibold tracking-tight">Detection layer forward work</h2>
+        <p>
+          The detection layer in its current shape — seven rules, a unified schema, eval-script
+          ground truth — is the working surface for the canonical window. Several extensions
+          have been considered and deferred. Each is shaped here as what it would do, why it
+          sits below the current line, and an honest sense of scope.
+        </p>
+        <ul className="list-disc list-outside ml-5 space-y-3 text-sm">
+          <li>
+            <strong>Vectorize the static-band rules.</strong> The five band rules currently
+            iterate with <code className="bg-muted px-1 rounded">for row in enriched.itertuples()</code>,
+            which is fine at canonical scale (2,944 store-day rows) but reads as iterative
+            against a code-base whose other hot paths are vectorized. A pandas/numpy rewrite —
+            column-wise comparison against the per-profile band bounds, severity assignment via{" "}
+            <code className="bg-muted px-1 rounded">np.select</code> — is roughly 80 lines and
+            exists more for pandas hygiene than for runtime performance at current scale.
+          </li>
+          <li>
+            <strong>Empirical baselines for the remaining band metrics.</strong> The{" "}
+            <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> rule is the first
+            instance of the learned-baseline pattern. Extending it to labor_pct, avg_ticket, and
+            transactions would replace static thresholds with per-store learned expectations,
+            with the static bands staying as fallback for cold-start periods where fewer than 14
+            days of history exist. The shape mirrors the revenue rule: 28-day trailing mean and
+            stddev per store-metric, |z| ≥ 2.5 fires, severity buckets at 3 and 4.
+          </li>
+          <li>
+            <strong>Multivariate detection via Mahalanobis distance.</strong> Current rules
+            evaluate one metric at a time. A multivariate rule would compute the Mahalanobis
+            distance of the (revenue, transactions, avg_ticket) triple for each store-day
+            against the per-store covariance matrix and flag dates where the joint distribution
+            sits outside the expected ellipsoid — catching cases where no single metric is
+            outside band but the combination is implausible. Roughly 200 lines; needs at least
+            60 days of per-store history to fit covariances stably, so cold-start handling
+            mirrors the z-score rule.
+          </li>
+          <li>
+            <strong>Drift detection.</strong> The z-score rule catches per-day point anomalies
+            but does not detect when a store&apos;s baseline itself is shifting. A separate
+            drift layer would compare a recent rolling window (28 or 56 days) against a
+            longer-window expectation (180 days) and flag stores whose mean has moved by more
+            than a configured threshold. Operationally this is different work — &quot;the store
+            is changing&quot; rather than &quot;this day is anomalous&quot; — and it deserves
+            its own rule kind in the schema rather than a tweak to the z-score one.
+          </li>
+          <li>
+            <strong>Forecasting endpoint.</strong> A{" "}
+            <code className="bg-muted px-1 rounded">/forecasts</code> route returning 7-day and
+            30-day per-store revenue projections, served by ARIMA, Prophet, or a learned model.
+            Framed as deferred deliberately: forecasting is a different problem from anomaly
+            detection — different objective, different evaluation, different failure modes — and
+            bolting it onto the detection layer would muddy both. If it ships, it ships as its
+            own concern with its own contract.
+          </li>
+        </ul>
+      </section>
     </article>
   );
 }
