@@ -19,6 +19,8 @@
  * handle the fallback to fixture.
  */
 
+import { trackResponse } from "@/lib/data-source-state";
+
 const PAGE_SIZE = 200;
 
 export interface PaginatedEnvelope<T> {
@@ -56,6 +58,7 @@ export async function fetchPaginated<T>(
     if (!res.ok) {
       throw new Error(`paginated fetch failed: ${res.status} for ${url}`);
     }
+    trackResponse(res);
     const body = (await res.json()) as PaginatedEnvelope<T>;
     total = body.total;
     items.push(...body.items);

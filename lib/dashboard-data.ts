@@ -19,6 +19,7 @@
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
 import { fetchPaginated } from "@/lib/pagination";
+import { trackResponse } from "@/lib/data-source-state";
 import {
   loadFullWindowStoreMetrics,
   type StoreMetricItem,
@@ -370,6 +371,7 @@ async function loadRawDashboardInputs(): Promise<RawDashboardInputs> {
     throw new Error(`Dashboard data fetch failed: dimStores=${dimStoresRes.status}`);
   }
 
+  trackResponse(dimStoresRes);
   const dimStores = (await dimStoresRes.json()) as DimStoreRaw[];
 
   const anomalies: AnomaliesRaw = {

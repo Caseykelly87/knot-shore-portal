@@ -23,6 +23,7 @@ import {
   type DimStoreRaw,
 } from "@/lib/exceptions-data";
 import { fetchPaginated } from "@/lib/pagination";
+import { trackResponse } from "@/lib/data-source-state";
 
 interface RawExceptionsInputs {
   anomalies: AnomaliesEnvelope;
@@ -52,6 +53,7 @@ async function loadRawExceptionsInputs(): Promise<RawExceptionsInputs> {
     throw new Error(`Exceptions data fetch failed: dimStores=${dimStoresRes.status}`);
   }
 
+  trackResponse(dimStoresRes);
   const dimStores = (await dimStoresRes.json()) as DimStoreRaw[];
 
   return {

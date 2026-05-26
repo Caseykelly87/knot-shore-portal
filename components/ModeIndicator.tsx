@@ -1,14 +1,27 @@
 import { getApiMode } from "@/lib/api-mode";
+import { wasFallbackUsed } from "@/lib/data-source-state";
+
+type IndicatorState = "demo" | "live" | "live-fallback";
+
+function resolveState(): IndicatorState {
+  if (getApiMode() !== "online") return "demo";
+  return wasFallbackUsed() ? "live-fallback" : "live";
+}
 
 export function ModeIndicator() {
-  const mode = getApiMode();
-  const label = mode === "online" ? "Live Data" : "Demo Mode";
+  const state = resolveState();
+  const label =
+    state === "demo"
+      ? "Demo Mode"
+      : state === "live-fallback"
+        ? "Live Data (Fallback)"
+        : "Live Data";
   const colorClasses =
-    mode === "online"
+    state === "live"
       ? "bg-brand-kelp-green/10 text-brand-kelp-green border-brand-kelp-green/30"
       : "bg-severity-warning/10 text-severity-warning-strong border-severity-warning/30";
   const dotClasses =
-    mode === "online" ? "bg-brand-kelp-green" : "bg-severity-warning";
+    state === "live" ? "bg-brand-kelp-green" : "bg-severity-warning";
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}
