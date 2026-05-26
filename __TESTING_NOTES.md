@@ -7,9 +7,9 @@ This repository is the last stage in the data pipeline: the simulation
 engine produces daily CSVs, the ETL transforms them into canonical
 parquets, the API reads those parquets and serves them over HTTP, and
 this portal consumes the API's responses and renders them. The
-conventions below are inherited from the sim engine's, ETL's, and API's
-`__TESTING_NOTES.md` and extended for the portal's position at the end
-of the chain.
+conventions below are inherited from the upstream `__TESTING_NOTES.md`
+files (sim engine, ETL, API) and extended for the portal's position at
+the end of the chain.
 
 ## Established patterns
 
@@ -135,39 +135,32 @@ what makes the chain meaningful. A failure here after regenerating a
 fixture means the API's output changed in a way the portal must account
 for.
 
-## The vitest race
+## Imports in API route tests
 
-`tests/api/store-metrics.test.ts` carried a known race: the CI gate ran
-`pnpm vitest run --no-file-parallelism` to serialize test-file execution
-and keep it from failing intermittently.
+The two API route test files — `tests/api/store-metrics.test.ts` and
+`tests/api/proxy-route.test.ts` — both import their route handlers
+statically at the top of the file. Earlier portal history had a
+dynamic-import pattern in `store-metrics.test.ts` (`await
+import("@/app/api/store-metrics/route")` inside each test body) that
+caused intermittent failures under parallel test-file execution: a
+slow import could exceed Vitest's per-test timeout, the abandoned
+test's continuation still ran when the import finally resolved, and
+the continuation read `process.env` and `globalThis.fetch` that a
+sibling test had already reassigned. CI carried `pnpm vitest run
+--no-file-parallelism` to mask it.
 
-Root cause: the test imported the route handler dynamically, with
-`await import("@/app/api/store-metrics/route")`, inside each test body.
-That import pulls the route's transitive fixture graph, including the
-multi-megabyte `department-metrics.json`. Under parallel test-file
-execution the import is CPU-starved and could exceed Vitest's 5-second
-test timeout. A timed-out test is abandoned but its continuation is not
-cancelled: when the slow import finally resolved, the continuation still
-ran `GET()`, which reads `process.env` and `globalThis.fetch` — globals a
-sibling test had already reassigned in its own `beforeEach`. The result
-was cross-test contamination that surfaced as intermittent assertion
-failures and timeouts.
+That pattern is gone. The route handlers read `API_MODE` and
+`API_BASE_URL` at request time inside `GET`, so they never need a
+per-test re-import; the test files use static imports and move the
+fixture-graph parse cost to collection time, outside any test
+timeout. Environment and fetch are mutated through `vi.stubEnv` /
+`vi.stubGlobal` and reverted in `afterEach`. CI runs under full file
+parallelism and the `--no-file-parallelism` flag is no longer
+required.
 
-Fix: the route handler reads `API_MODE` and `API_BASE_URL` only at
-request time, inside `GET`, so it never needs a per-test re-import. It is
-now imported statically at the top of the test file. The fixture-graph
-cost moves to collection time, outside any test timeout; the slowest test
-dropped from ~2.4s to ~0.1s and no test times out, so no continuation is
-left running to leak across tests. Environment and fetch are now mutated
-through `vi.stubEnv` / `vi.stubGlobal` and reverted in `afterEach`,
-rather than reassigning `process.env` and `globalThis.fetch` wholesale,
-so each test is self-contained.
-
-Verification: the suite was run repeatedly under full file parallelism
-with no failures, and the `--no-file-parallelism` flag was removed from
-the CI workflow. A test that needs a fresh module per case should still
-use a dynamic import; a test whose module reads its inputs at call time
-should import statically and keep slow work out of the timed test body.
+The convention for future API route tests: import statically and
+keep slow work out of the timed test body; reach for a dynamic import
+only when a test genuinely needs a fresh module per case.
 
 ## Test categories observed
 
@@ -188,10 +181,13 @@ converted six structural tests covering hot paths into business-correctness
 tests — the four fixture-loader tests (which now pin the canonical dataset
 values rather than checking response shape) and the two store-metrics
 route tests (which now assert the served body equals the fixture) — and
-added six contract tests, bringing the suite to 153. The z-score rule
-integration that followed added two more business-correctness tests
-(pinning the `revenue_zscore_28d` description format), and the suite now
-carries 155.
+added six contract tests, bringing the snapshot total to 153. The suite
+has continued to grow since under the same conventions; the snapshot
+above is a record of that pass, not a current count. The proportions
+held: subsequent additions land as business-correctness assertions
+against independently-derived values, and the structural tests in
+`logger.test.ts` and `metrics.test.ts` remain as the only structural
+holdouts, for the reasons in the next section.
 
 ## Known weak areas
 

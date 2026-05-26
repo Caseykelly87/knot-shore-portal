@@ -1,0 +1,8 @@
+packages:
+  - .
+
+# Permit install-time build scripts for trusted packages
+onlyBuiltDependencies:
+  - esbuild
+  - msw
+  - unrs-resolver
