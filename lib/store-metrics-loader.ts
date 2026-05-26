@@ -11,8 +11,7 @@
 
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
-
-const STORE_METRICS_FETCH_LIMIT = 5000;
+import { fetchPaginated } from "@/lib/pagination";
 
 export interface StoreMetricItem {
   date: string;
@@ -53,15 +52,7 @@ export async function loadFullWindowStoreMetrics(): Promise<StoreMetricsRaw> {
   }
 
   const base = getBaseUrl();
-  const res = await fetch(`${base}/api/store-metrics?limit=${STORE_METRICS_FETCH_LIMIT}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error(`Store metrics fetch failed: ${res.status}`);
-  }
-
-  return (await res.json()) as StoreMetricsRaw;
+  return fetchPaginated<StoreMetricItem>(base, "/api/store-metrics");
 }
 
 export async function loadFullWindowDepartmentMetrics(): Promise<DepartmentMetricsRaw> {
@@ -69,41 +60,7 @@ export async function loadFullWindowDepartmentMetrics(): Promise<DepartmentMetri
     const mod = await import("@/fixtures/department-metrics.json");
     return mod.default as unknown as DepartmentMetricsRaw;
   }
+
   const base = getBaseUrl();
-  const PAGE_SIZE = 200;
-
-  const firstRes = await fetch(
-    `${base}/api/department-metrics?limit=${PAGE_SIZE}&offset=0`,
-    { cache: "no-store" },
-  );
-  if (!firstRes.ok) {
-    throw new Error(`Department metrics fetch failed: ${firstRes.status}`);
-  }
-  const firstBody = (await firstRes.json()) as DepartmentMetricsRaw;
-  const total = firstBody.total;
-  const items: DepartmentMetricItem[] = [...firstBody.items];
-
-  const remainingOffsets: number[] = [];
-  for (let offset = PAGE_SIZE; offset < total; offset += PAGE_SIZE) {
-    remainingOffsets.push(offset);
-  }
-
-  const remainingResponses = await Promise.all(
-    remainingOffsets.map(async (offset) => {
-      const res = await fetch(
-        `${base}/api/department-metrics?limit=${PAGE_SIZE}&offset=${offset}`,
-        { cache: "no-store" },
-      );
-      if (!res.ok) {
-        throw new Error(`Department metrics fetch failed: ${res.status}`);
-      }
-      return (await res.json()) as DepartmentMetricsRaw;
-    }),
-  );
-
-  for (const body of remainingResponses) {
-    items.push(...body.items);
-  }
-
-  return { total, limit: items.length, offset: 0, items };
+  return fetchPaginated<DepartmentMetricItem>(base, "/api/department-metrics");
 }
