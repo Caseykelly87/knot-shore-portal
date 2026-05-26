@@ -58,10 +58,24 @@ export default function ArchitecturePage() {
       <section className="space-y-4" id="overview">
         <h2 className="text-2xl font-semibold tracking-tight">Overview</h2>
         <p>
-          The platform is an end-to-end retail analytics stack built around a fictional 8-store
-          grocery chain. It generates synthetic store and department-level data, ingests that data
-          through a pipeline that detects anomalies, exposes the resulting data through a service
-          API, and renders stakeholder dashboards in a web portal.
+          The platform serves operations leads and regional managers at a small grocery chain —
+          eight stores across a suburban, urban, and value market mix. They open the dashboards
+          at the start of a day or week with specific questions: which stores are tracking ahead
+          or behind their expected revenue for the period, how today&apos;s numbers compare to the
+          same day last year, which department in which store is the most anomalous right now,
+          and which of the open exception flags are critical versus noise the team can dismiss.
+          A secondary audience — corporate finance and category management — uses the same
+          surfaces for weekly numbers and light cross-store comparison.
+        </p>
+        <p>
+          The dashboards are organized around those questions. The KPI cards anchor the daily
+          snapshot: revenue total, year-over-year comp, exception severity counts, and the
+          leading stores by revenue. The sales-trend chart shows the period at a glance against
+          prior-period and prior-year baselines. The exceptions triage page covers the detection
+          layer, with severity buckets and per-finding rule traces. Per-store and per-department
+          drilldowns service the &quot;why&quot; — when a card or a flag raises a question, the
+          drilldown is where the answer lives. A trade-area comparison covers cross-profile
+          patterns for the finance and category-management view.
         </p>
         <p>
           The platform is organized as four independently maintained repositories, each with its
