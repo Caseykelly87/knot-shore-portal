@@ -472,7 +472,7 @@ knot-shore-portal/
 ## Testing approach
 
 ```bash
-pnpm test          # Run the full suite once (155 tests across 16 files)
+pnpm test          # Run the full suite once (196 tests across 22 files)
 pnpm test:watch    # Watch mode
 ```
 
@@ -486,7 +486,7 @@ Tests are graded into the three categories the platform's other repositories use
 - **Structural** — asserts shape (a property is present, a value has the right type, a row count matches) but not specific values. Useful as an entry-level floor; not sufficient on its own for hot-path code.
 - **Ceremony** — runs code but verifies nothing beyond "no exception raised."
 
-The most recent test-quality pass landed the suite at 150 business-correctness, 3 structural, 0 ceremony out of 153 tests; the two follow-on commits (z-score rule, health envelope migration) added two more business-correctness tests, bringing the suite to 155. The structural tests that remain cover logging and metrics interface shape, where the data hot path is elsewhere; the rationale for leaving each one is in [__TESTING_NOTES.md](__TESTING_NOTES.md) under "Known weak areas".
+Most tests are business-correctness assertions against independently-derived expected values; the rest are structural shape checks covering logging and metrics interface shape, where the data hot path is elsewhere. The rationale for leaving each remaining structural test is in [__TESTING_NOTES.md](__TESTING_NOTES.md) under "Known weak areas".
 
 ### Test naming and structure
 
@@ -494,13 +494,19 @@ Each test file mirrors the source it covers. [lib/dashboard-data.ts](lib/dashboa
 
 Tests are short — typically five to fifteen lines including setup. The unit tests for the shape transformers use small inline fixtures defined at the top of the file rather than reading from disk; the contract test uses the bundled JSON fixtures because its job is precisely to assert the API's output. Component tests drive interaction through `fireEvent`; `@testing-library/user-event` is not a dependency.
 
-The 16 test files break down as:
+The 22 test files break down as:
 
 | File | Tests | What it covers |
 |---|---|---|
+| [tests/api/proxy-route.test.ts](tests/api/proxy-route.test.ts) | 31 | Parameterized coverage of the six `/api/*` handlers built from `makeProxyRoute`: offline-fixture path, online-upstream success, online-upstream failure (fixture fallback with `X-Data-Source: fallback` for the five data routes, structured 503 body for health), and `x-request-id` propagation |
 | [tests/api/store-metrics.test.ts](tests/api/store-metrics.test.ts) | 3 | Route handler in offline mode (fixture path), online mode (proxy path), and online-mode-with-upstream-failure (fixture fallback marked `X-Data-Source: fallback`) |
+| [tests/app/departments-error.test.tsx](tests/app/departments-error.test.tsx) | 2 | Departments drilldown `error.tsx` boundary: heading, recovery copy, digest rendering, retry callback |
+| [tests/app/departments-loading.test.tsx](tests/app/departments-loading.test.tsx) | 1 | Departments drilldown `loading.tsx` skeleton scaffold |
+| [tests/app/departments-not-found.test.tsx](tests/app/departments-not-found.test.tsx) | 1 | Departments drilldown `not-found.tsx`: heading, valid-id hint, link back to index |
+| [tests/app/exceptions-error.test.tsx](tests/app/exceptions-error.test.tsx) | 2 | Exceptions triage `error.tsx` boundary |
+| [tests/app/stores-error.test.tsx](tests/app/stores-error.test.tsx) | 3 | Stores index and drilldown `error.tsx` boundaries |
 | [tests/components/DepartmentsIndexClient.test.tsx](tests/components/DepartmentsIndexClient.test.tsx) | 15 | Default sort, re-sort on new field, direction toggle, per-field defaults, card links to detail routes |
-| [tests/components/ModeIndicator.test.tsx](tests/components/ModeIndicator.test.tsx) | 3 | Mode-aware badge rendering (Demo Mode vs Live Data) |
+| [tests/components/ModeIndicator.test.tsx](tests/components/ModeIndicator.test.tsx) | 4 | Mode-aware badge rendering (Demo Mode vs Live Data) |
 | [tests/components/StoresIndexClient.test.tsx](tests/components/StoresIndexClient.test.tsx) | 13 | Default sort, re-sort, direction toggle, per-field defaults, card links |
 | [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) | 6 | API → portal contract: dashboard, stores, departments, exceptions, cross-grain reconciliation, cross-endpoint reconciliation |
 | [tests/lib/api-mode.test.ts](tests/lib/api-mode.test.ts) | 4 | `API_MODE` resolver, default behavior, env var override |
@@ -514,7 +520,7 @@ The 16 test files break down as:
 | [tests/lib/metrics.test.ts](tests/lib/metrics.test.ts) | 3 | prom-client Registry singleton, counter and histogram wiring |
 | [tests/lib/store-data.test.ts](tests/lib/store-data.test.ts) | 9 | Store drilldown shape transformer (year-over-year alignment, department mix) |
 | [tests/lib/stores-index-data.test.ts](tests/lib/stores-index-data.test.ts) | 6 | Stores index aggregation |
-| **Total** | **155** | |
+| **Total** | **196** | |
 
 ### Fixture-driven testing and the contract chain
 
