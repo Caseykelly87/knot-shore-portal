@@ -410,6 +410,21 @@ export const DECISIONS: DecisionCategory[] = [
         cost: "The route is not prerendered. For a metrics endpoint, this is the correct behavior.",
         revisitWhen: "Never.",
       },
+      {
+        title: "Extract makeProxyRoute and fetchPaginated after the third copy",
+        problem:
+          "The dual-mode pattern — offline serves bundled fixtures, online proxies the upstream with a fixture fallback on failure — was a deliberate platform decision (see \"Two-mode demo as first-class\"). I implemented it once correctly in the first /api/* route handler, then copy-pasted the same ~60-line shape into each of the next five handlers. The same thing happened with pagination: the canonical 200-row-walker landed in lib/store-data.ts; lib/store-metrics-loader.ts and lib/exceptions-data-server.ts each grew their own inline paginators with the same shape; lib/dashboard-data.ts skipped pagination entirely and asked the upstream for limit=5000, which it caps at 200 and rejects with 422.",
+        decision:
+          "Extracted lib/proxy-route.ts's makeProxyRoute<T>(config) factory and lib/pagination.ts's fetchPaginated<T>(base, path). Each /api/* route file is now ~7 lines — a config object naming path, upstreamPath, fixture loader, and (for /api/health) an onUpstreamFailure override for the operational-signal 503 body that should never silently degrade to a fixture. Each portal-side fetcher that needs more than 200 rows from the upstream calls fetchPaginated; the four previously-paginated callsites all go through the shared implementation. The dashboard fetcher that lacked pagination entirely picks it up in the same change.",
+        rejected:
+          "Leave the duplication and add a unit test per route handler — would have caught the dashboard bug in the test gap (only store-metrics had a handler test, so the other five were uncovered), but adding five more 90-line copies of the existing test would have made the next refactor harder, not easier. Extract only the proxy pattern and leave pagination alone — would have left the dashboard bug in place and the three pagination copies in place; the abstraction effort doesn't earn its keep without addressing both. Move the X-Data-Source: fallback header to a separate observability channel — the response header is the right signal, just needs a reader; the ModeIndicator extension reads it.",
+        cost:
+          "Two new modules to maintain — lib/proxy-route.ts and lib/pagination.ts — plus a thin per-request flag module (lib/data-source-state.ts) that surfaces fallback to the indicator. The proxy-route abstraction is portal-specific; if a non-Next.js consumer ever needed similar behavior the factory shape wouldn't transfer directly. lib/data-source-state.ts uses React's cache() through a fallback for environments where the vitest React build doesn't expose it, which is an extra five lines of polyfill that wouldn't exist if test and runtime shared a React build.",
+        revisitWhen:
+          "If the upstream cap moves off 200, lib/pagination.ts's PAGE_SIZE constant moves with it; the rest of the module is shape-stable. If route-specific behavior accumulates (per-route caching, per-route auth boundaries, per-route response transforms), the config object grows and the factory's ergonomics start fighting the use case — at that point splitting back to per-route handlers or threading more behavior into the config becomes the right shape.",
+        honestNote:
+          "External code review caught both the dashboard bug and the broader duplication pattern that produced it. I had written the second through sixth route handlers without noticing the shape was already three copies deep; the rule-of-three line was crossed quietly. The lesson isn't \"extract aggressively from day one\" — premature abstractions have their own tax — but \"when you've written the same shape three times, that's the cue to extract before writing the fourth.\" The bug in lib/dashboard-data.ts was the consequence of skipping that cue.",
+      },
     ],
   },
 ];

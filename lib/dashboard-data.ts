@@ -18,6 +18,8 @@
 
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
+import { fetchPaginated } from "@/lib/pagination";
+import { trackResponse } from "@/lib/data-source-state";
 import {
   loadFullWindowStoreMetrics,
   type StoreMetricItem,
@@ -30,7 +32,6 @@ import {
   type DashboardPeriods,
 } from "@/lib/dashboard-periods";
 
-const ANOMALIES_FETCH_LIMIT = 5000;
 const TOP_STORES_COUNT = 5;
 const TRADE_AREA_ORDER = ["suburban-family", "urban-dense", "value-market"] as const;
 
@@ -360,22 +361,25 @@ async function loadRawDashboardInputs(): Promise<RawDashboardInputs> {
 
   const base = getBaseUrl();
 
-  const [anomaliesRes, storeMetrics, dimStoresRes] = await Promise.all([
-    fetch(`${base}/api/anomalies?limit=${ANOMALIES_FETCH_LIMIT}`, { cache: "no-store" }),
+  const [anomaliesEnvelope, storeMetrics, dimStoresRes] = await Promise.all([
+    fetchPaginated<AnomalyItem>(base, "/api/anomalies"),
     loadFullWindowStoreMetrics(),
     fetch(`${base}/api/dim-stores`, { cache: "no-store" }),
   ]);
 
-  if (!anomaliesRes.ok || !dimStoresRes.ok) {
-    throw new Error(
-      `Dashboard data fetch failed: anomalies=${anomaliesRes.status} dimStores=${dimStoresRes.status}`,
-    );
+  if (!dimStoresRes.ok) {
+    throw new Error(`Dashboard data fetch failed: dimStores=${dimStoresRes.status}`);
   }
 
-  const [anomalies, dimStores] = await Promise.all([
-    anomaliesRes.json() as Promise<AnomaliesRaw>,
-    dimStoresRes.json() as Promise<DimStoreRaw[]>,
-  ]);
+  trackResponse(dimStoresRes);
+  const dimStores = (await dimStoresRes.json()) as DimStoreRaw[];
+
+  const anomalies: AnomaliesRaw = {
+    total: anomaliesEnvelope.total,
+    limit: anomaliesEnvelope.limit,
+    offset: 0,
+    items: anomaliesEnvelope.items,
+  };
 
   return { anomalies, storeMetrics, dimStores };
 }

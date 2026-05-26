@@ -21,6 +21,8 @@
 import { getApiMode } from "@/lib/api-mode";
 import { getBaseUrl } from "@/lib/get-base-url";
 import { getDepartmentName } from "@/lib/dim-departments";
+import { fetchPaginated } from "@/lib/pagination";
+import { trackResponse } from "@/lib/data-source-state";
 
 const CURRENT_YEAR_START = "2025-07-01";
 const CURRENT_YEAR_END = "2025-12-31";
@@ -257,32 +259,6 @@ export function shapeStoreData(
   };
 }
 
-async function fetchPaginated<T extends { total: number; items: unknown[] }>(
-  base: string,
-  path: string,
-): Promise<T> {
-  const PAGE_SIZE = 200;
-  let offset = 0;
-  let total = 0;
-  const items: unknown[] = [];
-
-  while (true) {
-    const sep = path.includes("?") ? "&" : "?";
-    const url = `${base}${path}${sep}limit=${PAGE_SIZE}&offset=${offset}`;
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) {
-      throw new Error(`paginated fetch failed: ${res.status} for ${url}`);
-    }
-    const body = (await res.json()) as T;
-    total = body.total;
-    items.push(...body.items);
-    if (items.length >= total || body.items.length === 0) break;
-    offset += PAGE_SIZE;
-  }
-
-  return { total, limit: items.length, offset: 0, items } as unknown as T;
-}
-
 interface RawStoreInputs {
   dimStores: DimStoreRaw[];
   currentYear: StoreMetricsRaw;
@@ -317,21 +293,25 @@ async function loadRawStoreInputs(storeId: number): Promise<RawStoreInputs> {
     (async () => {
       const r = await fetch(`${base}/api/dim-stores`, { cache: "no-store" });
       if (!r.ok) throw new Error(`dim-stores fetch failed: ${r.status}`);
+      trackResponse(r);
       return r.json() as Promise<DimStoreRaw[]>;
     })(),
-    fetchPaginated<StoreMetricsRaw>(
+    fetchPaginated<StoreMetricsRaw["items"][number]>(
       base,
       `/api/store-metrics?store_id=${storeId}&start_date=${CURRENT_YEAR_START}&end_date=${CURRENT_YEAR_END}`,
     ),
-    fetchPaginated<StoreMetricsRaw>(
+    fetchPaginated<StoreMetricsRaw["items"][number]>(
       base,
       `/api/store-metrics?store_id=${storeId}&start_date=${PRIOR_YEAR_START}&end_date=${PRIOR_YEAR_END}`,
     ),
-    fetchPaginated<DeptMetricsRaw>(
+    fetchPaginated<DeptMetricsRaw["items"][number]>(
       base,
       `/api/department-metrics?store_id=${storeId}&start_date=${CURRENT_YEAR_START}&end_date=${CURRENT_YEAR_END}`,
     ),
-    fetchPaginated<AnomaliesRaw>(base, `/api/anomalies?store_id=${storeId}`),
+    fetchPaginated<AnomaliesRaw["items"][number]>(
+      base,
+      `/api/anomalies?store_id=${storeId}`,
+    ),
   ]);
 
   return { dimStores, currentYear, priorYear, deptMetrics, anomalies };
