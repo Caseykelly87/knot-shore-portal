@@ -1,73 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getApiMode, getUpstreamBaseUrl } from "@/lib/api-mode";
+import { makeProxyRoute } from "@/lib/proxy-route";
 import { loadDashboardSummaryFixture } from "@/lib/fixture-loader";
-import { getRequestLogger } from "@/lib/logger";
-import {
-  portalRequestsTotal,
-  portalRequestDurationSeconds,
-  portalUpstreamUnreachableTotal,
-} from "@/lib/metrics";
 
-export async function GET(req: NextRequest) {
-  const incoming = req.headers.get("x-request-id");
-  const requestId = incoming ?? crypto.randomUUID();
-  const log = getRequestLogger(requestId);
-
-  const mode = getApiMode();
-  const start = Date.now();
-  log.info(
-    { event: "route_started", path: "/api/dashboard-summary", mode },
-    "route started",
-  );
-
-  let response: NextResponse;
-  if (mode === "offline") {
-    response = NextResponse.json(loadDashboardSummaryFixture());
-  } else {
-    const upstream = `${getUpstreamBaseUrl()}/dashboard-summary${req.nextUrl.search}`;
-    try {
-      const res = await fetch(upstream, {
-        cache: "no-store",
-        headers: { "x-request-id": requestId },
-      });
-      const data = await res.json();
-      response = NextResponse.json(data, { status: res.status });
-    } catch (err) {
-      log.error(
-        {
-          event: "upstream_unreachable",
-          path: "/api/dashboard-summary",
-          error: err instanceof Error ? err.message : String(err),
-        },
-        "upstream unreachable",
-      );
-      portalUpstreamUnreachableTotal.inc();
-      response = NextResponse.json(loadDashboardSummaryFixture());
-      response.headers.set("X-Data-Source", "fallback");
-    }
-  }
-
-  response.headers.set("x-request-id", requestId);
-  const durationMs = Date.now() - start;
-  portalRequestsTotal
-    .labels({
-      route: "/api/dashboard-summary",
-      mode,
-      status_code: String(response.status),
-    })
-    .inc();
-  portalRequestDurationSeconds
-    .labels({ route: "/api/dashboard-summary", mode })
-    .observe(durationMs / 1000);
-  log.info(
-    {
-      event: "route_completed",
-      path: "/api/dashboard-summary",
-      mode,
-      status_code: response.status,
-      duration_ms: durationMs,
-    },
-    "route completed",
-  );
-  return response;
-}
+export const GET = makeProxyRoute({
+  path: "/api/dashboard-summary",
+  upstreamPath: "/dashboard-summary",
+  loadFixture: loadDashboardSummaryFixture,
+});
