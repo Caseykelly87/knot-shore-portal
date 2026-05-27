@@ -474,7 +474,7 @@ knot-shore-portal/
 ## Testing approach
 
 ```bash
-pnpm test          # Run the full suite once (196 tests across 22 files)
+pnpm test          # Run the full suite once (199 tests across 23 files)
 pnpm test:watch    # Watch mode
 ```
 
@@ -518,11 +518,12 @@ The 22 test files break down as:
 | [tests/lib/departments-index-data.test.ts](tests/lib/departments-index-data.test.ts) | 8 | Departments index aggregation |
 | [tests/lib/exceptions-data.test.ts](tests/lib/exceptions-data.test.ts) | 20 | `shapeExceptionsData` severity sort, rule-family description synthesis, `applyFilters` predicate composition |
 | [tests/lib/fixture-loader.test.ts](tests/lib/fixture-loader.test.ts) | 5 | JSON fixture imports pinning canonical dataset values (894 exceptions, 2944 store-days, eight stores, Health envelope) |
+| [tests/lib/get-base-url.test.ts](tests/lib/get-base-url.test.ts) | 3 | `getBaseUrl()` happy path plus the two static-prerender failure modes (`headers()` returns null, `headers()` throws) |
 | [tests/lib/logger.test.ts](tests/lib/logger.test.ts) | 3 | pino configuration, child logger creation, `request_id` binding |
 | [tests/lib/metrics.test.ts](tests/lib/metrics.test.ts) | 3 | prom-client Registry singleton, counter and histogram wiring |
 | [tests/lib/store-data.test.ts](tests/lib/store-data.test.ts) | 9 | Store drilldown shape transformer (year-over-year alignment, department mix) |
 | [tests/lib/stores-index-data.test.ts](tests/lib/stores-index-data.test.ts) | 6 | Stores index aggregation |
-| **Total** | **196** | |
+| **Total** | **199** | |
 
 ### Fixture-driven testing and the contract chain
 

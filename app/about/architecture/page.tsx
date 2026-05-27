@@ -383,8 +383,8 @@ export default function ArchitecturePage() {
           before implementation; new bugs start with a failing test that reproduces them.
         </p>
         <p>
-          Total test count across the platform is 747 — 138 in the sim engine, 271 in the ETL,
-          142 in the API, and 196 in the portal. Each test exists for a documented reason;
+          Total test count across the platform is 750 — 138 in the sim engine, 271 in the ETL,
+          142 in the API, and 199 in the portal. Each test exists for a documented reason;
           coverage isn&apos;t the goal, behavioral integrity is.
         </p>
         <p>
