@@ -33,6 +33,16 @@ export default function PortalPage() {
           </Link>{" "}
           / Portal
         </p>
+        <p className="text-sm text-muted-foreground">
+          <a
+            href="https://github.com/Caseykelly87/knot-shore-portal"
+            target="_blank"
+            rel="noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            View source on GitHub →
+          </a>
+        </p>
         <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Portal</h1>
         <p className="text-lg text-muted-foreground">
           The Next.js 14 application you&apos;re reading right now. Three primary user-facing

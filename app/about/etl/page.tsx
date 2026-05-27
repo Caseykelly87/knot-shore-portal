@@ -58,6 +58,16 @@ export default function EtlPage() {
           </Link>{" "}
           / ETL
         </p>
+        <p className="text-sm text-muted-foreground">
+          <a
+            href="https://github.com/Caseykelly87/economic-data-etl"
+            target="_blank"
+            rel="noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            View source on GitHub →
+          </a>
+        </p>
         <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">ETL</h1>
         <p className="text-lg text-muted-foreground">
           The ingestion and detection pipeline. Reads sim engine output, validates schemas,

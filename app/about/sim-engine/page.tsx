@@ -32,6 +32,16 @@ export default function SimEnginePage() {
           </Link>{" "}
           / Simulation engine
         </p>
+        <p className="text-sm text-muted-foreground">
+          <a
+            href="https://github.com/Caseykelly87/Knot-shore-grocery-simulation-engine"
+            target="_blank"
+            rel="noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            View source on GitHub →
+          </a>
+        </p>
         <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Simulation engine</h1>
         <p className="text-lg text-muted-foreground">
           The synthetic data generator for the platform. Produces deterministic store and
