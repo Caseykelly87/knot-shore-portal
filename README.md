@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Caseykelly87/knot-shore-portal/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Caseykelly87/knot-shore-portal/actions/workflows/test.yml)
 
+**Live demo:** https://knot-shore-portal.vercel.app — the portal alone, served against bundled JSON fixtures. For the full pipeline running end-to-end, see [knot-shore-platform](https://github.com/Caseykelly87/knot-shore-platform).
+
 Next.js 14 application that renders stakeholder dashboards for the Knot Shore Grocery analytics platform. The portal consumes JSON from the upstream `economic-data-api` and turns it into three primary user-facing pages — a daily dashboard, a per-store drilldown, and an exception triage interface — plus an architectural documentation hub at `/about`.
 
 The portal supports two operational modes: offline (default, serves bundled JSON fixtures) and online (proxies to a running upstream API). Both modes are first-class production paths; neither is a degraded fallback. A clone-and-run demo against fixtures looks the same as a live deployment against an API.
@@ -472,7 +474,7 @@ knot-shore-portal/
 ## Testing approach
 
 ```bash
-pnpm test          # Run the full suite once (196 tests across 22 files)
+pnpm test          # Run the full suite once (199 tests across 23 files)
 pnpm test:watch    # Watch mode
 ```
 
@@ -516,15 +518,16 @@ The 22 test files break down as:
 | [tests/lib/departments-index-data.test.ts](tests/lib/departments-index-data.test.ts) | 8 | Departments index aggregation |
 | [tests/lib/exceptions-data.test.ts](tests/lib/exceptions-data.test.ts) | 20 | `shapeExceptionsData` severity sort, rule-family description synthesis, `applyFilters` predicate composition |
 | [tests/lib/fixture-loader.test.ts](tests/lib/fixture-loader.test.ts) | 5 | JSON fixture imports pinning canonical dataset values (894 exceptions, 2944 store-days, eight stores, Health envelope) |
+| [tests/lib/get-base-url.test.ts](tests/lib/get-base-url.test.ts) | 3 | `getBaseUrl()` happy path plus the two static-prerender failure modes (`headers()` returns null, `headers()` throws) |
 | [tests/lib/logger.test.ts](tests/lib/logger.test.ts) | 3 | pino configuration, child logger creation, `request_id` binding |
 | [tests/lib/metrics.test.ts](tests/lib/metrics.test.ts) | 3 | prom-client Registry singleton, counter and histogram wiring |
 | [tests/lib/store-data.test.ts](tests/lib/store-data.test.ts) | 9 | Store drilldown shape transformer (year-over-year alignment, department mix) |
 | [tests/lib/stores-index-data.test.ts](tests/lib/stores-index-data.test.ts) | 6 | Stores index aggregation |
-| **Total** | **196** | |
+| **Total** | **199** | |
 
 ### Fixture-driven testing and the contract chain
 
-The bundled JSON files in [fixtures/](fixtures/) (six of them: dashboard-summary, store-metrics, department-metrics, dim-stores, anomalies, health) are byte-identical captures of API responses. They serve two roles. At runtime in offline mode they are the data source the page server components consume. At test time they are the input the contract test exercises. A fixture change is verified by the same tests that catch a portal-side regression, and the contract test asserts the canonical totals (894 anomalies across five rule families; 2944 store-days across eight stores and 368 days; the dashboard window totals that the per-store and per-department aggregates reconcile back to).
+The bundled JSON files in [fixtures/](fixtures/) (six of them: dashboard-summary, store-metrics, department-metrics, dim-stores, anomalies, health) are byte-identical captures of API responses. They serve two roles. At runtime in offline mode they are the data source the page server components consume. At test time they are the input the contract test exercises. A fixture change is verified by the same tests that catch a portal-side regression, and the contract test asserts the canonical totals (894 anomalies on the canonical run, with five rule families firing out of the seven defined (`labor_pct_band` and `avg_ticket_band` are within-band on this dataset and don't fire); 2944 store-days across eight stores and 368 days; the dashboard window totals that the per-store and per-department aggregates reconcile back to).
 
 This file is the last link in a contract chain that starts at the sim engine. The ETL pins sim engine → ETL with `test_sim_engine_contract.py`, the API pins ETL → API with `test_etl_contract.py`, and this repository pins API → portal with [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts). A value asserted at one layer's contract test traces to the same value at the next; a fixture-out-of-date failure anywhere in the chain is the signal that the dataset moved and the layer below must catch up.
 
@@ -650,6 +653,7 @@ The image is platform-neutral. Notes for the most common targets:
 - [`knot-shore-grocery-simulation-engine`](https://github.com/Caseykelly87/Knot-shore-grocery-simulation-engine) — generates the synthetic data that flows through the platform. Reader-grade narrative at [`/about/sim-engine`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/sim-engine/page.tsx).
 - [`economic-data-etl`](https://github.com/Caseykelly87/economic-data-etl) — ingests sim engine output into canonical parquet artifacts; runs the macro-economic pipeline (FRED, BLS, ERS). Reader-grade narrative at [`/about/etl`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/etl/page.tsx).
 - [`economic-data-api`](https://github.com/Caseykelly87/economic-data-api) — FastAPI service that this portal proxies to in online mode. Reader-grade narrative at [`/about/api`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/api/page.tsx).
+- [`knot-shore-platform`](https://github.com/Caseykelly87/knot-shore-platform) — orchestration repo that brings the four service repos together as Git submodules and runs the full pipeline locally with `docker compose up`. The only place the four services run end-to-end against live (rather than fixture-backed) data. Reader-grade narrative at [`/about/architecture`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/architecture/page.tsx).
 
 ## License
 

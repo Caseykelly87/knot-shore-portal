@@ -128,11 +128,11 @@ export const DECISIONS: DecisionCategory[] = [
         rejected:
           "Storing in S3 or a database that the API populates on startup — too much infra for a demo. Generating fixtures on API boot from a checked-in sim engine seed — would couple the API to the sim engine as a runtime dependency. Keeping them out of git entirely — the canonical state would be invisible in PR diffs.",
         cost:
-          "Parquet files are binary; they don't diff well in PRs. The integrity depends on the two repos staying in sync — a regeneration in the ETL repo must be followed by a fixture copy to the API repo, or they drift. There's no automated check. At ~500KB total for the canonical, the on-disk cost is negligible.",
+          "Parquet files are binary; they don't diff well in PRs. The integrity depends on the two repos staying in sync — a regeneration in the ETL repo must be followed by a fixture copy to the API repo, or they drift. At ~500KB total for the canonical, the on-disk cost is negligible.",
         revisitWhen:
           "When the canonical dataset grows beyond a few MB, or if the platform adds a fifth repo that needs the data. Right now the largest fixture is around 600KB.",
         honestNote:
-          "I should have written a script to verify byte-identity between the two repos as a pre-commit hook. I didn't. Nothing actively enforces the invariant; it's enforced by remembering to copy. This is the highest-value automation I skipped.",
+          "An earlier version of this entry said nothing automated enforced the byte-identity invariant. That's no longer true: the orchestration repo's `byte-identity.yml` workflow verifies SHA-256 equality between the ETL canonical and the API fixtures on every push, and `test_bundled_fixture_matches_canonical_sha256` pins the same hashes from the API side. A pre-commit hook would have been overkill given the canonical regeneration cadence; the CI check is the right granularity.",
       },
       {
         title: "Anomaly_log boundary",

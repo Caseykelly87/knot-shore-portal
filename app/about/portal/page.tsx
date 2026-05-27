@@ -33,6 +33,16 @@ export default function PortalPage() {
           </Link>{" "}
           / Portal
         </p>
+        <p className="text-sm text-muted-foreground">
+          <a
+            href="https://github.com/Caseykelly87/knot-shore-portal"
+            target="_blank"
+            rel="noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            View source on GitHub →
+          </a>
+        </p>
         <h1 className="font-display text-4xl tracking-tight text-brand-deep-navy">Portal</h1>
         <p className="text-lg text-muted-foreground">
           The Next.js 14 application you&apos;re reading right now. Three primary user-facing
@@ -455,7 +465,7 @@ export default function PortalPage() {
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
-          The portal has 196 tests via Vitest. Coverage emphasizes the pure shape transformers
+          The portal has 199 tests via Vitest. Coverage emphasizes the pure shape transformers
           (each <code className="bg-muted px-1 rounded">lib/*-data.ts</code> module&apos;s
           transformer has a dedicated test file with edge-case fixtures). The presentational
           components — charts, headers, KPI cards, the exception table — are not unit tested;
