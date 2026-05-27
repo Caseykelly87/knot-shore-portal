@@ -194,6 +194,7 @@ export default function ArchitecturePage() {
           <RepoBlock
             name="knot-shore-grocery-simulation-engine"
             tagline="Synthetic data generator"
+            href="https://github.com/Caseykelly87/Knot-shore-grocery-simulation-engine"
             body={
               <>
                 Python tool that produces deterministic synthetic retail data for the platform.
@@ -212,6 +213,7 @@ export default function ArchitecturePage() {
           <RepoBlock
             name="economic-data-etl"
             tagline="Ingestion and detection"
+            href="https://github.com/Caseykelly87/economic-data-etl"
             body={
               <>
                 Python pipeline that reads sim engine output, validates schema and referential
@@ -231,6 +233,7 @@ export default function ArchitecturePage() {
           <RepoBlock
             name="economic-data-api"
             tagline="Service layer"
+            href="https://github.com/Caseykelly87/economic-data-api"
             body={
               <>
                 FastAPI service exposing the canonical data via HTTP. Two operational modes for
@@ -250,6 +253,7 @@ export default function ArchitecturePage() {
           <RepoBlock
             name="knot-shore-portal"
             tagline="Stakeholder web application"
+            href="https://github.com/Caseykelly87/knot-shore-portal"
             body={
               <>
                 Next.js 14 App Router application. Three primary pages: daily dashboard at{" "}
@@ -267,7 +271,43 @@ export default function ArchitecturePage() {
               </>
             }
           />
+          <RepoBlock
+            name="knot-shore-platform"
+            tagline="Orchestration and end-to-end stack"
+            href="https://github.com/Caseykelly87/knot-shore-platform"
+            body={
+              <>
+                Brings the four service repos together as Git submodules and runs the full
+                pipeline locally with{" "}
+                <code className="bg-muted px-1 rounded">docker compose up</code>. The sim engine
+                generates the canonical window, the ETL writes the parquet artifacts, the API
+                serves them, and the portal renders them — all on{" "}
+                <code className="bg-muted px-1 rounded">localhost</code>, no cloud dependencies.
+                <br />
+                <br />
+                This is the only place the four services run end-to-end against live (rather
+                than fixture-backed) data. It is also where the cross-repo invariant checks
+                live: the <code className="bg-muted px-1 rounded">byte-identity.yml</code>{" "}
+                workflow pins the SHA-256 equality between the ETL canonical and the API
+                bundled fixtures.
+              </>
+            }
+          />
         </div>
+        <p className="text-sm text-muted-foreground">
+          Two ways to see the platform run. The orchestration repo above is the full-stack path
+          — every service running against every other service. The Vercel deployment at{" "}
+          <a
+            href="https://knot-shore-portal.vercel.app"
+            target="_blank"
+            rel="noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            knot-shore-portal.vercel.app
+          </a>{" "}
+          is the portal alone, served against bundled JSON fixtures, useful for clicking through
+          the dashboards without running anything locally.
+        </p>
       </section>
 
       <section className="space-y-4" id="modes">
@@ -445,13 +485,26 @@ interface RepoBlockProps {
   name: string;
   tagline: string;
   body: React.ReactNode;
+  href?: string;
 }
 
-function RepoBlock({ name, tagline, body }: RepoBlockProps) {
+function RepoBlock({ name, tagline, body, href }: RepoBlockProps) {
   return (
     <div className="rounded-lg border border-border bg-card p-5">
       <div className="space-y-1 mb-3">
-        <h3 className="text-base font-semibold font-mono">{name}</h3>
+        <div className="flex flex-wrap items-baseline gap-x-3">
+          <h3 className="text-base font-semibold font-mono">{name}</h3>
+          {href ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs text-muted-foreground underline hover:text-foreground transition-colors"
+            >
+              View on GitHub →
+            </a>
+          ) : null}
+        </div>
         <p className="text-sm text-muted-foreground">{tagline}</p>
       </div>
       <div className="text-sm leading-relaxed">{body}</div>
