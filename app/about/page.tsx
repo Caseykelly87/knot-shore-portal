@@ -5,6 +5,39 @@ export const metadata = {
   description: "Documentation hub for the Knot Shore Grocery analytics platform.",
 };
 
+const REPOS = [
+  {
+    href: "https://github.com/Caseykelly87/Knot-shore-grocery-simulation-engine",
+    name: "knot-shore-grocery-simulation-engine",
+    description:
+      "Synthetic data generator. Produces deterministic store and department-level daily retail data with injected anomalies.",
+  },
+  {
+    href: "https://github.com/Caseykelly87/economic-data-etl",
+    name: "economic-data-etl",
+    description:
+      "Ingestion and detection pipeline. Reads sim engine output, validates schemas, applies detection rules, writes canonical parquet artifacts.",
+  },
+  {
+    href: "https://github.com/Caseykelly87/economic-data-api",
+    name: "economic-data-api",
+    description:
+      "FastAPI service that exposes the canonical data over HTTP. Runs in fixture or live mode per data source.",
+  },
+  {
+    href: "https://github.com/Caseykelly87/knot-shore-portal",
+    name: "knot-shore-portal",
+    description:
+      "Next.js 14 portal — the dashboards and this documentation hub. Runs against bundled JSON fixtures (offline) or an upstream API (online).",
+  },
+  {
+    href: "https://github.com/Caseykelly87/knot-shore-platform",
+    name: "knot-shore-platform",
+    description:
+      "Orchestration repo. Brings the four service repos together as Git submodules and runs the full pipeline locally with `docker compose up`. The only place the four services run end-to-end against live data.",
+  },
+];
+
 const PAGES = [
   {
     href: "/about/architecture",
@@ -112,6 +145,43 @@ export default function AboutPage() {
             <PageCard key={page.href} {...page} />
           ))}
         </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold tracking-tight">Repositories</h2>
+        <p className="text-sm text-muted-foreground">
+          The platform spans five repositories. The four service repos build the data path
+          end-to-end; the orchestration repo runs all four together as the full-stack technical
+          demo.
+        </p>
+        <ul className="space-y-3">
+          {REPOS.map((repo) => (
+            <li key={repo.href} className="text-sm">
+              <a
+                href={repo.href}
+                target="_blank"
+                rel="noreferrer"
+                className="font-mono font-semibold underline hover:text-foreground transition-colors"
+              >
+                {repo.name}
+              </a>
+              <span className="text-muted-foreground"> — {repo.description}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="text-sm text-muted-foreground">
+          The Vercel deployment at{" "}
+          <a
+            href="https://knot-shore-portal.vercel.app"
+            target="_blank"
+            rel="noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            knot-shore-portal.vercel.app
+          </a>{" "}
+          is the portal alone against bundled JSON fixtures — the offline-only preview. The
+          orchestration repo above is the full-stack path that wires the four services together.
+        </p>
       </section>
     </article>
   );
