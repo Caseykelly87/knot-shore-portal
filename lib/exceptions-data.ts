@@ -164,6 +164,8 @@ export function shapeExceptionsData(
 
 export function applyFilters(rows: ExceptionRow[], filters: ExceptionsFilters): ExceptionRow[] {
   return rows.filter((row) => {
+    // ISO 8601 dates sort lexically the same way they sort chronologically,
+    // so string comparison is the correct operator here — no Date parse needed.
     if (filters.dateFrom && row.date < filters.dateFrom) return false;
     if (filters.dateTo && row.date > filters.dateTo) return false;
     if (filters.severities && filters.severities.length > 0 && !filters.severities.includes(row.severity)) {

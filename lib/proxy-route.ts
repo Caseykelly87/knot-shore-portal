@@ -56,6 +56,9 @@ export function makeProxyRoute<T>(
     } else {
       const upstream = `${getUpstreamBaseUrl()}${upstreamPath}${req.nextUrl.search}`;
       try {
+        // The upstream API does not emit useful ETags or Cache-Control headers, and the
+        // default Next.js fetch cache would mask canonical regenerations behind stale
+        // payloads. Bypass it entirely.
         const res = await fetch(upstream, {
           cache: "no-store",
           headers: { "x-request-id": requestId },
