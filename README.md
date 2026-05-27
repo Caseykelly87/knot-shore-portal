@@ -653,6 +653,7 @@ The image is platform-neutral. Notes for the most common targets:
 - [`knot-shore-grocery-simulation-engine`](https://github.com/Caseykelly87/Knot-shore-grocery-simulation-engine) — generates the synthetic data that flows through the platform. Reader-grade narrative at [`/about/sim-engine`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/sim-engine/page.tsx).
 - [`economic-data-etl`](https://github.com/Caseykelly87/economic-data-etl) — ingests sim engine output into canonical parquet artifacts; runs the macro-economic pipeline (FRED, BLS, ERS). Reader-grade narrative at [`/about/etl`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/etl/page.tsx).
 - [`economic-data-api`](https://github.com/Caseykelly87/economic-data-api) — FastAPI service that this portal proxies to in online mode. Reader-grade narrative at [`/about/api`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/api/page.tsx).
+- [`knot-shore-platform`](https://github.com/Caseykelly87/knot-shore-platform) — orchestration repo that brings the four service repos together as Git submodules and runs the full pipeline locally with `docker compose up`. The only place the four services run end-to-end against live (rather than fixture-backed) data. Reader-grade narrative at [`/about/architecture`](https://github.com/Caseykelly87/knot-shore-portal/blob/main/app/about/architecture/page.tsx).
 
 ## License
 
