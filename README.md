@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Caseykelly87/knot-shore-portal/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Caseykelly87/knot-shore-portal/actions/workflows/test.yml)
 
+**Live demo:** https://knot-shore-portal.vercel.app — the portal alone, served against bundled JSON fixtures. For the full pipeline running end-to-end, see [knot-shore-platform](https://github.com/Caseykelly87/knot-shore-platform).
+
 Next.js 14 application that renders stakeholder dashboards for the Knot Shore Grocery analytics platform. The portal consumes JSON from the upstream `economic-data-api` and turns it into three primary user-facing pages — a daily dashboard, a per-store drilldown, and an exception triage interface — plus an architectural documentation hub at `/about`.
 
 The portal supports two operational modes: offline (default, serves bundled JSON fixtures) and online (proxies to a running upstream API). Both modes are first-class production paths; neither is a degraded fallback. A clone-and-run demo against fixtures looks the same as a live deployment against an API.
