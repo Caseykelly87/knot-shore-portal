@@ -4,6 +4,7 @@ import dashboardSummaryRaw from "@/fixtures/dashboard-summary.json";
 import healthRaw from "@/fixtures/health.json";
 import dimStoresRaw from "@/fixtures/dim-stores.json";
 import departmentMetricsRaw from "@/fixtures/department-metrics.json";
+import detectionQualityRaw from "@/fixtures/insights-detection-quality.json";
 
 import { logger } from "@/lib/logger";
 import type {
@@ -13,6 +14,7 @@ import type {
   Health,
   DimStore,
   PaginatedDepartmentMetrics,
+  DetectionQuality,
 } from "./types";
 
 export function loadStoreMetricsFixture(): PaginatedStoreMetrics {
@@ -43,4 +45,9 @@ export function loadDimStoresFixture(): DimStore[] {
 export function loadDepartmentMetricsFixture(): PaginatedDepartmentMetrics {
   logger.debug({ event: "fixture_loaded", source: "department_metrics" }, "fixture loaded");
   return departmentMetricsRaw as PaginatedDepartmentMetrics;
+}
+
+export function loadDetectionQualityFixture(): DetectionQuality {
+  logger.debug({ event: "fixture_loaded", source: "detection_quality" }, "fixture loaded");
+  return detectionQualityRaw as DetectionQuality;
 }

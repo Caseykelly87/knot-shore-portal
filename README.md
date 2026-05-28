@@ -63,8 +63,9 @@ The portal hosts the platform's reader-grade documentation at `/about`. After `p
 - `/about/etl` — ETL deep-dive: source-adapter / transform separation, canonical fixtures, detection rules, the macro pipeline
 - `/about/api` — API deep-dive: dual-mode operation, endpoint catalog, schema discipline, observability stack
 - `/about/portal` — portal deep-dive: server-component data flow, URL-synced state, the next/headers boundary, charts
+- `/about/detection-quality` — current recall, false-positive rate, and per-anomaly-type recall for the detection layer, with the platform's phase 2 contract verdict. Reads the upstream API's `/insights/detection-quality` endpoint at request time.
 
-Each page is a static React Server Component — no auth, no API calls, just content. The mermaid diagrams render via a small client component that lazy-loads mermaid from `cdn.jsdelivr.net` on mount; no npm package added.
+Most pages are static React Server Components — no auth, no API calls, just content. The `/about/detection-quality` page is the exception: it dynamically fetches the live measurement payload so the verdict reflects whatever the API is currently serving. The mermaid diagrams render via a small client component that lazy-loads mermaid from `cdn.jsdelivr.net` on mount; no npm package added.
 
 ## Frontend architecture
 
@@ -80,7 +81,7 @@ The route segments and how each one renders:
 - `/stores` and `/stores/[id]` — server components rendering pre-computed per-store data. The drilldown reads its `id` from `params`; invalid IDs render [app/stores/[id]/not-found.tsx](app/stores/[id]/not-found.tsx) instead of throwing.
 - `/departments` and `/departments/[id]` — same shape as stores: a server-rendered index plus a per-department drilldown.
 - `/exceptions` — server component that fetches all 894 anomaly rows once, then renders a client-side filter shell. Filtering happens client-side; the URL is the single source of state.
-- `/about/*` — eight static documentation pages (`architecture`, `decisions`, `lessons`, `operations`, `sim-engine`, `etl`, `api`, `portal`) plus an index. Each is a server component returning JSX from typed constants under `lib/about/`. No data fetching, no client state.
+- `/about/*` — eight static documentation pages (`architecture`, `decisions`, `lessons`, `operations`, `sim-engine`, `etl`, `api`, `portal`) plus an index. Each is a server component returning JSX from typed constants under `lib/about/`. No data fetching, no client state. A ninth page, `/about/detection-quality`, is dynamic: it fetches the live measurement payload from the API at request time so the rendered verdict tracks whatever the upstream is currently serving.
 - `/api/*` — route handlers, not pages. Each one inspects `getApiMode()` and either reads from `fixtures/` or proxies to `API_BASE_URL`, with structured logging and prom-client metric updates on every call.
 
 The full lesson behind the rendering split lives at `/about/lessons` under "The Vercel deploy bug that became an architectural improvement". The short version: an earlier shape used `next/headers` to construct a self-fetch URL inside each server fetcher, which broke under Vercel's partial-prerender path. The fix restructured each fetcher so the offline branch reads JSON directly via dynamic `import()` and never calls `headers()`. The dashboard and `/exceptions` pages flipped from `ƒ (Dynamic)` to `○ (Static)` in the production build output as a side effect.
