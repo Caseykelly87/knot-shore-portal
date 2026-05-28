@@ -56,6 +56,22 @@ describe("/about/detection-quality page", () => {
     );
   });
 
+  it("links the contract prose to the detection-contract-thresholds decision", async () => {
+    // Structural: pins the cross-link wiring. The decision anchor is
+    // derived from the entry title via slugify, so a title rename that
+    // moved the slug would 404 this link silently; the assertion catches it.
+    mockFetch.mockResolvedValue(buildPayload());
+    render(await DetectionQualityPage());
+
+    const decisionLink = screen.getByRole("link", {
+      name: /detection-contract-thresholds decision/i,
+    });
+    expect(decisionLink).toHaveAttribute(
+      "href",
+      "/about/decisions#detection-contract-thresholds",
+    );
+  });
+
   it("renders the PASS verdict and no reasons when the contract passes", async () => {
     mockFetch.mockResolvedValue(buildPayload());
     render(await DetectionQualityPage());

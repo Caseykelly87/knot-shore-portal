@@ -58,8 +58,16 @@ export default async function DetectionQualityPage() {
           AND <code className="bg-muted px-1 rounded">fpr ≤ {data.contract.fpr_threshold}</code>.
           The thresholds were set during the platform&apos;s design phase as
           targets the static-band detection rules should clear against
-          deterministically injected anomalies — not as industry standards.
-          They represent &quot;the detector is doing its job&quot; for this
+          deterministically injected anomalies, not as industry standards.
+          The reasoning behind 0.35/0.10 specifically — including why the
+          bar wasn&apos;t set tighter — is recorded in the{" "}
+          <Link
+            href="/about/decisions#detection-contract-thresholds"
+            className="underline hover:text-foreground"
+          >
+            detection-contract-thresholds decision
+          </Link>
+          . They represent &quot;the detector is doing its job&quot; for this
           synthetic dataset, not a universal recall benchmark.
         </p>
       </section>
