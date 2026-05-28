@@ -103,3 +103,34 @@ export interface PaginatedDepartmentMetrics {
   offset: number;
   items: DepartmentMetricItem[];
 }
+
+export interface DetectionQualityGlobal {
+  injected_pairs: number;
+  matched_pairs: number;
+  recall: number;
+}
+
+export interface DetectionQualityAnomalyTypeStats {
+  injected: number;
+  matched: number;
+  recall: number;
+}
+
+export interface DetectionQualityContract {
+  global_recall_threshold: number;
+  fpr_threshold: number;
+  passes: boolean;
+  reasons: string[];
+}
+
+export interface DetectionQuality {
+  global: DetectionQualityGlobal;
+  by_anomaly_type: Record<string, DetectionQualityAnomalyTypeStats>;
+  false_positive_rate: number;
+  false_positives: number;
+  negative_universe: number;
+  flag_rate: number;
+  total_flags: number;
+  total_metric_rows: number;
+  contract: DetectionQualityContract;
+}
