@@ -383,6 +383,66 @@ const SECTIONS: OperationsSection[] = [
       },
     ],
   },
+  {
+    title: "Detection calibration",
+    intro: (
+      <p>
+        The detection layer is measured against ground truth on every canonical
+        regeneration — see the{" "}
+        <Link
+          href="/about/detection-quality"
+          className="underline hover:text-foreground"
+        >
+          detection quality
+        </Link>{" "}
+        page for the current numbers. The verdict fails on false-positive rate
+        today, and the shape of that failure points directly at the next
+        analytical-depth work.
+      </p>
+    ),
+    considerations: [
+      {
+        heading: "Severity calibration on integrity_breach and margin_outlier",
+        body: (
+          <p>
+            Structural rules (duplicate_row, missing_department) catch their
+            intended cases at 100% recall on the canonical. The statistical-band
+            rules underperform on integrity_breach (15% recall) and margin_outlier
+            (17% recall) while still flagging enough clean store-days to pull the
+            platform-wide false-positive rate to 0.188, over the 0.10 contract. The
+            natural next phase is band-severity calibration — tightening the bands&apos;
+            tail thresholds so true anomalies in those categories trigger more often,
+            and narrowing them where they fire on legitimate variance. That trade
+            (catch more of what the bands target, at the cost of a higher per-rule
+            false-positive rate before the tails are tuned) is real work, not yet
+            scoped. The contract numbers it has to clear are recorded in the{" "}
+            <Link
+              href="/about/decisions#detection-contract-thresholds"
+              className="underline hover:text-foreground"
+            >
+              detection-contract-thresholds decision
+            </Link>
+            .
+          </p>
+        ),
+      },
+      {
+        heading: "Per-anomaly-type rule families",
+        body: (
+          <p>
+            The current band-rule detection is anomaly-type-agnostic — the same
+            revenue band fires on duplicate_row and margin_outlier injections alike,
+            with no rule shaped to the signal a given anomaly type actually leaves.
+            Adding type-specific rules (a margin-outlier rule keyed on per-department
+            margin distributions, an integrity-breach rule keyed on department-coverage
+            gaps) is a meaningful next phase beyond severity calibration alone, and the
+            likelier path to lifting the two underperforming recalls without widening
+            the false-positive rate.
+          </p>
+        ),
+      },
+    ],
+  },
 ];
 
 export default function OperationsPage() {

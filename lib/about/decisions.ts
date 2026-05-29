@@ -102,6 +102,21 @@ export const DECISIONS: DecisionCategory[] = [
           "ML-based detection here would have been engineering theater. The platform handles 8 stores and 184 days of synthetic data. The rule-based approach is more honest than ML would have been, because the question is whether the rules' parameters match the simulator's parameters, which is a transparent test. ML would have hidden the question behind training data.",
       },
       {
+        title: "Detection contract thresholds",
+        problem:
+          "The detection layer needed a pass/fail bar — a concrete definition of \"the detector is doing its job\" that `scripts/evaluate_detection.py` could check against the sim engine's ground-truth anomaly log on every canonical regeneration. Without a named threshold, \"good enough recall\" is an argument rather than a test, and a regression that quietly halved recall would pass unnoticed.",
+        decision:
+          "The contract is global recall ≥ 0.35 AND false-positive rate ≤ 0.10; both must hold for the verdict to pass. Recall ≥ 0.35 says at least a third of injected anomalies must be caught; FPR ≤ 0.10 says no more than 10% of clean store-days may be falsely flagged. These are platform-design thresholds set when the detection layer was specified — targets the static-band rules should clear against deterministically injected anomalies — not industry standards or a benchmark borrowed from elsewhere. The canonical currently clears recall (0.48) but fails FPR (0.188), and [the detection-quality page](/about/detection-quality) publishes that failing verdict honestly rather than loosening the bar to make it green.",
+        rejected:
+          "Tighter thresholds (a higher recall floor, a lower FPR ceiling) — the platform shipped with the simpler static-band detector, and a tighter bar would have made shipping conditional on band-calibration work that wasn't yet scoped. A single-number contract (recall only or FPR only) — gameable in one direction: flag everything for perfect recall at a terrible FPR, or flag nothing for a perfect FPR. Pinning the numbers to an external industry benchmark — there's no comparable benchmark for 8 stores of synthetic data, and borrowing one would imply a rigor the measurement doesn't have.",
+        cost:
+          "0.35/0.10 is a floor, not a quality ceiling — a detector can pass while missing two-thirds of injected anomalies. And the canonical fails the FPR half today, so on that side the contract is currently aspirational: the page commits to showing the failing number until band calibration closes the gap rather than treating \"fails\" as a bug to hide.",
+        revisitWhen:
+          "When the band-severity calibration work ([/about/operations#detection-calibration](/about/operations#detection-calibration)) lands and the statistical rules stop over-flagging, the FPR ceiling can tighten and the recall floor can rise. Real retail data with seasonality and promotions would also force both numbers to be recalibrated against a higher false-positive baseline.",
+        honestNote:
+          "0.35 and 0.10 are round numbers I picked as a first bar, not values derived from a cost model weighing a missed integrity_breach against a false alarm. They're defensible — a third of anomalies caught, a tenth of clean days falsely flagged — but the real tradeoff was never quantified. A production detector would set these from that cost model, not from what looked reasonable when the layer was specified.",
+      },
+      {
         title: "Paired-year canonical",
         decision:
           "The canonical fixtures contain both 2024 and 2025 data, not just the demo window.",
