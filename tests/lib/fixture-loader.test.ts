@@ -32,17 +32,17 @@ describe("fixture loaders", () => {
 
   it("loadAnomaliesFixture serves the canonical anomaly-flags set", () => {
     const data = loadAnomaliesFixture();
-    // 894 anomaly flags — the canonical count carried from the API
-    // after the revenue_zscore_28d rule joined the band and structural
-    // rules in the detection layer.
-    expect(data.total).toBe(894);
-    expect(data.items).toHaveLength(894);
+    // 178 anomaly flags — the canonical count carried from the API
+    // after the margin and reconciliation rules brought the detection
+    // verdict to PASS.
+    expect(data.total).toBe(178);
+    expect(data.items).toHaveLength(178);
     expect(data.items[0]).toMatchObject({
-      date: "2024-07-05",
-      store_id: 7,
-      rule_id: "revenue_band",
-      actual_value: 70154.26,
-      severity_level: "info",
+      date: "2024-07-02",
+      store_id: 8,
+      rule_id: "department_reconciliation",
+      actual_value: 50930.5,
+      severity_level: "warning",
     });
   });
 

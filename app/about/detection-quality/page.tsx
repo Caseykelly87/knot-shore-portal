@@ -152,9 +152,9 @@ export default async function DetectionQualityPage() {
           <code className="bg-muted px-1 rounded">scripts/build_canonical_fixtures.py</code>{" "}
           and served byte-identical by the API at{" "}
           <code className="bg-muted px-1 rounded">/insights/detection-quality</code>.
-          A failing verdict is committed honestly — the same artifact
-          downstream consumers (this page included) read in both passing
-          and failing states.
+          Whatever the verdict reads, it is committed honestly — the
+          same artifact downstream consumers (this page included) read in
+          both passing and failing states. It currently passes.
         </p>
       </section>
     </article>
