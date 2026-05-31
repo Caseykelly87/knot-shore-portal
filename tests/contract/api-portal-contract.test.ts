@@ -43,13 +43,13 @@ describe("API -> portal contract", () => {
       expect(data.windowEndDate).toBe("2025-12-31");
 
       // Every anomaly flag is an active exception; the canonical set
-      // carries 894 across all three severity levels. The single
+      // carries 178 across all three severity levels. The single
       // critical row is the revenue_zscore_28d flag at store 4 on
       // 2024-09-24 (|z| ≈ 4.02).
-      expect(data.activeExceptions).toBe(894);
+      expect(data.activeExceptions).toBe(178);
       expect(data.exceptionSeverityCounts).toEqual({
-        info: 815,
-        warning: 78,
+        info: 27,
+        warning: 150,
         critical: 1,
       });
 
@@ -91,9 +91,9 @@ describe("API -> portal contract", () => {
       expect(entries.map((e) => e.storeId)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
 
       // Every anomaly flag is attributed to a store, so the per-store
-      // exception counts sum back to the canonical 894.
+      // exception counts sum back to the canonical 178.
       const exceptionTotal = entries.reduce((sum, e) => sum + e.exceptionCount, 0);
-      expect(exceptionTotal).toBe(894);
+      expect(exceptionTotal).toBe(178);
 
       // The per-store sales sum equals the dashboard's full-window
       // total: both aggregate the same store-metrics fixture.
@@ -103,13 +103,15 @@ describe("API -> portal contract", () => {
       const store1 = entries.find((e) => e.storeId === 1)!;
       expect(store1.totalSales).toBeCloseTo(37182419.48, 2);
       expect(store1.totalTransactions).toBe(982814);
-      expect(store1.exceptionCount).toBe(112);
-      expect(store1.severityCounts).toEqual({ info: 107, warning: 5, critical: 0 });
+      expect(store1.exceptionCount).toBe(21);
+      expect(store1.severityCounts).toEqual({ info: 0, warning: 21, critical: 0 });
 
-      // Store 7 carries warning-severity flags from both the band rules
-      // and the structural department_coverage rule.
+      // Store 7 carries warning-severity flags from the reconciliation,
+      // margin, and structural department_coverage rules, plus a handful
+      // of info-severity flags.
       const store7 = entries.find((e) => e.storeId === 7)!;
-      expect(store7.severityCounts).toEqual({ info: 177, warning: 17, critical: 0 });
+      expect(store7.exceptionCount).toBe(26);
+      expect(store7.severityCounts).toEqual({ info: 10, warning: 16, critical: 0 });
     });
   });
 
@@ -144,16 +146,17 @@ describe("API -> portal contract", () => {
     it("shapes the canonical exceptions table from the bundled fixtures", () => {
       const data = shapeExceptionsData(loadAnomaliesFixture(), loadDimStoresFixture());
 
-      expect(data.rows).toHaveLength(894);
+      expect(data.rows).toHaveLength(178);
 
-      // The canonical set fires five rule families across all eight
-      // stores. With the revenue_zscore_28d rule now contributing the
-      // platform's first critical-severity row, all three severity
+      // The canonical set fires six rule families across all eight
+      // stores. With the revenue_zscore_28d rule contributing the
+      // platform's single critical-severity row, all three severity
       // levels are present.
       expect(data.uniqueSeverities).toEqual(["critical", "info", "warning"]);
       expect(data.uniqueRules).toEqual([
         "department_coverage",
-        "revenue_band",
+        "department_reconciliation",
+        "gross_margin_band",
         "revenue_zscore_28d",
         "transactions_band",
         "yoy_comp",
@@ -172,11 +175,11 @@ describe("API -> portal contract", () => {
           .every((r) => r.severity === "warning"),
       ).toBe(true);
 
-      // The 78 warning and 815 info flags filter out exactly, matching
+      // The 150 warning and 27 info flags filter out exactly, matching
       // the dashboard's severity breakdown.
       expect(applyFilters(data.rows, { severities: ["critical"] })).toHaveLength(1);
-      expect(applyFilters(data.rows, { severities: ["warning"] })).toHaveLength(78);
-      expect(applyFilters(data.rows, { severities: ["info"] })).toHaveLength(815);
+      expect(applyFilters(data.rows, { severities: ["warning"] })).toHaveLength(150);
+      expect(applyFilters(data.rows, { severities: ["info"] })).toHaveLength(27);
     });
   });
 
