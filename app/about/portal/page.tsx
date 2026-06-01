@@ -193,7 +193,7 @@ export default function PortalPage() {
         </p>
         <p>
           Filter application itself runs client-side after one fetch. The exceptions page
-          fetches all 894 anomalies on page load — paginated through the API&apos;s 200-row
+          fetches all 178 anomalies on page load — paginated through the API&apos;s 200-row
           cap in online mode, one fixture in offline mode — then re-filters in memory on every
           filter change. At this dataset size the re-filter is imperceptible; at a million
           rows it would freeze the browser. The decision is explicit that the choice

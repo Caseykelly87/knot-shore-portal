@@ -395,27 +395,31 @@ const SECTIONS: OperationsSection[] = [
         >
           detection quality
         </Link>{" "}
-        page for the current numbers. The verdict fails on false-positive rate
-        today, and the shape of that failure points directly at the next
-        analytical-depth work.
+        page for the current numbers. The verdict passes today — global recall
+        1.0 and a false-positive rate of 0.009, comfortably under the 0.10
+        contract ceiling. Getting there meant finding where the early detector
+        came up short and closing the coverage gap; the shape of that gap
+        pointed directly at the analytical-depth work that followed, and that
+        work is now in place.
       </p>
     ),
     considerations: [
       {
-        heading: "Severity calibration on integrity_breach and margin_outlier",
+        heading: "Closing the integrity_breach and margin_outlier recall gap",
         body: (
           <p>
-            Structural rules (duplicate_row, missing_department) catch their
-            intended cases at 100% recall on the canonical. The statistical-band
-            rules underperform on integrity_breach (15% recall) and margin_outlier
-            (17% recall) while still flagging enough clean store-days to pull the
-            platform-wide false-positive rate to 0.188, over the 0.10 contract. The
-            natural next phase is band-severity calibration — tightening the bands&apos;
-            tail thresholds so true anomalies in those categories trigger more often,
-            and narrowing them where they fire on legitimate variance. That trade
-            (catch more of what the bands target, at the cost of a higher per-rule
-            false-positive rate before the tails are tuned) is real work, not yet
-            scoped. The contract numbers it has to clear are recorded in the{" "}
+            Structural rules (duplicate_row, missing_department) caught their
+            intended cases at 100% recall on the canonical from the start. The
+            two types the early detector under-caught were integrity_breach
+            (15% recall) and margin_outlier (17% recall): the statistical-band
+            rules weren&apos;t shaped to the signal those anomalies leave, so they
+            slipped through while the same bands over-fired on clean store-days
+            and pulled the platform-wide false-positive rate to 0.188, over the
+            0.10 contract. Closing that gap took two moves — adding rules keyed
+            to those two signals, and tightening the over-firing value bands so
+            they stopped flagging legitimate variance. Both recalls now sit at
+            100% and the false-positive rate dropped to 0.009. The contract
+            numbers it had to clear are recorded in the{" "}
             <Link
               href="/about/decisions#detection-contract-thresholds"
               className="underline hover:text-foreground"
@@ -430,14 +434,19 @@ const SECTIONS: OperationsSection[] = [
         heading: "Per-anomaly-type rule families",
         body: (
           <p>
-            The current band-rule detection is anomaly-type-agnostic — the same
-            revenue band fires on duplicate_row and margin_outlier injections alike,
+            The early band-rule detection was anomaly-type-agnostic — the same
+            revenue band fired on duplicate_row and margin_outlier injections alike,
             with no rule shaped to the signal a given anomaly type actually leaves.
-            Adding type-specific rules (a margin-outlier rule keyed on per-department
-            margin distributions, an integrity-breach rule keyed on department-coverage
-            gaps) is a meaningful next phase beyond severity calibration alone, and the
-            likelier path to lifting the two underperforming recalls without widening
-            the false-positive rate.
+            The fix was two type-specific rules: gross_margin_band, which flags
+            per-department gross-margin percentages that fall outside their expected
+            range, and department_reconciliation, which compares the sum of a
+            store-day&apos;s department net_sales against the store total and flags
+            the gap. Those two rules — not band-severity tuning alone — are what
+            lifted integrity_breach and margin_outlier from the teens to full recall.
+            What stays genuinely open is baselines for real data: the static bands
+            assume synthetic, seasonality-free revenue, and a production deployment
+            against promotional calendars and seasonal swings would need per-store
+            seasonal or peer baselines before the same false-positive rate would hold.
           </p>
         ),
       },
