@@ -393,12 +393,15 @@ export default function ArchitecturePage() {
           <code className="bg-muted px-1 rounded">total_sales</code> for the 2025 demo window is{" "}
           <code className="bg-muted px-1 rounded">$115,253,718</code>. Store 1&apos;s drilldown
           total is <code className="bg-muted px-1 rounded">$18,598,268</code>. The full canonical
-          contains 894 anomaly flags (831 from band rules over store-day metrics, 52 from the{" "}
-          <code className="bg-muted px-1 rounded">department_coverage</code> structural rule over
-          department-grain metrics, and 11 from the{" "}
-          <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> rolling-baseline
-          rule). If these change unexpectedly, something has drifted — the canaries are how the
-          platform knows.
+          contains 178 anomaly flags, no longer dominated by any single rule:{" "}
+          <code className="bg-muted px-1 rounded">department_reconciliation</code> contributes 72
+          (each store-day&apos;s department net_sales summed against the store total),{" "}
+          <code className="bg-muted px-1 rounded">department_coverage</code> 52,{" "}
+          <code className="bg-muted px-1 rounded">gross_margin_band</code> 24,{" "}
+          <code className="bg-muted px-1 rounded">transactions_band</code> 18,{" "}
+          <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> 11, and{" "}
+          <code className="bg-muted px-1 rounded">yoy_comp</code> 1. If these change unexpectedly,
+          something has drifted — the canaries are how the platform knows.
         </p>
       </section>
 

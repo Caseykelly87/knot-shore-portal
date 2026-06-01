@@ -177,14 +177,22 @@ export default function EtlPage() {
             store-day-department: net sales, transactions, units, gross margin percentage.
           </li>
           <li>
-            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 894 rows. Each
+            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 178 rows. Each
             row is a flagged store-day with the rule that fired, the actual value, the expected
-            band, and a severity level. The static band rules contribute 831 flags over the
-            store-day grain; the{" "}
+            band, and a severity level. The flags spread across several rule kinds that write to
+            the same schema: the{" "}
+            <code className="bg-muted px-1 rounded">department_reconciliation</code>{" "}
+            structural rule contributes 72 over the department grain (each store-day&apos;s
+            department net_sales summed against the store total), the{" "}
             <code className="bg-muted px-1 rounded">department_coverage</code>{" "}
-            structural-integrity rule contributes 52 flags over the department grain; the{" "}
+            structural-integrity rule 52, the{" "}
+            <code className="bg-muted px-1 rounded">gross_margin_band</code> per-department margin
+            rule 24, the{" "}
+            <code className="bg-muted px-1 rounded">transactions_band</code> statistical rule 18
+            over the store-day grain, the{" "}
             <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> rolling-baseline
-            rule contributes the remaining 11. All three rule kinds write to the same schema.
+            rule 11, and{" "}
+            <code className="bg-muted px-1 rounded">yoy_comp</code> 1.
           </li>
           <li>
             <code className="bg-muted px-1 rounded">dim_stores.parquet</code> — 8 rows of store

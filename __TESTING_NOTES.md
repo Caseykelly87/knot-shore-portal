@@ -99,30 +99,30 @@ link in a chain the upstream repositories build: the ETL's
 The fixtures are the bundled JSON files under `fixtures/` — captured API
 responses, byte-identical with what the API serves in online mode. The
 canonical dataset is two H2 slices a year apart (2024 and 2025): 8 stores
-across 368 days, 2944 store-day rows, 29,414 department rows, and 894
-anomaly flags (831 from the band rules over store-day metrics, 52 from
-the `department_coverage` structural-integrity rule over department-grain
-metrics, and 11 from the `revenue_zscore_28d` rolling-baseline rule over
-store-day metrics). Because the API serves byte-identical output for a
+across 368 days, 2944 store-day rows, 29,414 department rows, and 178
+anomaly flags (`department_reconciliation` 72 and `department_coverage`
+52 over the department grain, `gross_margin_band` 24, `transactions_band`
+18, `revenue_zscore_28d` 11, and `yoy_comp` 1). Because the API serves
+byte-identical output for a
 given upstream dataset, a committed fixture is a stable contract input.
 
 The six tests assert:
 
 - **dashboard surface** — `shapeDashboardData` over the bundled fixtures
-  yields the canonical full-window totals, the 894/815/78/1 exception
+  yields the canonical full-window totals, the 178/27/150/1 exception
   counts (total / info / warning / critical), the top-stores ranking, and
   the two-slice period shape (the PoP delta is null because the dataset
   has no first-half-2025 data).
 - **stores surface** — `shapeStoresIndexData` yields one entry per store,
-  per-store exception counts that sum back to 894, and per-store sales
+  per-store exception counts that sum back to 178, and per-store sales
   that sum to the dashboard's full-window total.
 - **departments surface** — `shapeDepartmentsIndexData` yields the
   ten-department taxonomy with the canonical per-department aggregates.
-- **exceptions surface** — `shapeExceptionsData` yields 894 rows, the
-  five canonical rule families (`revenue_band`, `transactions_band`,
-  `yoy_comp`, `department_coverage`, and `revenue_zscore_28d`), the
-  severity sort, and filter counts that match the dashboard's severity
-  breakdown.
+- **exceptions surface** — `shapeExceptionsData` yields 178 rows, the
+  six rule families that fire on the canonical (`department_reconciliation`,
+  `gross_margin_band`, `department_coverage`, `transactions_band`,
+  `revenue_zscore_28d`, and `yoy_comp`), the severity sort, and filter
+  counts that match the dashboard's severity breakdown.
 - **cross-grain reconciliation** — department `net_sales` aggregates back
   to store `total_sales` (see "Known weak areas" for the tolerance).
 - **cross-endpoint reconciliation** — the portal's own recent-window
@@ -221,18 +221,23 @@ expect). The pattern is upstream sim engine anomaly injection (the
 design), structurally present in the canonical pipeline through all
 four repos.
 
-The detection layer now mixes three rule kinds writing to the same
-`anomaly_flags` schema. The band rules — `revenue_band`,
-`transactions_band`, and `yoy_comp` — flag statistical outliers in
-sales and transaction volume against per-profile bands over the
-store-day grain (831 flags). The `department_coverage` rule operates
-on the department grain and flags the same 52 irregular store-days
-the cross-grain reconciliation observes (52 flags). The
-`revenue_zscore_28d` rule sits alongside the static bands at the
-store-day grain: it learns a 28-day trailing mean and stddev per
-store and flags days outside |z| ≥ 2.5, contributing 11 flags
-including the only critical-severity row in the canonical set
-(store 4, 2024-09-24, |z| ≈ 4.02) — and bringing the total to 894.
+The detection layer mixes several rule kinds writing to the same
+`anomaly_flags` schema. Two structural rules over the department grain
+account for most of the count: `department_reconciliation` compares
+each store-day's summed department `net_sales` against the store total
+and flags the gap (72 flags), and `department_coverage` flags the same
+irregular store-days the cross-grain reconciliation observes (52
+flags). `gross_margin_band` flags per-department gross-margin
+percentages outside their expected range (24 flags). The statistical
+band rules — `transactions_band` and `yoy_comp` — flag outliers in
+transaction volume and year-over-year comparison against per-profile
+bands over the store-day grain (18 and 1 flags; `revenue_band` is
+within band on this dataset and doesn't fire). The `revenue_zscore_28d`
+rule sits alongside the static bands at the store-day grain: it learns
+a 28-day trailing mean and stddev per store and flags days outside
+|z| ≥ 2.5, contributing 11 flags including the only critical-severity
+row in the canonical set (store 4, 2024-09-24, |z| ≈ 4.02) — bringing
+the total to 178.
 
 The cross-grain contract test in this repo asserts the aggregate gap
 stays under 0.1% and that per-store-day reconciliation holds for over
