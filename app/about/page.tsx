@@ -92,7 +92,7 @@ const PAGES = [
     href: "/about/detection-quality",
     title: "Detection quality",
     description:
-      "Measurement against ground truth — recall, false-positive rate, per-anomaly-type breakdown, and the platform's phase 2 contract verdict.",
+      "Measurement against ground truth — recall, false-positive rate, per-anomaly-type breakdown, and the platform's detection contract verdict.",
     available: true,
   },
   {
