@@ -16,13 +16,54 @@ interface SalesTrendChartProps {
   data: Array<{ date: string; totalSales: number; priorYearSales: number | null }>;
 }
 
-function formatTickDate(dateStr: string): string {
+// X-axis ticks span a multi-month window, so month + year ("Jul 2025") keeps
+// the year visible without the clutter of a day on every tick.
+export function formatAxisDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00Z");
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+// The tooltip is where the current and prior-year lines (drawn at the same
+// x-position) are disambiguated, so it carries the full date including year.
+export function formatTooltipDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00Z");
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
+    year: "numeric",
     timeZone: "UTC",
   });
+}
+
+// Derive the series years from the plotted dates rather than hardcoding them,
+// so a changed dashboard window keeps the legend truthful. The current series
+// year is the most common year among the rows (ties resolve to the later year);
+// the prior series is that minus one. Returns null for empty data so the
+// component can fall back to non-year labels.
+export function deriveSeriesYears(
+  data: Array<{ date: string }>,
+): { currentYear: number; priorYear: number } | null {
+  if (data.length === 0) return null;
+  const counts: Record<number, number> = {};
+  data.forEach((row) => {
+    const year = new Date(row.date + "T00:00:00Z").getUTCFullYear();
+    counts[year] = (counts[year] ?? 0) + 1;
+  });
+  let currentYear = -Infinity;
+  let bestCount = -1;
+  Object.keys(counts).forEach((key) => {
+    const year = Number(key);
+    const count = counts[year];
+    if (count > bestCount || (count === bestCount && year > currentYear)) {
+      bestCount = count;
+      currentYear = year;
+    }
+  });
+  return { currentYear, priorYear: currentYear - 1 };
 }
 
 function formatTickValue(value: number): string {
@@ -46,6 +87,9 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
     .filter((_, i) => i % tickInterval === 0)
     .map((d) => d.date);
   const hasPriorYearData = data.some((d) => d.priorYearSales !== null);
+  const seriesYears = deriveSeriesYears(data);
+  const currentName = seriesYears ? String(seriesYears.currentYear) : "Current";
+  const priorName = seriesYears ? String(seriesYears.priorYear) : "Prior year";
 
   return (
     <Card>
@@ -60,7 +104,7 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
               <XAxis
                 dataKey="date"
                 ticks={ticks}
-                tickFormatter={formatTickDate}
+                tickFormatter={formatAxisDate}
                 className="text-xs"
                 stroke="hsl(var(--muted-foreground))"
               />
@@ -75,7 +119,7 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
                   formatTooltipValue(value as number | null),
                   name as string,
                 ]}
-                labelFormatter={formatTickDate}
+                labelFormatter={formatTooltipDate}
                 contentStyle={{
                   backgroundColor: "hsl(var(--popover))",
                   border: "1px solid hsl(var(--border))",
@@ -88,7 +132,7 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
                 <Line
                   type="monotone"
                   dataKey="priorYearSales"
-                  name="Prior year"
+                  name={priorName}
                   stroke="var(--brand-sea-glass)"
                   strokeWidth={2}
                   strokeDasharray="4 4"
@@ -100,7 +144,7 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
               <Line
                 type="monotone"
                 dataKey="totalSales"
-                name="Current"
+                name={currentName}
                 stroke="var(--brand-kelp-green)"
                 strokeWidth={2}
                 dot={false}
