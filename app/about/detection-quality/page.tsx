@@ -6,7 +6,7 @@ import type { DetectionQualityAnomalyTypeStats } from "@/lib/types";
 export const metadata = {
   title: "Detection quality — Knot Shore Portal",
   description:
-    "Recall, false-positive rate, and the phase 2 contract verdict for the detection layer measured against the sim engine's ground-truth anomaly log.",
+    "Recall, false-positive rate, and the detection contract verdict measured against the sim engine's ground-truth anomaly log.",
 };
 
 // Rendered on every request so the verdict reflects the latest
@@ -45,7 +45,7 @@ export default async function DetectionQualityPage() {
         <p className="text-lg text-muted-foreground">
           How well the detection layer matches the sim engine&apos;s
           ground-truth anomaly log — measured globally, by anomaly type,
-          and against the platform&apos;s phase 2 contract.
+          and against the platform&apos;s detection contract.
         </p>
       </header>
 
@@ -54,7 +54,7 @@ export default async function DetectionQualityPage() {
       <section className="space-y-4" id="contract">
         <h2 className="text-2xl font-semibold tracking-tight">The contract</h2>
         <p>
-          Phase 2 requires <code className="bg-muted px-1 rounded">global_recall ≥ {data.contract.global_recall_threshold}</code>{" "}
+          The detection contract requires <code className="bg-muted px-1 rounded">global_recall ≥ {data.contract.global_recall_threshold}</code>{" "}
           AND <code className="bg-muted px-1 rounded">fpr ≤ {data.contract.fpr_threshold}</code>.
           The thresholds were set during the platform&apos;s design phase as
           targets the static-band detection rules should clear against
@@ -184,7 +184,7 @@ function VerdictBanner({
       data-passes={passes ? "true" : "false"}
     >
       <p className={`text-xs uppercase tracking-wider font-semibold ${labelClasses}`}>
-        Phase 2 contract verdict
+        Detection contract verdict
       </p>
       <p className="text-3xl font-display font-semibold">
         {passes ? "PASS" : "FAIL"}

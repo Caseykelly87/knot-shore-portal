@@ -63,7 +63,7 @@ The portal hosts the platform's reader-grade documentation at `/about`. After `p
 - `/about/etl` — ETL deep-dive: source-adapter / transform separation, canonical fixtures, detection rules, the macro pipeline
 - `/about/api` — API deep-dive: dual-mode operation, endpoint catalog, schema discipline, observability stack
 - `/about/portal` — portal deep-dive: server-component data flow, URL-synced state, the next/headers boundary, charts
-- `/about/detection-quality` — current recall, false-positive rate, and per-anomaly-type recall for the detection layer, with the platform's phase 2 contract verdict. Reads the upstream API's `/insights/detection-quality` endpoint at request time.
+- `/about/detection-quality` — current recall, false-positive rate, and per-anomaly-type recall for the detection layer, with the platform's detection contract verdict. Reads the upstream API's `/insights/detection-quality` endpoint at request time.
 
 Most pages are static React Server Components — no auth, no API calls, just content. The `/about/detection-quality` page is the exception: it dynamically fetches the live measurement payload so the verdict reflects whatever the API is currently serving. The mermaid diagrams render via a small client component that lazy-loads mermaid from `cdn.jsdelivr.net` on mount; no npm package added.
 
