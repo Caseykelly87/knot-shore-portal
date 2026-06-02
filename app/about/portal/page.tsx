@@ -465,7 +465,7 @@ export default function PortalPage() {
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
-          The portal has 199 tests via Vitest. Coverage emphasizes the pure shape transformers
+          The portal has 222 tests via Vitest. Coverage emphasizes the pure shape transformers
           (each <code className="bg-muted px-1 rounded">lib/*-data.ts</code> module&apos;s
           transformer has a dedicated test file with edge-case fixtures). The presentational
           components — charts, headers, KPI cards, the exception table — are not unit tested;

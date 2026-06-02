@@ -475,7 +475,7 @@ knot-shore-portal/
 ## Testing approach
 
 ```bash
-pnpm test          # Run the full suite once (221 tests across 28 files)
+pnpm test          # Run the full suite once (222 tests across 29 files)
 pnpm test:watch    # Watch mode
 ```
 
@@ -497,19 +497,23 @@ Each test file mirrors the source it covers. [lib/dashboard-data.ts](lib/dashboa
 
 Tests are short — typically five to fifteen lines including setup. The unit tests for the shape transformers use small inline fixtures defined at the top of the file rather than reading from disk; the contract test uses the bundled JSON fixtures because its job is precisely to assert the API's output. Component tests drive interaction through `fireEvent`; `@testing-library/user-event` is not a dependency.
 
-The 22 test files break down as:
+The 29 test files break down as:
 
 | File | Tests | What it covers |
 |---|---|---|
 | [tests/api/proxy-route.test.ts](tests/api/proxy-route.test.ts) | 31 | Parameterized coverage of the six `/api/*` handlers built from `makeProxyRoute`: offline-fixture path, online-upstream success, online-upstream failure (fixture fallback with `X-Data-Source: fallback` for the five data routes, structured 503 body for health), and `x-request-id` propagation |
 | [tests/api/store-metrics.test.ts](tests/api/store-metrics.test.ts) | 3 | Route handler in offline mode (fixture path), online mode (proxy path), and online-mode-with-upstream-failure (fixture fallback marked `X-Data-Source: fallback`) |
+| [tests/app/about-detection-quality.test.tsx](tests/app/about-detection-quality.test.tsx) | 6 | `/about/detection-quality` page: breadcrumb, heading, and view-source link; PASS and FAIL verdict rendering with failure reasons; one table row per anomaly type with injected/matched/recall; global recall and FPR formatted to one decimal |
 | [tests/app/departments-error.test.tsx](tests/app/departments-error.test.tsx) | 2 | Departments drilldown `error.tsx` boundary: heading, recovery copy, digest rendering, retry callback |
 | [tests/app/departments-loading.test.tsx](tests/app/departments-loading.test.tsx) | 1 | Departments drilldown `loading.tsx` skeleton scaffold |
 | [tests/app/departments-not-found.test.tsx](tests/app/departments-not-found.test.tsx) | 1 | Departments drilldown `not-found.tsx`: heading, valid-id hint, link back to index |
 | [tests/app/exceptions-error.test.tsx](tests/app/exceptions-error.test.tsx) | 2 | Exceptions triage `error.tsx` boundary |
 | [tests/app/stores-error.test.tsx](tests/app/stores-error.test.tsx) | 3 | Stores index and drilldown `error.tsx` boundaries |
 | [tests/components/DepartmentsIndexClient.test.tsx](tests/components/DepartmentsIndexClient.test.tsx) | 15 | Default sort, re-sort on new field, direction toggle, per-field defaults, card links to detail routes |
+| [tests/components/DepartmentTrendChart.test.tsx](tests/components/DepartmentTrendChart.test.tsx) | 2 | `formatAxisDate` and `formatTooltipDate`: month/year axis labels and full tooltip dates, with the year never stripped |
+| [tests/components/ExceptionsSummary.test.tsx](tests/components/ExceptionsSummary.test.tsx) | 7 | `summarizeBySeverity`, `summarizeByRule` (rank by count with rule-id tie-break), and `bucketByMonth` chronological bucketing |
 | [tests/components/ModeIndicator.test.tsx](tests/components/ModeIndicator.test.tsx) | 4 | Mode-aware badge rendering (Demo Mode vs Live Data) |
+| [tests/components/SalesTrendChart.test.tsx](tests/components/SalesTrendChart.test.tsx) | 6 | `formatAxisDate`, `formatTooltipDate`, and `deriveSeriesYears` (dominant-year resolution, even-split tie-break toward the later year, empty-data fallback) |
 | [tests/components/StoresIndexClient.test.tsx](tests/components/StoresIndexClient.test.tsx) | 13 | Default sort, re-sort, direction toggle, per-field defaults, card links |
 | [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) | 6 | API → portal contract: dashboard, stores, departments, exceptions, cross-grain reconciliation, cross-endpoint reconciliation |
 | [tests/lib/api-mode.test.ts](tests/lib/api-mode.test.ts) | 4 | `API_MODE` resolver, default behavior, env var override |
@@ -517,6 +521,8 @@ The 22 test files break down as:
 | [tests/lib/dashboard-periods.test.ts](tests/lib/dashboard-periods.test.ts) | 13 | Calendar-month period derivation and `computeDelta` |
 | [tests/lib/department-data.test.ts](tests/lib/department-data.test.ts) | 15 | Per-department drilldown shape transformer (totals, PoP and YoY deltas, trend) |
 | [tests/lib/departments-index-data.test.ts](tests/lib/departments-index-data.test.ts) | 8 | Departments index aggregation |
+| [tests/lib/detection-quality-data.test.ts](tests/lib/detection-quality-data.test.ts) | 1 | `fetchDetectionQuality` offline branch returns the bundled fixture without calling `getBaseUrl`/`headers` |
+| [tests/lib/docs-count.test.ts](tests/lib/docs-count.test.ts) | 1 | Doc-drift guard: the README's stated test count and file count match the live `vitest list` collection |
 | [tests/lib/exceptions-data.test.ts](tests/lib/exceptions-data.test.ts) | 20 | `shapeExceptionsData` severity sort, rule-family description synthesis, `applyFilters` predicate composition |
 | [tests/lib/fixture-loader.test.ts](tests/lib/fixture-loader.test.ts) | 5 | JSON fixture imports pinning canonical dataset values (178 exceptions, 2944 store-days, eight stores, Health envelope) |
 | [tests/lib/get-base-url.test.ts](tests/lib/get-base-url.test.ts) | 3 | `getBaseUrl()` happy path plus the two static-prerender failure modes (`headers()` returns null, `headers()` throws) |
@@ -524,7 +530,7 @@ The 22 test files break down as:
 | [tests/lib/metrics.test.ts](tests/lib/metrics.test.ts) | 3 | prom-client Registry singleton, counter and histogram wiring |
 | [tests/lib/store-data.test.ts](tests/lib/store-data.test.ts) | 9 | Store drilldown shape transformer (year-over-year alignment, department mix) |
 | [tests/lib/stores-index-data.test.ts](tests/lib/stores-index-data.test.ts) | 6 | Stores index aggregation |
-| **Total** | **199** | |
+| **Total** | **222** | |
 
 ### Fixture-driven testing and the contract chain
 
