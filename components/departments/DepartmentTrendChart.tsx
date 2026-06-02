@@ -15,11 +15,25 @@ interface DepartmentTrendChartProps {
   data: Array<{ date: string; totalSales: number }>;
 }
 
-function formatTickDate(dateStr: string): string {
+// X-axis ticks span a multi-month window, so month + year ("Jul 2025") keeps
+// the year visible without the clutter of a day on every tick.
+export function formatAxisDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00Z");
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+// The tooltip carries the full date including year so a hovered point is
+// unambiguous regardless of how coarse the axis ticks are.
+export function formatTooltipDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00Z");
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
+    year: "numeric",
     timeZone: "UTC",
   });
 }
@@ -55,7 +69,7 @@ export function DepartmentTrendChart({ data }: DepartmentTrendChartProps) {
               <XAxis
                 dataKey="date"
                 ticks={ticks}
-                tickFormatter={formatTickDate}
+                tickFormatter={formatAxisDate}
                 className="text-xs"
                 stroke="hsl(var(--muted-foreground))"
               />
@@ -67,7 +81,7 @@ export function DepartmentTrendChart({ data }: DepartmentTrendChartProps) {
               />
               <Tooltip
                 formatter={(value: number) => [formatTooltipValue(value), "Sales"]}
-                labelFormatter={formatTickDate}
+                labelFormatter={formatTooltipDate}
                 contentStyle={{
                   backgroundColor: "hsl(var(--popover))",
                   border: "1px solid hsl(var(--border))",
