@@ -53,7 +53,7 @@ export const DECISIONS: DecisionCategory[] = [
       {
         title: "Offline mode as the public-deploy default",
         problem:
-          "The public deployment needed to work reliably for any reviewer landing on the URL. Pointing at a live API adds: a separate API deployment, CORS configuration, the API needing to be always-up, and a larger surface area for things that can break in production. None of that serves the portfolio purpose.",
+          "The public deployment needed to work reliably for any reviewer landing on the URL. Pointing at a live API adds: a separate API deployment, CORS configuration, the API needing to be always-up, and a larger surface area for things that can break in production. None of that serves the goal of a deployment that just works.",
         decision:
           "The deployed Vercel portal serves bundled JSON fixtures rather than fetching from the live API. The portal supports both modes via a `DataSource` abstraction with `LiveAPIDataSource` and `StaticFixtureDataSource` implementations; the mode is determined by environment variable at deploy time. The frontend code is identical across modes — the abstraction swaps implementations transparently.",
         rejected:
@@ -198,9 +198,9 @@ export const DECISIONS: DecisionCategory[] = [
       "Things the platform deliberately does not do, and the reasoning for each.",
     entries: [
       {
-        title: "No user authentication",
+        title: "Authentication at the infrastructure layer",
         decision:
-          "The portal has no login, no session management, no per-user state.",
+          "Authentication is handled at the infrastructure layer; the portal itself has no login, session management, or per-user state.",
         rationale:
           "The deployment pattern this targets is internal analytics tooling at 50-200 users, served inside a corporate network or behind a reverse-proxy auth boundary like NGINX with auth_request, Cloudflare Access, or an OAuth2 proxy like oauth2-proxy. At that scale and shape, application-layer auth is the wrong layer: every other internal tool in the same network already has identity, sessions, password reset, and SSO integration solved at the proxy, so duplicating that work in this app adds a second identity store to maintain for no gain in posture. The data model doesn't pull in the other direction either. Every endpoint serves the same data to every caller — no per-user state, no row-level security, no auth-driven content differentiation that an auth layer would need to drive.",
         cost:

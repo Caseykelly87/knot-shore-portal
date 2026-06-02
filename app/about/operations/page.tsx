@@ -122,10 +122,10 @@ const SECTIONS: OperationsSection[] = [
             reads that header into a request-scoped context object that downstream handlers and
             log lines can rely on. This pairs with the{" "}
             <Link
-              href="/about/decisions#no-user-authentication"
+              href="/about/decisions#authentication-at-the-infrastructure-layer"
               className="underline hover:text-foreground"
             >
-              No user authentication
+              Authentication at the infrastructure layer
             </Link>{" "}
             decision card — that card explains why nothing in the platform reads a principal
             today, and the middleware shape above is the specific surface that absorbs one when
