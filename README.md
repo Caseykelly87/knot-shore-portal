@@ -475,7 +475,7 @@ knot-shore-portal/
 ## Testing approach
 
 ```bash
-pnpm test          # Run the full suite once (199 tests across 23 files)
+pnpm test          # Run the full suite once (221 tests across 28 files)
 pnpm test:watch    # Watch mode
 ```
 
