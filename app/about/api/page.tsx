@@ -412,7 +412,7 @@ def resolved_store_metrics_path(self) -> str:
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
-          The API has 142 tests. Endpoint tests patch the service layer and assert on response
+          The API has 180 tests. Endpoint tests patch the service layer and assert on response
           shapes; this isolates them from filesystem state and makes them fast. Service-layer
           tests use small synthetic DataFrames to verify filter and pagination logic. Health-
           check tests cover the four-path live-mode contract: the data source label is{" "}

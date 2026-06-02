@@ -436,7 +436,7 @@ rng = np.random.default_rng(date_seed)`}</code>
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
-          The sim engine has 138 tests. Coverage emphasizes determinism and the stage-pipeline
+          The sim engine has 142 tests. Coverage emphasizes determinism and the stage-pipeline
           contracts: a test that asserts byte-identity across two successive runs of the same
           seed is the most important property the suite verifies.
         </p>
