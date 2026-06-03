@@ -18,10 +18,19 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # Supply-chain hygiene signal. Reports advisories against the
+      # installed dependency tree. Scoped to high/critical with
+      # --audit-level=high and non-blocking for now (continue-on-error) so
+      # a transitive advisory doesn't wall the build on day one; the result
+      # is still visible as its own step.
+      - name: Dependency scan (pnpm audit)
+        continue-on-error: true
+        run: pnpm audit --audit-level=high
 
       - run: pnpm lint
 
