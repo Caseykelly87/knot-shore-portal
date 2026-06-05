@@ -475,7 +475,7 @@ knot-shore-portal/
 ## Testing approach
 
 ```bash
-pnpm test          # Run the full suite once (222 tests across 29 files)
+pnpm test          # Run the full suite once (219 tests across 29 files)
 pnpm test:watch    # Watch mode
 ```
 
@@ -517,7 +517,7 @@ The 29 test files break down as:
 | [tests/components/StoresIndexClient.test.tsx](tests/components/StoresIndexClient.test.tsx) | 13 | Default sort, re-sort, direction toggle, per-field defaults, card links |
 | [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) | 6 | API → portal contract: dashboard, stores, departments, exceptions, cross-grain reconciliation, cross-endpoint reconciliation |
 | [tests/lib/api-mode.test.ts](tests/lib/api-mode.test.ts) | 4 | `API_MODE` resolver, default behavior, env var override |
-| [tests/lib/dashboard-data.test.ts](tests/lib/dashboard-data.test.ts) | 29 | Dashboard shape transformer: KPI aggregation, top-stores ranking, daily trend, severity breakdown, PoP and YoY deltas, trade-area summaries |
+| [tests/lib/dashboard-data.test.ts](tests/lib/dashboard-data.test.ts) | 26 | Dashboard shape transformer: KPI aggregation, top-stores ranking, daily trend, severity breakdown, PoP and YoY deltas, trade-area summaries |
 | [tests/lib/dashboard-periods.test.ts](tests/lib/dashboard-periods.test.ts) | 13 | Calendar-month period derivation and `computeDelta` |
 | [tests/lib/department-data.test.ts](tests/lib/department-data.test.ts) | 15 | Per-department drilldown shape transformer (totals, PoP and YoY deltas, trend) |
 | [tests/lib/departments-index-data.test.ts](tests/lib/departments-index-data.test.ts) | 8 | Departments index aggregation |

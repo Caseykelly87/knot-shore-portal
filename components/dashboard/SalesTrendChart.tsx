@@ -7,13 +7,12 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface SalesTrendChartProps {
-  data: Array<{ date: string; totalSales: number; priorYearSales: number | null }>;
+  data: Array<{ date: string; totalSales: number }>;
 }
 
 // X-axis ticks span a multi-month window, so month + year ("Jul 2025") keeps
@@ -27,8 +26,8 @@ export function formatAxisDate(dateStr: string): string {
   });
 }
 
-// The tooltip is where the current and prior-year lines (drawn at the same
-// x-position) are disambiguated, so it carries the full date including year.
+// The axis ticks abbreviate to month + year, so the tooltip carries the full
+// date including the day to pin down the exact point under the cursor.
 export function formatTooltipDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00Z");
   return d.toLocaleDateString("en-US", {
@@ -86,10 +85,8 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
   const ticks = data
     .filter((_, i) => i % tickInterval === 0)
     .map((d) => d.date);
-  const hasPriorYearData = data.some((d) => d.priorYearSales !== null);
   const seriesYears = deriveSeriesYears(data);
   const currentName = seriesYears ? String(seriesYears.currentYear) : "Current";
-  const priorName = seriesYears ? String(seriesYears.priorYear) : "Prior year";
 
   return (
     <Card>
@@ -127,20 +124,6 @@ export function SalesTrendChart({ data }: SalesTrendChartProps) {
                   fontSize: "0.875rem",
                 }}
               />
-              {hasPriorYearData && <Legend wrapperStyle={{ fontSize: "0.875rem" }} />}
-              {hasPriorYearData && (
-                <Line
-                  type="monotone"
-                  dataKey="priorYearSales"
-                  name={priorName}
-                  stroke="var(--brand-sea-glass)"
-                  strokeWidth={2}
-                  strokeDasharray="4 4"
-                  dot={false}
-                  activeDot={{ r: 4 }}
-                  connectNulls={false}
-                />
-              )}
               <Line
                 type="monotone"
                 dataKey="totalSales"
