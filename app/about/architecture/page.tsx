@@ -70,8 +70,8 @@ export default function ArchitecturePage() {
         <p>
           The dashboards are organized around those questions. The KPI cards anchor the daily
           snapshot: revenue total, year-over-year comp, exception severity counts, and the
-          leading stores by revenue. The sales-trend chart shows the period at a glance against
-          prior-period and prior-year baselines. The exceptions triage page covers the detection
+          leading stores by revenue. The sales-trend chart shows daily revenue across the window
+          as a single continuous line. The exceptions triage page covers the detection
           layer, with severity buckets and per-finding rule traces. Per-store and per-department
           drilldowns service the &quot;why&quot; — when a card or a flag raises a question, the
           drilldown is where the answer lives. A trade-area comparison covers cross-profile
@@ -383,8 +383,8 @@ export default function ArchitecturePage() {
           before implementation; new bugs start with a failing test that reproduces them.
         </p>
         <p>
-          Total test count across the platform is 831 — 142 in the sim engine, 287 in the ETL,
-          180 in the API, and 222 in the portal. Each test exists for a documented reason;
+          Total test count across the platform is 828 — 142 in the sim engine, 287 in the ETL,
+          180 in the API, and 219 in the portal. Each test exists for a documented reason;
           coverage isn&apos;t the goal, behavioral integrity is.
         </p>
         <p>
