@@ -24,9 +24,9 @@ import { getDepartmentName } from "@/lib/dim-departments";
 import { fetchPaginated } from "@/lib/pagination";
 import { trackResponse } from "@/lib/data-source-state";
 
-const CURRENT_YEAR_START = "2025-07-01";
+const CURRENT_YEAR_START = "2025-01-01";
 const CURRENT_YEAR_END = "2025-12-31";
-const PRIOR_YEAR_START = "2024-07-01";
+const PRIOR_YEAR_START = "2024-01-01";
 const PRIOR_YEAR_END = "2024-12-31";
 
 export interface StoreData {

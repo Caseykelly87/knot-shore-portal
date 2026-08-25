@@ -36,20 +36,20 @@ describe("API -> portal contract", () => {
         loadDimStoresFixture(),
       );
 
-      // Full-window aggregates over all 2944 store-day rows.
-      expect(data.totalSales).toBeCloseTo(230554446.9, 2);
-      expect(data.totalTransactions).toBe(7003496);
-      expect(data.windowStartDate).toBe("2024-07-01");
+      // Full-window aggregates over all 5848 store-day rows.
+      expect(data.totalSales).toBeCloseTo(444167102.4, 2);
+      expect(data.totalTransactions).toBe(13490058);
+      expect(data.windowStartDate).toBe("2024-01-01");
       expect(data.windowEndDate).toBe("2025-12-31");
 
       // Every anomaly flag is an active exception; the canonical set
-      // carries 178 across all three severity levels. The single
+      // carries 343 across all three severity levels. The single
       // critical row is the revenue_zscore_28d flag at store 4 on
       // 2024-09-24 (|z| ≈ 4.02).
-      expect(data.activeExceptions).toBe(178);
+      expect(data.activeExceptions).toBe(343);
       expect(data.exceptionSeverityCounts).toEqual({
-        info: 27,
-        warning: 150,
+        info: 42,
+        warning: 300,
         critical: 1,
       });
 
@@ -58,23 +58,25 @@ describe("API -> portal contract", () => {
       expect(data.topStores).toHaveLength(5);
       expect(data.topStores[0].storeId).toBe("2");
       expect(data.topStores[0].storeName).toBe("Knot Shore — Chesterfield");
-      expect(data.topStores[0].totalSales).toBeCloseTo(43079265.51, 2);
+      expect(data.topStores[0].totalSales).toBeCloseTo(82892602.65, 2);
       for (let i = 1; i < data.topStores.length; i++) {
         expect(data.topStores[i].totalSales).toBeLessThanOrEqual(
           data.topStores[i - 1].totalSales,
         );
       }
 
-      // The window spans the two H2 slices (2024 and 2025), 368 days.
-      expect(data.dailyTrend).toHaveLength(368);
+      // The window spans two full calendar years, 731 days.
+      expect(data.dailyTrend).toHaveLength(731);
 
-      // The canonical dataset is two H2 slices a year apart with no
-      // first-half-2025 data, so the prior-period (H1 2025) comparison
-      // has no baseline and the PoP delta is null while YoY is live.
+      // On a two-full-year window the recent period is calendar 2025,
+      // and both comparison periods resolve to calendar 2024 — the
+      // period immediately preceding recent is also exactly one year
+      // back, so PoP and YoY coincide and both deltas are live.
       expect(data.periods).not.toBeNull();
-      expect(data.periods!.recent).toEqual({ start: "2025-07-01", end: "2025-12-31" });
-      expect(data.periods!.yoy).toEqual({ start: "2024-07-01", end: "2024-12-31" });
-      expect(data.kpiDeltas.totalSales.popDelta).toBeNull();
+      expect(data.periods!.recent).toEqual({ start: "2025-01-01", end: "2025-12-31" });
+      expect(data.periods!.pop).toEqual({ start: "2024-01-01", end: "2024-12-31" });
+      expect(data.periods!.yoy).toEqual({ start: "2024-01-01", end: "2024-12-31" });
+      expect(data.kpiDeltas.totalSales.popDelta).not.toBeNull();
       expect(data.kpiDeltas.totalSales.yoyDelta).not.toBeNull();
     });
   });
@@ -91,27 +93,27 @@ describe("API -> portal contract", () => {
       expect(entries.map((e) => e.storeId)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
 
       // Every anomaly flag is attributed to a store, so the per-store
-      // exception counts sum back to the canonical 178.
+      // exception counts sum back to the canonical 343.
       const exceptionTotal = entries.reduce((sum, e) => sum + e.exceptionCount, 0);
-      expect(exceptionTotal).toBe(178);
+      expect(exceptionTotal).toBe(343);
 
       // The per-store sales sum equals the dashboard's full-window
       // total: both aggregate the same store-metrics fixture.
       const salesTotal = entries.reduce((sum, e) => sum + e.totalSales, 0);
-      expect(salesTotal).toBeCloseTo(230554446.9, 2);
+      expect(salesTotal).toBeCloseTo(444167102.4, 2);
 
       const store1 = entries.find((e) => e.storeId === 1)!;
-      expect(store1.totalSales).toBeCloseTo(37182419.48, 2);
-      expect(store1.totalTransactions).toBe(982814);
-      expect(store1.exceptionCount).toBe(21);
-      expect(store1.severityCounts).toEqual({ info: 0, warning: 21, critical: 0 });
+      expect(store1.totalSales).toBeCloseTo(71632442.22, 2);
+      expect(store1.totalTransactions).toBe(1892664);
+      expect(store1.exceptionCount).toBe(46);
+      expect(store1.severityCounts).toEqual({ info: 4, warning: 42, critical: 0 });
 
       // Store 7 carries warning-severity flags from the reconciliation,
       // margin, and structural department_coverage rules, plus a handful
       // of info-severity flags.
       const store7 = entries.find((e) => e.storeId === 7)!;
-      expect(store7.exceptionCount).toBe(26);
-      expect(store7.severityCounts).toEqual({ info: 10, warning: 16, critical: 0 });
+      expect(store7.exceptionCount).toBe(45);
+      expect(store7.severityCounts).toEqual({ info: 14, warning: 31, critical: 0 });
     });
   });
 
@@ -123,21 +125,21 @@ describe("API -> portal contract", () => {
 
       // One entry per department in the fixed 10-department taxonomy.
       expect(entries.map((e) => e.departmentId)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-      expect(windowStart).toBe("2024-07-01");
+      expect(windowStart).toBe("2024-01-01");
       expect(windowEnd).toBe("2025-12-31");
 
       // Grocery (Center Store) is the largest department; it and
       // Produce both stock all eight stores.
       const grocery = entries.find((e) => e.departmentId === 7)!;
       expect(grocery.departmentName).toBe("Grocery (Center Store)");
-      expect(grocery.totalSales).toBeCloseTo(59086368.18, 2);
-      expect(grocery.totalTransactions).toBe(1786822);
-      expect(grocery.totalUnitsSold).toBe(8029262);
+      expect(grocery.totalSales).toBeCloseTo(110689256.76, 2);
+      expect(grocery.totalTransactions).toBe(3342202);
+      expect(grocery.totalUnitsSold).toBe(15048033);
       expect(grocery.storeCoverage).toBe(8);
 
       const produce = entries.find((e) => e.departmentId === 1)!;
       expect(produce.departmentName).toBe("Produce");
-      expect(produce.totalSales).toBeCloseTo(25467342.83, 2);
+      expect(produce.totalSales).toBeCloseTo(50242221.29, 2);
       expect(produce.storeCoverage).toBe(8);
     });
   });
@@ -146,7 +148,7 @@ describe("API -> portal contract", () => {
     it("shapes the canonical exceptions table from the bundled fixtures", () => {
       const data = shapeExceptionsData(loadAnomaliesFixture(), loadDimStoresFixture());
 
-      expect(data.rows).toHaveLength(178);
+      expect(data.rows).toHaveLength(343);
 
       // The canonical set fires six rule families across all eight
       // stores. With the revenue_zscore_28d rule contributing the
@@ -175,11 +177,11 @@ describe("API -> portal contract", () => {
           .every((r) => r.severity === "warning"),
       ).toBe(true);
 
-      // The 150 warning and 27 info flags filter out exactly, matching
+      // The 300 warning and 42 info flags filter out exactly, matching
       // the dashboard's severity breakdown.
       expect(applyFilters(data.rows, { severities: ["critical"] })).toHaveLength(1);
-      expect(applyFilters(data.rows, { severities: ["warning"] })).toHaveLength(150);
-      expect(applyFilters(data.rows, { severities: ["info"] })).toHaveLength(27);
+      expect(applyFilters(data.rows, { severities: ["warning"] })).toHaveLength(300);
+      expect(applyFilters(data.rows, { severities: ["info"] })).toHaveLength(42);
     });
   });
 
@@ -201,7 +203,7 @@ describe("API -> portal contract", () => {
 
       // Per store-day, the ten department net_sales rows sum to that
       // store-day's total_sales. This holds exactly for the large
-      // majority of the 2944 store-days.
+      // majority of the 5848 store-days.
       const deptByKey = new Map<string, number>();
       for (const r of deptItems) {
         const key = `${r.date}|${r.store_id}`;
@@ -228,9 +230,9 @@ describe("API -> portal contract", () => {
       );
 
       // The /dashboard-summary endpoint pre-aggregates the recent
-      // window (H2 2025). The portal derives the same recent-period
-      // KPIs itself from the /store-metrics endpoint; the two
-      // independent paths must land on the same totals.
+      // window (calendar 2025). The portal derives the same
+      // recent-period KPIs itself from the /store-metrics endpoint;
+      // the two independent paths must land on the same totals.
       expect(dashboard.kpiDeltas.totalSales.recent).toBe(summary.total_sales);
       expect(dashboard.kpiDeltas.totalTransactions.recent).toBe(summary.total_transactions);
       expect(dashboard.kpiDeltas.avgLaborCostPct.recent).toBeCloseTo(

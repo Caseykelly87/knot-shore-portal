@@ -37,7 +37,7 @@ describe("store-metrics route handler", () => {
     // Offline mode returns the bundled fixture unchanged — same total,
     // same row count, same canonical anchor row.
     expect(data).toEqual(loadStoreMetricsFixture());
-    expect(data.total).toBe(2944);
+    expect(data.total).toBe(5848);
     expect(res.headers.get("X-Data-Source")).toBeNull();
   });
 
