@@ -379,13 +379,11 @@ export default function ArchitecturePage() {
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
-          The platform follows test-driven development across all four repos. Tests are written
-          before implementation; new bugs start with a failing test that reproduces them.
-        </p>
-        <p>
-          Total test count across the platform is 828 — 142 in the sim engine, 287 in the ETL,
-          180 in the API, and 219 in the portal. Each test exists for a documented reason;
-          coverage isn&apos;t the goal, behavioral integrity is.
+          I aimed for test-driven development across all four repos — new bugs start with a
+          failing test that reproduces them, and most behavior grew alongside its tests — though
+          I&apos;m still learning the discipline and won&apos;t claim the test always came first.
+          Each test exists for a documented reason; coverage isn&apos;t the goal, behavioral
+          integrity is.
         </p>
         <p>
           The platform also maintains integrity canaries — single values that should hold across

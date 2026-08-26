@@ -109,15 +109,16 @@ export default function EtlPage() {
         </p>
         <p>
           The grocery side is what feeds the dashboards in this portal. The canonical window is
-          184 days ending 2025-12-31 (start date 2025-07-01, working backward inclusive — a
-          detail that was wrong in the README for several iterations; see{" "}
+          the two full calendar years 2024-01-01 through 2025-12-31 — 731 days, since 2024 is a
+          leap year. The earlier half-year window&apos;s default was itself the subject of an
+          off-by-one documentation bug; see{" "}
           <Link
             href="/about/lessons#the-off-by-one-in-the-canonical-backfill-default"
             className="underline hover:text-foreground"
           >
             The off-by-one in the canonical backfill default
           </Link>
-          ).
+          .
         </p>
       </section>
 

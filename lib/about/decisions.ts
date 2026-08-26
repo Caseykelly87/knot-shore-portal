@@ -169,15 +169,15 @@ export const DECISIONS: DecisionCategory[] = [
         problem:
           "Synthetic data has to support paired-year regeneration — the 2024 window must be byte-identical when regenerated. It also has to support partial regeneration: re-running a single date in the middle of the canonical window can't shift the surrounding dates. And the detection metrics need stable inputs across runs so the recall and false-positive contracts hold.",
         decision:
-          "The sim engine seeds each generated day with `global_seed + date.toordinal()` rather than advancing a single RNG across dates. Per-date RNGs (sales, anomalies, realism) seed from this base, with anomaly injection offsetting by +1,000,000 and realism by +999,999 to isolate their distributions. Same date and same seed produces byte-identical output regardless of generation order — backfilling 2024-07-01 produces the same data whether it was generated as part of a 2024 backfill, a 2025 anchor's T-365 paired generation, or a single-day regeneration.",
+          "The sim engine seeds each generated day with `global_seed + date.toordinal()` rather than advancing a single RNG across dates. Per-date RNGs (sales, anomalies, realism) seed from this base, with anomaly injection offsetting by +1,000,000 and realism by +2,000,000 to keep the streams separate. Same date and same seed produces byte-identical output regardless of generation order — backfilling 2024-07-01 produces the same data whether it was generated as part of a 2024 backfill, a 2025 anchor's T-365 paired generation, or a single-day regeneration.",
         rejected:
           "A single global RNG that walks forward in time — the obvious naive approach. Rejected because any single-date regeneration cascades through every following date; you can't fix a bug in 2025-08-15 without invalidating every date after it. Also rejected: hashing the date string for the seed. The `toordinal()` approach is cheaper, deterministic across Python versions, and produces a uniform integer space that the offset isolation pattern relies on.",
         cost:
-          "Slight overhead per date — a new RNG initialization per day. The offset constants (+1,000,000, +999,999) look like magic numbers and are.",
+          "Slight overhead per date — a new RNG initialization per day. The offset constants look like magic numbers, and the first pair chosen actually collided (see the honest note).",
         revisitWhen:
           "If anomaly injection ever needs cross-date state — for example, \"exactly one anomaly per week per store\" — this scheme can't represent it without redesign.",
         honestNote:
-          "I picked the offset constants without much thought. They're large enough that they can't collide with realistic seeds, but the actual rationale (orders of magnitude apart so distributions don't accidentally overlap) was post-hoc. They work; they're slightly embarrassing.",
+          "I picked the original offset constants — +1,000,000 and +999,999 — without much thought, and the rationale I wrote for them (\"orders of magnitude apart so distributions don't accidentally overlap\") was post-hoc and, it turned out, wrong. Offsets one apart while date ordinals also step by one meant the realism stream for any date reused the anomaly stream's seed from the day before — a real cross-stream collision, every consecutive day pair. A later review pass caught it and moved realism to +2,000,000. The actual constraint was never \"orders of magnitude\"; it's that the gap between offsets has to exceed the span of date ordinals in play.",
       },
       {
         title: "Mirror-don't-modify when adding new grains",

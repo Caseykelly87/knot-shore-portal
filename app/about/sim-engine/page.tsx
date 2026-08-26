@@ -88,13 +88,15 @@ export default function SimEnginePage() {
           Stage 1 (<code className="bg-muted px-1 rounded">generate_day</code>) produces the
           baseline store summaries and department sales for the date — the &quot;what would this
           store make on this day under nominal conditions&quot; layer. Stage 2 (
-          <code className="bg-muted px-1 rounded">realism.adjust</code>) optionally adds
-          variability to make the data feel like real retail: small daily noise, weather effects,
-          local promotions. Stage 2 is opt-out via{" "}
-          <code className="bg-muted px-1 rounded">--no-realism</code>. Stage 3 (
+          <code className="bg-muted px-1 rounded">realism.adjust</code>) optionally layers
+          real-world economics onto the base data: multipliers derived from actual FRED and BLS
+          series — food-category CPI, consumer sentiment, the unemployment rate, average wages —
+          nudge sales, margins, and labor cost the way the real economy would. Stage 2 is opt-out
+          via <code className="bg-muted px-1 rounded">--no-realism</code>. Stage 3 (
           <code className="bg-muted px-1 rounded">anomalies.inject</code>) injects a bounded set
-          of anomalies — sales spikes or drops, transaction anomalies, labor cost irregularities
-          — and records the ground truth in{" "}
+          of data-integrity anomalies — a net-sales figure that stops reconciling, a missing
+          department row, an impossible margin, a duplicated row — and records the ground truth
+          in{" "}
           <code className="bg-muted px-1 rounded">anomaly_log.csv</code> alongside the data files.
         </p>
         <p>
@@ -141,7 +143,16 @@ rng = np.random.default_rng(date_seed)`}</code>
           the same shape with offset constants —{" "}
           <code className="bg-muted px-1 rounded">date_seed + 1_000_000</code> for injection,{" "}
           <code className="bg-muted px-1 rounded">date_seed + 2_000_000</code> for realism — so
-          their distributions don&apos;t accidentally overlap with the baseline sales RNG.
+          each stream seeds from its own region of the seed space. The gap between offsets has
+          to exceed the span of date ordinals in play — a constraint the original constants got
+          wrong; the{" "}
+          <Link
+            href="/about/decisions#per-date-deterministic-seeding"
+            className="underline hover:text-foreground"
+          >
+            Decisions page
+          </Link>{" "}
+          tells that story.
           Backfilling 2024-07-01 produces byte-identical data whether it&apos;s part of a 2024
           backfill, a 2025 anchor&apos;s T-365 paired generation, or a single-day regeneration.
           The architectural property is that partial regeneration is safe.
@@ -171,20 +182,22 @@ rng = np.random.default_rng(date_seed)`}</code>
       <section className="space-y-4" id="anomaly-injection">
         <h2 className="text-2xl font-semibold tracking-tight">Anomaly injection</h2>
         <p>
-          Stage 3 injects four anomaly types — sales spikes, sales drops, transaction
-          anomalies, and labor-cost irregularities — using static, deterministic rules in{" "}
+          Stage 3 injects four data-integrity anomaly types — a net-sales figure that stops
+          reconciling with gross minus discounts, a department row silently missing, an
+          impossible gross margin, a duplicated department row — using static, deterministic
+          rules in{" "}
           <code className="bg-muted px-1 rounded">anomalies.py</code>. Each anomaly type fires
           with a bounded per-store-day probability; the per-day RNG seeded from{" "}
           <code className="bg-muted px-1 rounded">date_seed + 1_000_000</code> selects whether
           and where to fire. Every injection is recorded in{" "}
           <code className="bg-muted px-1 rounded">anomaly_log.csv</code> alongside the data
-          files, with the rule that fired, the store-day it landed on, and the magnitude of
+          files, with the type that fired, the store-day it landed on, and a description of
           the injection.
         </p>
         <p>
           The choice is deliberately not ML-based. The detection layer downstream — five
-          static-band rules over store-day metrics and one structural-integrity rule over
-          department-grain metrics, both writing to a shared anomaly schema — needs ground
+          static-band rules over store-day metrics, three department-grain rules, and a rolling
+          z-score baseline, all writing to a shared anomaly schema — needs ground
           truth to measure recall and false-positive rate against. If the ground truth were learned from a distribution rather than
           generated from rules, the eval would be measuring &quot;can a learned classifier
           reproduce a learned distribution&quot; instead of &quot;can these specific rules
@@ -263,7 +276,7 @@ rng = np.random.default_rng(date_seed)`}</code>
 
       <section className="space-y-4" id="commands">
         <h2 className="text-2xl font-semibold tracking-tight">Commands</h2>
-        <p>The sim engine has three top-level commands:</p>
+        <p>The sim engine has four top-level commands:</p>
         <ul className="list-disc list-inside space-y-2 text-sm">
           <li>
             <code className="bg-muted px-1 rounded">cmd_init</code> — generates dimension tables
@@ -284,6 +297,10 @@ rng = np.random.default_rng(date_seed)`}</code>
             <code className="bg-muted px-1 rounded">--end-date</code> (mutually exclusive) and
             sized with <code className="bg-muted px-1 rounded">--days</code>; when neither edge is
             given, the canonical 2024-01-01 through 2025-12-31 window is used.
+          </li>
+          <li>
+            <code className="bg-muted px-1 rounded">cmd_reports</code> — (re-)generates the
+            per-store human-readable reports for a date that already has daily data on disk.
           </li>
         </ul>
       </section>
