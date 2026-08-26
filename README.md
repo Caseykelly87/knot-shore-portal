@@ -40,11 +40,11 @@ The route accepts numeric IDs 1 through 8. Invalid IDs render a `not-found` UI r
 
 ### Exception triage (`/exceptions`)
 
-Operations-focused interface for reviewing all 178 anomaly flags from the canonical detection run. Filter sidebar with severity, store, and rule filters; the filter state is URL-synced via `useSearchParams`, so a `/exceptions?severity=warning&store=3` link reproduces the same view, browser back/forward navigates filter history, and refresh preserves filters.
+Operations-focused interface for reviewing all 343 anomaly flags from the canonical detection run. Filter sidebar with severity, store, and rule filters; the filter state is URL-synced via `useSearchParams`, so a `/exceptions?severity=warning&store=3` link reproduces the same view, browser back/forward navigates filter history, and refresh preserves filters.
 
 The exception table sorts severity-first, then date-descending. Clicking a row opens a detail sheet showing the full anomaly record with a synthesized human-readable description (composed from `rule_id`, `actual_value`, and the expected band — the API doesn't provide a description field; the portal builds one client-side).
 
-The page fetches all anomalies once on load (paginated through the API's 200-row cap) and filters client-side. 178 rows is small enough that filter latency is imperceptible.
+The page fetches all anomalies once on load (paginated through the API's 200-row cap) and filters client-side. 343 rows is small enough that filter latency is imperceptible.
 
 ### Documentation hub (`/about`)
 
@@ -80,7 +80,7 @@ The route segments and how each one renders:
 - `/` (daily dashboard) — server component that awaits `fetchDashboardData()` once per request. In offline mode the fetcher resolves via a dynamic JSON import and the page is statically prerendered at build time. In online mode the same fetcher proxies the upstream API and the page is dynamic per request.
 - `/stores` and `/stores/[id]` — server components rendering pre-computed per-store data. The drilldown reads its `id` from `params`; invalid IDs render [app/stores/[id]/not-found.tsx](app/stores/[id]/not-found.tsx) instead of throwing.
 - `/departments` and `/departments/[id]` — same shape as stores: a server-rendered index plus a per-department drilldown.
-- `/exceptions` — server component that fetches all 178 anomaly rows once, then renders a client-side filter shell. Filtering happens client-side; the URL is the single source of state.
+- `/exceptions` — server component that fetches all 343 anomaly rows once, then renders a client-side filter shell. Filtering happens client-side; the URL is the single source of state.
 - `/about/*` — eight static documentation pages (`architecture`, `decisions`, `lessons`, `operations`, `sim-engine`, `etl`, `api`, `portal`) plus an index. Each is a server component returning JSX from typed constants under `lib/about/`. No data fetching, no client state. A ninth page, `/about/detection-quality`, is dynamic: it fetches the live measurement payload from the API at request time so the rendered verdict tracks whatever the upstream is currently serving.
 - `/api/*` — route handlers, not pages. Each one inspects `getApiMode()` and either reads from `fixtures/` or proxies to `API_BASE_URL`, with structured logging and prom-client metric updates on every call.
 
@@ -127,7 +127,7 @@ The portal has no React Context, no Zustand, no Redux, and no state library of a
 
 The exceptions filter set is the only nontrivial client state in the portal, and it lives entirely in the URL. [lib/use-exceptions-filters.ts](lib/use-exceptions-filters.ts) is a hook that reads filter values from `useSearchParams()` on every render and exposes an `updateFilters()` callback that pushes a new URL via `router.push()`. There is no internal `useState`; the URL is the source of truth.
 
-This shape gives three things for free. A URL like `/exceptions?severity=warning&store=3` reproduces the filtered view exactly, so a link can be shared. Browser back and forward navigate filter history because each `router.push()` adds a history entry. A page refresh preserves the filters because they were never in component memory. The trade-off is that filter changes go through Next's routing layer rather than a synchronous setState, so there is a small added latency per change; for a four-field filter on a 178-row table the latency is not perceptible.
+This shape gives three things for free. A URL like `/exceptions?severity=warning&store=3` reproduces the filtered view exactly, so a link can be shared. Browser back and forward navigate filter history because each `router.push()` adds a history entry. A page refresh preserves the filters because they were never in component memory. The trade-off is that filter changes go through Next's routing layer rather than a synchronous setState, so there is a small added latency per change; for a four-field filter on a 343-row table the latency is not perceptible.
 
 The filters themselves are narrow: a date range, one or more severities, an optional store ID, and an optional rule ID. The rendered table depends on those fields plus the static row set that the server component fetched once. Nothing else feeds into what renders, so nothing else needs to be state.
 
@@ -253,7 +253,7 @@ Open http://localhost:3000 — the footer badge now reads "Live Data". A single 
 ## Operating modes
 
 | Mode | Behavior | When to use |
-|---|---|---|
+|---|---|
 | `offline` (default) | Serves fixtures from `fixtures/` | Demo, local exploration, CI |
 | `online` | Proxies to upstream API | Real platform integration |
 
@@ -278,14 +278,14 @@ To refresh:
 2. From this repo: `pnpm tsx scripts/capture-fixtures.ts`
 3. Verify the captured files in `fixtures/`, commit them.
 
-The capture script paginates through the API's 200-row cap and assembles the full dataset (store-metrics at 2,944 rows and department-metrics at 29,414 each take many 200-row calls, which the script walks by offset and concatenates; the 178-row anomalies set now fits in a single page).
+The capture script paginates through the API's 200-row cap and assembles the full dataset (store-metrics at 5,848 rows and department-metrics at 58,424 each take many 200-row calls, which the script walks by offset and concatenates; even the 343-row anomalies set takes two).
 
 ## Logging
 
 The portal emits structured logs via [pino](https://getpino.io/). Output is human-readable colored text when stdout is a tty, single-line JSON otherwise. Format and verbosity are controlled via environment variables:
 
 | Variable | Values | Default |
-|---|---|---|
+|---|---|
 | `LOG_LEVEL` | `debug`, `info`, `warn`, `error`, `fatal` | `info` |
 | `LOG_FORMAT` | `pretty`, `json` | auto (pretty if tty, else json) |
 
@@ -343,7 +343,7 @@ curl http://localhost:3000/api/metrics
 ### Application metrics
 
 | Metric | Type | Labels | Description |
-|---|---|---|---|
+|---|---|---|
 | `portal_requests_total` | Counter | `route`, `mode`, `status_code` | Increments per `/api/*` request the portal handles. `mode` is `offline` or `online`. |
 | `portal_request_duration_seconds` | Histogram | `route`, `mode` | Latency distribution per route and mode. Default prom-client histogram buckets. |
 | `portal_upstream_unreachable_total` | Counter | _none_ | Increments only when `/api/health` in online mode can't reach the upstream API. |
@@ -475,7 +475,7 @@ knot-shore-portal/
 ## Testing approach
 
 ```bash
-pnpm test          # Run the full suite once (219 tests across 29 files)
+pnpm test          # Run the full suite once
 pnpm test:watch    # Watch mode
 ```
 
@@ -497,44 +497,42 @@ Each test file mirrors the source it covers. [lib/dashboard-data.ts](lib/dashboa
 
 Tests are short — typically five to fifteen lines including setup. The unit tests for the shape transformers use small inline fixtures defined at the top of the file rather than reading from disk; the contract test uses the bundled JSON fixtures because its job is precisely to assert the API's output. Component tests drive interaction through `fireEvent`; `@testing-library/user-event` is not a dependency.
 
-The 29 test files break down as:
+The test files break down as:
 
-| File | Tests | What it covers |
-|---|---|---|
-| [tests/api/proxy-route.test.ts](tests/api/proxy-route.test.ts) | 31 | Parameterized coverage of the six `/api/*` handlers built from `makeProxyRoute`: offline-fixture path, online-upstream success, online-upstream failure (fixture fallback with `X-Data-Source: fallback` for the five data routes, structured 503 body for health), and `x-request-id` propagation |
-| [tests/api/store-metrics.test.ts](tests/api/store-metrics.test.ts) | 3 | Route handler in offline mode (fixture path), online mode (proxy path), and online-mode-with-upstream-failure (fixture fallback marked `X-Data-Source: fallback`) |
-| [tests/app/about-detection-quality.test.tsx](tests/app/about-detection-quality.test.tsx) | 6 | `/about/detection-quality` page: breadcrumb, heading, and view-source link; PASS and FAIL verdict rendering with failure reasons; one table row per anomaly type with injected/matched/recall; global recall and FPR formatted to one decimal |
-| [tests/app/departments-error.test.tsx](tests/app/departments-error.test.tsx) | 2 | Departments drilldown `error.tsx` boundary: heading, recovery copy, digest rendering, retry callback |
-| [tests/app/departments-loading.test.tsx](tests/app/departments-loading.test.tsx) | 1 | Departments drilldown `loading.tsx` skeleton scaffold |
-| [tests/app/departments-not-found.test.tsx](tests/app/departments-not-found.test.tsx) | 1 | Departments drilldown `not-found.tsx`: heading, valid-id hint, link back to index |
-| [tests/app/exceptions-error.test.tsx](tests/app/exceptions-error.test.tsx) | 2 | Exceptions triage `error.tsx` boundary |
-| [tests/app/stores-error.test.tsx](tests/app/stores-error.test.tsx) | 3 | Stores index and drilldown `error.tsx` boundaries |
-| [tests/components/DepartmentsIndexClient.test.tsx](tests/components/DepartmentsIndexClient.test.tsx) | 15 | Default sort, re-sort on new field, direction toggle, per-field defaults, card links to detail routes |
-| [tests/components/DepartmentTrendChart.test.tsx](tests/components/DepartmentTrendChart.test.tsx) | 2 | `formatAxisDate` and `formatTooltipDate`: month/year axis labels and full tooltip dates, with the year never stripped |
-| [tests/components/ExceptionsSummary.test.tsx](tests/components/ExceptionsSummary.test.tsx) | 7 | `summarizeBySeverity`, `summarizeByRule` (rank by count with rule-id tie-break), and `bucketByMonth` chronological bucketing |
-| [tests/components/ModeIndicator.test.tsx](tests/components/ModeIndicator.test.tsx) | 4 | Mode-aware badge rendering (Demo Mode vs Live Data) |
-| [tests/components/SalesTrendChart.test.tsx](tests/components/SalesTrendChart.test.tsx) | 6 | `formatAxisDate`, `formatTooltipDate`, and `deriveSeriesYears` (dominant-year resolution, even-split tie-break toward the later year, empty-data fallback) |
-| [tests/components/StoresIndexClient.test.tsx](tests/components/StoresIndexClient.test.tsx) | 13 | Default sort, re-sort, direction toggle, per-field defaults, card links |
-| [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) | 6 | API → portal contract: dashboard, stores, departments, exceptions, cross-grain reconciliation, cross-endpoint reconciliation |
-| [tests/lib/api-mode.test.ts](tests/lib/api-mode.test.ts) | 4 | `API_MODE` resolver, default behavior, env var override |
-| [tests/lib/dashboard-data.test.ts](tests/lib/dashboard-data.test.ts) | 26 | Dashboard shape transformer: KPI aggregation, top-stores ranking, daily trend, severity breakdown, PoP and YoY deltas, trade-area summaries |
-| [tests/lib/dashboard-periods.test.ts](tests/lib/dashboard-periods.test.ts) | 13 | Calendar-month period derivation and `computeDelta` |
-| [tests/lib/department-data.test.ts](tests/lib/department-data.test.ts) | 15 | Per-department drilldown shape transformer (totals, PoP and YoY deltas, trend) |
-| [tests/lib/departments-index-data.test.ts](tests/lib/departments-index-data.test.ts) | 8 | Departments index aggregation |
-| [tests/lib/detection-quality-data.test.ts](tests/lib/detection-quality-data.test.ts) | 1 | `fetchDetectionQuality` offline branch returns the bundled fixture without calling `getBaseUrl`/`headers` |
-| [tests/lib/docs-count.test.ts](tests/lib/docs-count.test.ts) | 1 | Doc-drift guard: the README's stated test count and file count match the live `vitest list` collection |
-| [tests/lib/exceptions-data.test.ts](tests/lib/exceptions-data.test.ts) | 20 | `shapeExceptionsData` severity sort, rule-family description synthesis, `applyFilters` predicate composition |
-| [tests/lib/fixture-loader.test.ts](tests/lib/fixture-loader.test.ts) | 5 | JSON fixture imports pinning canonical dataset values (178 exceptions, 2944 store-days, eight stores, Health envelope) |
-| [tests/lib/get-base-url.test.ts](tests/lib/get-base-url.test.ts) | 3 | `getBaseUrl()` happy path plus the two static-prerender failure modes (`headers()` returns null, `headers()` throws) |
-| [tests/lib/logger.test.ts](tests/lib/logger.test.ts) | 3 | pino configuration, child logger creation, `request_id` binding |
-| [tests/lib/metrics.test.ts](tests/lib/metrics.test.ts) | 3 | prom-client Registry singleton, counter and histogram wiring |
-| [tests/lib/store-data.test.ts](tests/lib/store-data.test.ts) | 9 | Store drilldown shape transformer (year-over-year alignment, department mix) |
-| [tests/lib/stores-index-data.test.ts](tests/lib/stores-index-data.test.ts) | 6 | Stores index aggregation |
-| **Total** | **222** | |
+| File | What it covers |
+|---|---|
+| [tests/api/proxy-route.test.ts](tests/api/proxy-route.test.ts) | Parameterized coverage of the six `/api/*` handlers built from `makeProxyRoute`: offline-fixture path, online-upstream success, online-upstream failure (fixture fallback with `X-Data-Source: fallback` for the five data routes, structured 503 body for health), and `x-request-id` propagation |
+| [tests/api/store-metrics.test.ts](tests/api/store-metrics.test.ts) | Route handler in offline mode (fixture path), online mode (proxy path), and online-mode-with-upstream-failure (fixture fallback marked `X-Data-Source: fallback`) |
+| [tests/app/about-detection-quality.test.tsx](tests/app/about-detection-quality.test.tsx) | `/about/detection-quality` page: breadcrumb, heading, and view-source link; PASS and FAIL verdict rendering with failure reasons; one table row per anomaly type with injected/matched/recall; global recall and FPR formatted to one decimal |
+| [tests/app/departments-error.test.tsx](tests/app/departments-error.test.tsx) | Departments drilldown `error.tsx` boundary: heading, recovery copy, digest rendering, retry callback |
+| [tests/app/departments-loading.test.tsx](tests/app/departments-loading.test.tsx) | Departments drilldown `loading.tsx` skeleton scaffold |
+| [tests/app/departments-not-found.test.tsx](tests/app/departments-not-found.test.tsx) | Departments drilldown `not-found.tsx`: heading, valid-id hint, link back to index |
+| [tests/app/exceptions-error.test.tsx](tests/app/exceptions-error.test.tsx) | Exceptions triage `error.tsx` boundary |
+| [tests/app/stores-error.test.tsx](tests/app/stores-error.test.tsx) | Stores index and drilldown `error.tsx` boundaries |
+| [tests/components/DepartmentsIndexClient.test.tsx](tests/components/DepartmentsIndexClient.test.tsx) | Default sort, re-sort on new field, direction toggle, per-field defaults, card links to detail routes |
+| [tests/components/DepartmentTrendChart.test.tsx](tests/components/DepartmentTrendChart.test.tsx) | `formatAxisDate` and `formatTooltipDate`: month/year axis labels and full tooltip dates, with the year never stripped |
+| [tests/components/ExceptionsSummary.test.tsx](tests/components/ExceptionsSummary.test.tsx) | `summarizeBySeverity`, `summarizeByRule` (rank by count with rule-id tie-break), and `bucketByMonth` chronological bucketing |
+| [tests/components/ModeIndicator.test.tsx](tests/components/ModeIndicator.test.tsx) | Mode-aware badge rendering (Demo Mode vs Live Data) |
+| [tests/components/SalesTrendChart.test.tsx](tests/components/SalesTrendChart.test.tsx) | `formatAxisDate`, `formatTooltipDate`, and `deriveSeriesYears` (dominant-year resolution, even-split tie-break toward the later year, empty-data fallback) |
+| [tests/components/StoresIndexClient.test.tsx](tests/components/StoresIndexClient.test.tsx) | Default sort, re-sort, direction toggle, per-field defaults, card links |
+| [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts) | API → portal contract: dashboard, stores, departments, exceptions, cross-grain reconciliation, cross-endpoint reconciliation |
+| [tests/lib/api-mode.test.ts](tests/lib/api-mode.test.ts) | `API_MODE` resolver, default behavior, env var override |
+| [tests/lib/dashboard-data.test.ts](tests/lib/dashboard-data.test.ts) | Dashboard shape transformer: KPI aggregation, top-stores ranking, daily trend, severity breakdown, PoP and YoY deltas, trade-area summaries |
+| [tests/lib/dashboard-periods.test.ts](tests/lib/dashboard-periods.test.ts) | Calendar-month period derivation and `computeDelta` |
+| [tests/lib/department-data.test.ts](tests/lib/department-data.test.ts) | Per-department drilldown shape transformer (totals, PoP and YoY deltas, trend) |
+| [tests/lib/departments-index-data.test.ts](tests/lib/departments-index-data.test.ts) | Departments index aggregation |
+| [tests/lib/detection-quality-data.test.ts](tests/lib/detection-quality-data.test.ts) | `fetchDetectionQuality` offline branch returns the bundled fixture without calling `getBaseUrl`/`headers` |
+| [tests/lib/exceptions-data.test.ts](tests/lib/exceptions-data.test.ts) | `shapeExceptionsData` severity sort, rule-family description synthesis, `applyFilters` predicate composition |
+| [tests/lib/fixture-loader.test.ts](tests/lib/fixture-loader.test.ts) | JSON fixture imports pinning canonical dataset values (343 exceptions, 5848 store-days, eight stores, Health envelope) |
+| [tests/lib/get-base-url.test.ts](tests/lib/get-base-url.test.ts) | `getBaseUrl()` happy path plus the two static-prerender failure modes (`headers()` returns null, `headers()` throws) |
+| [tests/lib/logger.test.ts](tests/lib/logger.test.ts) | pino configuration, child logger creation, `request_id` binding |
+| [tests/lib/metrics.test.ts](tests/lib/metrics.test.ts) | prom-client Registry singleton, counter and histogram wiring |
+| [tests/lib/store-data.test.ts](tests/lib/store-data.test.ts) | Store drilldown shape transformer (year-over-year alignment, department mix) |
+| [tests/lib/stores-index-data.test.ts](tests/lib/stores-index-data.test.ts) | Stores index aggregation |
 
 ### Fixture-driven testing and the contract chain
 
-The bundled JSON files in [fixtures/](fixtures/) (six of them: dashboard-summary, store-metrics, department-metrics, dim-stores, anomalies, health) are byte-identical captures of API responses. They serve two roles. At runtime in offline mode they are the data source the page server components consume. At test time they are the input the contract test exercises. A fixture change is verified by the same tests that catch a portal-side regression, and the contract test asserts the canonical totals (178 anomalies on the canonical run, with six of the nine rule definitions firing (`revenue_band`, `labor_pct_band`, and `avg_ticket_band` are within band on this dataset and don't fire); 2944 store-days across eight stores and 368 days; the dashboard window totals that the per-store and per-department aggregates reconcile back to).
+The bundled JSON files in [fixtures/](fixtures/) (six of them: dashboard-summary, store-metrics, department-metrics, dim-stores, anomalies, health) are byte-identical captures of API responses. They serve two roles. At runtime in offline mode they are the data source the page server components consume. At test time they are the input the contract test exercises. A fixture change is verified by the same tests that catch a portal-side regression, and the contract test asserts the canonical totals (343 anomalies on the canonical run, with six of the nine rule definitions firing (`revenue_band`, `labor_pct_band`, and `avg_ticket_band` are within band on this dataset and don't fire); 5848 store-days across eight stores and 731 days; the dashboard window totals that the per-store and per-department aggregates reconcile back to).
 
 This file is the last link in a contract chain that starts at the sim engine. The ETL pins sim engine → ETL with `test_sim_engine_contract.py`, the API pins ETL → API with `test_etl_contract.py`, and this repository pins API → portal with [tests/contract/api-portal-contract.test.ts](tests/contract/api-portal-contract.test.ts). A value asserted at one layer's contract test traces to the same value at the next; a fixture-out-of-date failure anywhere in the chain is the signal that the dataset moved and the layer below must catch up.
 
@@ -637,7 +635,7 @@ The script requires Docker to be running. It does not require an upstream API.
 ### Environment variables
 
 | Variable | Required? | Default | Description |
-|---|---|---|---|
+|---|---|---|
 | `API_MODE` | optional | `offline` | `offline` serves bundled fixtures; `online` proxies to the upstream API. |
 | `API_BASE_URL` | required when `API_MODE=online` | `http://localhost:8000` | Upstream `economic-data-api` URL. |
 | `LOG_LEVEL` | optional | `info` | Log verbosity: `trace`, `debug`, `info`, `warn`, `error`, `fatal`. |

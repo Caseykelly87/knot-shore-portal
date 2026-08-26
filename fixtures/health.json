@@ -4,7 +4,7 @@
   "grocery_pipeline": {
     "status": "healthy",
     "mode": "offline",
-    "canonical_path": "app\\fixtures"
+    "canonical_path": "C:\\Users\\Casey\\Desktop\\A\\economic-data-api\\economic-data-api\\app\\fixtures"
   },
   "macro_pipeline": {
     "status": "unavailable",

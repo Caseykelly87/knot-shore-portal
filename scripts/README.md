@@ -41,8 +41,8 @@ window:
 
     python -c "import json; d=json.load(open('fixtures/department-metrics.json')); i=d['items']; dts=sorted({r['date'] for r in i}); print(len(i),'items',len(dts),'dates',dts[0],'..',dts[-1])"
 
-The canonical store and department windows are 368 unique dates from
-2024-07-01 to 2025-12-31 — department-metrics has 29,414 rows,
-store-metrics 2,944. `anomalies` is sparse: 178 rows across 119 dates in
-the same span. A short window (for example 184 dates ending 2025-12-31)
+The canonical store and department windows are 731 unique dates from
+2024-01-01 to 2025-12-31 — department-metrics has 58,424 rows,
+store-metrics 5,848. `anomalies` is sparse: 343 rows across 234 dates in
+the same span. A short window (for example 365 dates ending 2025-12-31)
 indicates a stale, windowed capture.

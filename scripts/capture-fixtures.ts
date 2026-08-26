@@ -53,9 +53,9 @@ const TARGETS: CaptureSpec[] = [
   // anomalies — full 2024+2025 canonical, paginated.
   { url: "/anomalies", filename: "anomalies.json", shape: "paginated" },
 
-  // dashboard-summary — fixed 2025 window for the kpi canary.
+  // dashboard-summary — fixed calendar-2025 window for the kpi canary.
   {
-    url: "/dashboard-summary?start_date=2025-07-01&end_date=2025-12-31",
+    url: "/dashboard-summary?start_date=2025-01-01&end_date=2025-12-31",
     filename: "dashboard-summary.json",
     shape: "single",
   },

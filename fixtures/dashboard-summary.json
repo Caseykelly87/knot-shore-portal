@@ -1,39 +1,39 @@
 {
-  "start_date": "2025-07-01",
+  "start_date": "2025-01-01",
   "end_date": "2025-12-31",
-  "total_sales": 115253718.09,
-  "total_transactions": 3501471,
-  "average_labor_cost_pct": 0.125425,
+  "total_sales": 222402533.91,
+  "total_transactions": 6752355,
+  "average_labor_cost_pct": 0.124317,
   "top_stores_by_revenue": [
     {
       "store_id": 2,
-      "total_sales": 21561968.63
+      "total_sales": 41560031.77
     },
     {
       "store_id": 1,
-      "total_sales": 18598267.84
+      "total_sales": 35882160.74
     },
     {
       "store_id": 3,
-      "total_sales": 16594132.7
+      "total_sales": 32059518.13
     },
     {
       "store_id": 4,
-      "total_sales": 13356726.86
+      "total_sales": 25846998.51
     },
     {
       "store_id": 6,
-      "total_sales": 12229315.37
+      "total_sales": 23587807.76
     }
   ],
   "exception_count_by_severity": [
     {
       "severity_level": "info",
-      "count": 485
+      "count": 17
     },
     {
       "severity_level": "warning",
-      "count": 42
+      "count": 150
     },
     {
       "severity_level": "critical",
@@ -42,414 +42,1319 @@
   ],
   "daily_sales_trend": [
     {
+      "date": "2025-01-01",
+      "total_sales": 551188.53,
+      "transaction_count": 16852
+    },
+    {
+      "date": "2025-01-02",
+      "total_sales": 567043.52,
+      "transaction_count": 17330
+    },
+    {
+      "date": "2025-01-03",
+      "total_sales": 650758.01,
+      "transaction_count": 19738
+    },
+    {
+      "date": "2025-01-04",
+      "total_sales": 680357.42,
+      "transaction_count": 21184
+    },
+    {
+      "date": "2025-01-05",
+      "total_sales": 689109.42,
+      "transaction_count": 20873
+    },
+    {
+      "date": "2025-01-06",
+      "total_sales": 518879.52,
+      "transaction_count": 15727
+    },
+    {
+      "date": "2025-01-07",
+      "total_sales": 531193.72,
+      "transaction_count": 16067
+    },
+    {
+      "date": "2025-01-08",
+      "total_sales": 558513.32,
+      "transaction_count": 16899
+    },
+    {
+      "date": "2025-01-09",
+      "total_sales": 563127.2,
+      "transaction_count": 17196
+    },
+    {
+      "date": "2025-01-10",
+      "total_sales": 646972.09,
+      "transaction_count": 19714
+    },
+    {
+      "date": "2025-01-11",
+      "total_sales": 656285.55,
+      "transaction_count": 19538
+    },
+    {
+      "date": "2025-01-12",
+      "total_sales": 660652.92,
+      "transaction_count": 20107
+    },
+    {
+      "date": "2025-01-13",
+      "total_sales": 501915.41,
+      "transaction_count": 15248
+    },
+    {
+      "date": "2025-01-14",
+      "total_sales": 512584.53,
+      "transaction_count": 15450
+    },
+    {
+      "date": "2025-01-15",
+      "total_sales": 532959.97,
+      "transaction_count": 16133
+    },
+    {
+      "date": "2025-01-16",
+      "total_sales": 534457.54,
+      "transaction_count": 16278
+    },
+    {
+      "date": "2025-01-17",
+      "total_sales": 607491.94,
+      "transaction_count": 18275
+    },
+    {
+      "date": "2025-01-18",
+      "total_sales": 633973.93,
+      "transaction_count": 18803
+    },
+    {
+      "date": "2025-01-19",
+      "total_sales": 618388.57,
+      "transaction_count": 18688
+    },
+    {
+      "date": "2025-01-20",
+      "total_sales": 471174.61,
+      "transaction_count": 14178
+    },
+    {
+      "date": "2025-01-21",
+      "total_sales": 484887.31,
+      "transaction_count": 14738
+    },
+    {
+      "date": "2025-01-22",
+      "total_sales": 518301.78,
+      "transaction_count": 15895
+    },
+    {
+      "date": "2025-01-23",
+      "total_sales": 529597.1,
+      "transaction_count": 16138
+    },
+    {
+      "date": "2025-01-24",
+      "total_sales": 583946.54,
+      "transaction_count": 17728
+    },
+    {
+      "date": "2025-01-25",
+      "total_sales": 630026.79,
+      "transaction_count": 18952
+    },
+    {
+      "date": "2025-01-26",
+      "total_sales": 636672.91,
+      "transaction_count": 19433
+    },
+    {
+      "date": "2025-01-27",
+      "total_sales": 484229.59,
+      "transaction_count": 14665
+    },
+    {
+      "date": "2025-01-28",
+      "total_sales": 499283.0,
+      "transaction_count": 15191
+    },
+    {
+      "date": "2025-01-29",
+      "total_sales": 523467.42,
+      "transaction_count": 16009
+    },
+    {
+      "date": "2025-01-30",
+      "total_sales": 549765.13,
+      "transaction_count": 16648
+    },
+    {
+      "date": "2025-01-31",
+      "total_sales": 625495.28,
+      "transaction_count": 18826
+    },
+    {
+      "date": "2025-02-01",
+      "total_sales": 663917.33,
+      "transaction_count": 20090
+    },
+    {
+      "date": "2025-02-02",
+      "total_sales": 631552.88,
+      "transaction_count": 19283
+    },
+    {
+      "date": "2025-02-03",
+      "total_sales": 474937.23,
+      "transaction_count": 14622
+    },
+    {
+      "date": "2025-02-04",
+      "total_sales": 483176.09,
+      "transaction_count": 14648
+    },
+    {
+      "date": "2025-02-05",
+      "total_sales": 508212.36,
+      "transaction_count": 15523
+    },
+    {
+      "date": "2025-02-06",
+      "total_sales": 511769.17,
+      "transaction_count": 15768
+    },
+    {
+      "date": "2025-02-07",
+      "total_sales": 593832.98,
+      "transaction_count": 17952
+    },
+    {
+      "date": "2025-02-08",
+      "total_sales": 615045.06,
+      "transaction_count": 18612
+    },
+    {
+      "date": "2025-02-09",
+      "total_sales": 615695.69,
+      "transaction_count": 18653
+    },
+    {
+      "date": "2025-02-10",
+      "total_sales": 470421.76,
+      "transaction_count": 14459
+    },
+    {
+      "date": "2025-02-11",
+      "total_sales": 494711.99,
+      "transaction_count": 14913
+    },
+    {
+      "date": "2025-02-12",
+      "total_sales": 522117.0,
+      "transaction_count": 15678
+    },
+    {
+      "date": "2025-02-13",
+      "total_sales": 528093.95,
+      "transaction_count": 15937
+    },
+    {
+      "date": "2025-02-14",
+      "total_sales": 602891.72,
+      "transaction_count": 18236
+    },
+    {
+      "date": "2025-02-15",
+      "total_sales": 634606.55,
+      "transaction_count": 19173
+    },
+    {
+      "date": "2025-02-16",
+      "total_sales": 634631.29,
+      "transaction_count": 19231
+    },
+    {
+      "date": "2025-02-17",
+      "total_sales": 487394.63,
+      "transaction_count": 14800
+    },
+    {
+      "date": "2025-02-18",
+      "total_sales": 498449.57,
+      "transaction_count": 15132
+    },
+    {
+      "date": "2025-02-19",
+      "total_sales": 516978.83,
+      "transaction_count": 15858
+    },
+    {
+      "date": "2025-02-20",
+      "total_sales": 536425.4,
+      "transaction_count": 16492
+    },
+    {
+      "date": "2025-02-21",
+      "total_sales": 606042.2,
+      "transaction_count": 18511
+    },
+    {
+      "date": "2025-02-22",
+      "total_sales": 641493.94,
+      "transaction_count": 19602
+    },
+    {
+      "date": "2025-02-23",
+      "total_sales": 642306.88,
+      "transaction_count": 19401
+    },
+    {
+      "date": "2025-02-24",
+      "total_sales": 483825.56,
+      "transaction_count": 14662
+    },
+    {
+      "date": "2025-02-25",
+      "total_sales": 481512.07,
+      "transaction_count": 14618
+    },
+    {
+      "date": "2025-02-26",
+      "total_sales": 516523.24,
+      "transaction_count": 15600
+    },
+    {
+      "date": "2025-02-27",
+      "total_sales": 528098.0,
+      "transaction_count": 16148
+    },
+    {
+      "date": "2025-02-28",
+      "total_sales": 616496.98,
+      "transaction_count": 18984
+    },
+    {
+      "date": "2025-03-01",
+      "total_sales": 687956.97,
+      "transaction_count": 20883
+    },
+    {
+      "date": "2025-03-02",
+      "total_sales": 689649.1,
+      "transaction_count": 20810
+    },
+    {
+      "date": "2025-03-03",
+      "total_sales": 523321.71,
+      "transaction_count": 16012
+    },
+    {
+      "date": "2025-03-04",
+      "total_sales": 539640.3,
+      "transaction_count": 16333
+    },
+    {
+      "date": "2025-03-05",
+      "total_sales": 562015.97,
+      "transaction_count": 17029
+    },
+    {
+      "date": "2025-03-06",
+      "total_sales": 574367.73,
+      "transaction_count": 17447
+    },
+    {
+      "date": "2025-03-07",
+      "total_sales": 662107.36,
+      "transaction_count": 19975
+    },
+    {
+      "date": "2025-03-08",
+      "total_sales": 683095.4,
+      "transaction_count": 20786
+    },
+    {
+      "date": "2025-03-09",
+      "total_sales": 686849.06,
+      "transaction_count": 20925
+    },
+    {
+      "date": "2025-03-10",
+      "total_sales": 527260.95,
+      "transaction_count": 16112
+    },
+    {
+      "date": "2025-03-11",
+      "total_sales": 519931.42,
+      "transaction_count": 15829
+    },
+    {
+      "date": "2025-03-12",
+      "total_sales": 534658.82,
+      "transaction_count": 16059
+    },
+    {
+      "date": "2025-03-13",
+      "total_sales": 549790.47,
+      "transaction_count": 16788
+    },
+    {
+      "date": "2025-03-14",
+      "total_sales": 606235.77,
+      "transaction_count": 18054
+    },
+    {
+      "date": "2025-03-15",
+      "total_sales": 658443.13,
+      "transaction_count": 19794
+    },
+    {
+      "date": "2025-03-16",
+      "total_sales": 658095.97,
+      "transaction_count": 19948
+    },
+    {
+      "date": "2025-03-17",
+      "total_sales": 495114.14,
+      "transaction_count": 15053
+    },
+    {
+      "date": "2025-03-18",
+      "total_sales": 506972.65,
+      "transaction_count": 15507
+    },
+    {
+      "date": "2025-03-19",
+      "total_sales": 527699.47,
+      "transaction_count": 15909
+    },
+    {
+      "date": "2025-03-20",
+      "total_sales": 544723.1,
+      "transaction_count": 16713
+    },
+    {
+      "date": "2025-03-21",
+      "total_sales": 614012.68,
+      "transaction_count": 18885
+    },
+    {
+      "date": "2025-03-22",
+      "total_sales": 644282.64,
+      "transaction_count": 19479
+    },
+    {
+      "date": "2025-03-23",
+      "total_sales": 649301.49,
+      "transaction_count": 19744
+    },
+    {
+      "date": "2025-03-24",
+      "total_sales": 494477.22,
+      "transaction_count": 14894
+    },
+    {
+      "date": "2025-03-25",
+      "total_sales": 504999.67,
+      "transaction_count": 15519
+    },
+    {
+      "date": "2025-03-26",
+      "total_sales": 534878.73,
+      "transaction_count": 16482
+    },
+    {
+      "date": "2025-03-27",
+      "total_sales": 553448.89,
+      "transaction_count": 16862
+    },
+    {
+      "date": "2025-03-28",
+      "total_sales": 631482.23,
+      "transaction_count": 19181
+    },
+    {
+      "date": "2025-03-29",
+      "total_sales": 654515.91,
+      "transaction_count": 20081
+    },
+    {
+      "date": "2025-03-30",
+      "total_sales": 667477.55,
+      "transaction_count": 20127
+    },
+    {
+      "date": "2025-03-31",
+      "total_sales": 502211.22,
+      "transaction_count": 15354
+    },
+    {
+      "date": "2025-04-01",
+      "total_sales": 555053.23,
+      "transaction_count": 16874
+    },
+    {
+      "date": "2025-04-02",
+      "total_sales": 580188.78,
+      "transaction_count": 17547
+    },
+    {
+      "date": "2025-04-03",
+      "total_sales": 603620.84,
+      "transaction_count": 18351
+    },
+    {
+      "date": "2025-04-04",
+      "total_sales": 686672.4,
+      "transaction_count": 20686
+    },
+    {
+      "date": "2025-04-05",
+      "total_sales": 711746.67,
+      "transaction_count": 21326
+    },
+    {
+      "date": "2025-04-06",
+      "total_sales": 717007.56,
+      "transaction_count": 22025
+    },
+    {
+      "date": "2025-04-07",
+      "total_sales": 545003.23,
+      "transaction_count": 16798
+    },
+    {
+      "date": "2025-04-08",
+      "total_sales": 553718.95,
+      "transaction_count": 16957
+    },
+    {
+      "date": "2025-04-09",
+      "total_sales": 575558.76,
+      "transaction_count": 17370
+    },
+    {
+      "date": "2025-04-10",
+      "total_sales": 596400.57,
+      "transaction_count": 18145
+    },
+    {
+      "date": "2025-04-11",
+      "total_sales": 649825.56,
+      "transaction_count": 19788
+    },
+    {
+      "date": "2025-04-12",
+      "total_sales": 679093.41,
+      "transaction_count": 20382
+    },
+    {
+      "date": "2025-04-13",
+      "total_sales": 685120.5,
+      "transaction_count": 20787
+    },
+    {
+      "date": "2025-04-14",
+      "total_sales": 518092.35,
+      "transaction_count": 15797
+    },
+    {
+      "date": "2025-04-15",
+      "total_sales": 536755.19,
+      "transaction_count": 16413
+    },
+    {
+      "date": "2025-04-16",
+      "total_sales": 563361.89,
+      "transaction_count": 17039
+    },
+    {
+      "date": "2025-04-17",
+      "total_sales": 575680.31,
+      "transaction_count": 17457
+    },
+    {
+      "date": "2025-04-18",
+      "total_sales": 647819.97,
+      "transaction_count": 19780
+    },
+    {
+      "date": "2025-04-19",
+      "total_sales": 679879.88,
+      "transaction_count": 20502
+    },
+    {
+      "date": "2025-04-20",
+      "total_sales": 682218.22,
+      "transaction_count": 20563
+    },
+    {
+      "date": "2025-04-21",
+      "total_sales": 521119.71,
+      "transaction_count": 15996
+    },
+    {
+      "date": "2025-04-22",
+      "total_sales": 521743.17,
+      "transaction_count": 15876
+    },
+    {
+      "date": "2025-04-23",
+      "total_sales": 548748.81,
+      "transaction_count": 16638
+    },
+    {
+      "date": "2025-04-24",
+      "total_sales": 568875.43,
+      "transaction_count": 17107
+    },
+    {
+      "date": "2025-04-25",
+      "total_sales": 649626.58,
+      "transaction_count": 19747
+    },
+    {
+      "date": "2025-04-26",
+      "total_sales": 681147.45,
+      "transaction_count": 20588
+    },
+    {
+      "date": "2025-04-27",
+      "total_sales": 691518.9,
+      "transaction_count": 20999
+    },
+    {
+      "date": "2025-04-28",
+      "total_sales": 520149.79,
+      "transaction_count": 15686
+    },
+    {
+      "date": "2025-04-29",
+      "total_sales": 536659.15,
+      "transaction_count": 16302
+    },
+    {
+      "date": "2025-04-30",
+      "total_sales": 562660.65,
+      "transaction_count": 17189
+    },
+    {
+      "date": "2025-05-01",
+      "total_sales": 612487.99,
+      "transaction_count": 18714
+    },
+    {
+      "date": "2025-05-02",
+      "total_sales": 689445.38,
+      "transaction_count": 21013
+    },
+    {
+      "date": "2025-05-03",
+      "total_sales": 723451.47,
+      "transaction_count": 22097
+    },
+    {
+      "date": "2025-05-04",
+      "total_sales": 730610.28,
+      "transaction_count": 22035
+    },
+    {
+      "date": "2025-05-05",
+      "total_sales": 554343.45,
+      "transaction_count": 17088
+    },
+    {
+      "date": "2025-05-06",
+      "total_sales": 570733.72,
+      "transaction_count": 17391
+    },
+    {
+      "date": "2025-05-07",
+      "total_sales": 588626.22,
+      "transaction_count": 17901
+    },
+    {
+      "date": "2025-05-08",
+      "total_sales": 609874.42,
+      "transaction_count": 18317
+    },
+    {
+      "date": "2025-05-09",
+      "total_sales": 677561.21,
+      "transaction_count": 20678
+    },
+    {
+      "date": "2025-05-10",
+      "total_sales": 718495.62,
+      "transaction_count": 21639
+    },
+    {
+      "date": "2025-05-11",
+      "total_sales": 704405.85,
+      "transaction_count": 21253
+    },
+    {
+      "date": "2025-05-12",
+      "total_sales": 518891.13,
+      "transaction_count": 15979
+    },
+    {
+      "date": "2025-05-13",
+      "total_sales": 526291.6,
+      "transaction_count": 16125
+    },
+    {
+      "date": "2025-05-14",
+      "total_sales": 546974.89,
+      "transaction_count": 16707
+    },
+    {
+      "date": "2025-05-15",
+      "total_sales": 560843.15,
+      "transaction_count": 16813
+    },
+    {
+      "date": "2025-05-16",
+      "total_sales": 671645.37,
+      "transaction_count": 20588
+    },
+    {
+      "date": "2025-05-17",
+      "total_sales": 702224.32,
+      "transaction_count": 20985
+    },
+    {
+      "date": "2025-05-18",
+      "total_sales": 705099.69,
+      "transaction_count": 21275
+    },
+    {
+      "date": "2025-05-19",
+      "total_sales": 527861.74,
+      "transaction_count": 16180
+    },
+    {
+      "date": "2025-05-20",
+      "total_sales": 534232.99,
+      "transaction_count": 16299
+    },
+    {
+      "date": "2025-05-21",
+      "total_sales": 562897.04,
+      "transaction_count": 17274
+    },
+    {
+      "date": "2025-05-22",
+      "total_sales": 573719.15,
+      "transaction_count": 17627
+    },
+    {
+      "date": "2025-05-23",
+      "total_sales": 636145.11,
+      "transaction_count": 19259
+    },
+    {
+      "date": "2025-05-24",
+      "total_sales": 657040.2,
+      "transaction_count": 19844
+    },
+    {
+      "date": "2025-05-25",
+      "total_sales": 669512.95,
+      "transaction_count": 20273
+    },
+    {
+      "date": "2025-05-26",
+      "total_sales": 503742.74,
+      "transaction_count": 15454
+    },
+    {
+      "date": "2025-05-27",
+      "total_sales": 527479.28,
+      "transaction_count": 16466
+    },
+    {
+      "date": "2025-05-28",
+      "total_sales": 554070.47,
+      "transaction_count": 16908
+    },
+    {
+      "date": "2025-05-29",
+      "total_sales": 561655.88,
+      "transaction_count": 17089
+    },
+    {
+      "date": "2025-05-30",
+      "total_sales": 645688.52,
+      "transaction_count": 19337
+    },
+    {
+      "date": "2025-05-31",
+      "total_sales": 693129.27,
+      "transaction_count": 20792
+    },
+    {
+      "date": "2025-06-01",
+      "total_sales": 737358.76,
+      "transaction_count": 22205
+    },
+    {
+      "date": "2025-06-02",
+      "total_sales": 564911.86,
+      "transaction_count": 17104
+    },
+    {
+      "date": "2025-06-03",
+      "total_sales": 581124.58,
+      "transaction_count": 17746
+    },
+    {
+      "date": "2025-06-04",
+      "total_sales": 582608.4,
+      "transaction_count": 17715
+    },
+    {
+      "date": "2025-06-05",
+      "total_sales": 603876.6,
+      "transaction_count": 18259
+    },
+    {
+      "date": "2025-06-06",
+      "total_sales": 688689.18,
+      "transaction_count": 21079
+    },
+    {
+      "date": "2025-06-07",
+      "total_sales": 722147.54,
+      "transaction_count": 22053
+    },
+    {
+      "date": "2025-06-08",
+      "total_sales": 709858.76,
+      "transaction_count": 21377
+    },
+    {
+      "date": "2025-06-09",
+      "total_sales": 526127.2,
+      "transaction_count": 15982
+    },
+    {
+      "date": "2025-06-10",
+      "total_sales": 554452.64,
+      "transaction_count": 16734
+    },
+    {
+      "date": "2025-06-11",
+      "total_sales": 552947.98,
+      "transaction_count": 16678
+    },
+    {
+      "date": "2025-06-12",
+      "total_sales": 578538.05,
+      "transaction_count": 17528
+    },
+    {
+      "date": "2025-06-13",
+      "total_sales": 662682.95,
+      "transaction_count": 20335
+    },
+    {
+      "date": "2025-06-14",
+      "total_sales": 674016.14,
+      "transaction_count": 20297
+    },
+    {
+      "date": "2025-06-15",
+      "total_sales": 693810.16,
+      "transaction_count": 20743
+    },
+    {
+      "date": "2025-06-16",
+      "total_sales": 521284.18,
+      "transaction_count": 15955
+    },
+    {
+      "date": "2025-06-17",
+      "total_sales": 557596.49,
+      "transaction_count": 16826
+    },
+    {
+      "date": "2025-06-18",
+      "total_sales": 576377.27,
+      "transaction_count": 17505
+    },
+    {
+      "date": "2025-06-19",
+      "total_sales": 571931.82,
+      "transaction_count": 17239
+    },
+    {
+      "date": "2025-06-20",
+      "total_sales": 642384.9,
+      "transaction_count": 19332
+    },
+    {
+      "date": "2025-06-21",
+      "total_sales": 675343.97,
+      "transaction_count": 20498
+    },
+    {
+      "date": "2025-06-22",
+      "total_sales": 668807.34,
+      "transaction_count": 20488
+    },
+    {
+      "date": "2025-06-23",
+      "total_sales": 514335.36,
+      "transaction_count": 15679
+    },
+    {
+      "date": "2025-06-24",
+      "total_sales": 525802.12,
+      "transaction_count": 16037
+    },
+    {
+      "date": "2025-06-25",
+      "total_sales": 554212.03,
+      "transaction_count": 16996
+    },
+    {
+      "date": "2025-06-26",
+      "total_sales": 587894.73,
+      "transaction_count": 18020
+    },
+    {
+      "date": "2025-06-27",
+      "total_sales": 673108.0,
+      "transaction_count": 20175
+    },
+    {
+      "date": "2025-06-28",
+      "total_sales": 703575.03,
+      "transaction_count": 21395
+    },
+    {
+      "date": "2025-06-29",
+      "total_sales": 715617.67,
+      "transaction_count": 21573
+    },
+    {
+      "date": "2025-06-30",
+      "total_sales": 540266.46,
+      "transaction_count": 16632
+    },
+    {
       "date": "2025-07-01",
       "total_sales": 565377.5,
-      "transaction_count": 17590
+      "transaction_count": 17331
     },
     {
       "date": "2025-07-02",
       "total_sales": 584284.83,
-      "transaction_count": 17739
+      "transaction_count": 17911
     },
     {
       "date": "2025-07-03",
       "total_sales": 603547.48,
-      "transaction_count": 18397
+      "transaction_count": 18465
     },
     {
       "date": "2025-07-04",
       "total_sales": 695069.62,
-      "transaction_count": 20954
+      "transaction_count": 21439
     },
     {
       "date": "2025-07-05",
       "total_sales": 675128.99,
-      "transaction_count": 20738
+      "transaction_count": 20692
     },
     {
       "date": "2025-07-06",
       "total_sales": 738786.99,
-      "transaction_count": 22378
+      "transaction_count": 22100
     },
     {
       "date": "2025-07-07",
       "total_sales": 566724.25,
-      "transaction_count": 17171
+      "transaction_count": 17281
     },
     {
       "date": "2025-07-08",
       "total_sales": 573774.38,
-      "transaction_count": 17557
+      "transaction_count": 17728
     },
     {
       "date": "2025-07-09",
       "total_sales": 600400.39,
-      "transaction_count": 18304
+      "transaction_count": 18130
     },
     {
       "date": "2025-07-10",
       "total_sales": 615869.27,
-      "transaction_count": 18673
+      "transaction_count": 18718
     },
     {
       "date": "2025-07-11",
       "total_sales": 671249.57,
-      "transaction_count": 20189
+      "transaction_count": 20225
     },
     {
       "date": "2025-07-12",
       "total_sales": 700961.69,
-      "transaction_count": 21142
+      "transaction_count": 21095
     },
     {
       "date": "2025-07-13",
       "total_sales": 712064.3,
-      "transaction_count": 21477
+      "transaction_count": 21498
     },
     {
       "date": "2025-07-14",
       "total_sales": 540703.75,
-      "transaction_count": 16510
+      "transaction_count": 16397
     },
     {
       "date": "2025-07-15",
       "total_sales": 563014.8,
-      "transaction_count": 17114
+      "transaction_count": 17286
     },
     {
       "date": "2025-07-16",
       "total_sales": 585212.1,
-      "transaction_count": 17779
+      "transaction_count": 17613
     },
     {
       "date": "2025-07-17",
       "total_sales": 596588.49,
-      "transaction_count": 18161
+      "transaction_count": 18330
     },
     {
       "date": "2025-07-18",
       "total_sales": 660111.31,
-      "transaction_count": 20126
+      "transaction_count": 19975
     },
     {
       "date": "2025-07-19",
       "total_sales": 693485.01,
-      "transaction_count": 21186
+      "transaction_count": 21237
     },
     {
       "date": "2025-07-20",
       "total_sales": 696073.01,
-      "transaction_count": 20913
+      "transaction_count": 21060
     },
     {
       "date": "2025-07-21",
       "total_sales": 527044.2,
-      "transaction_count": 16139
+      "transaction_count": 16143
     },
     {
       "date": "2025-07-22",
       "total_sales": 539607.07,
-      "transaction_count": 16673
+      "transaction_count": 16606
     },
     {
       "date": "2025-07-23",
       "total_sales": 576707.94,
-      "transaction_count": 17368
+      "transaction_count": 17591
     },
     {
       "date": "2025-07-24",
       "total_sales": 571030.63,
-      "transaction_count": 17514
+      "transaction_count": 17360
     },
     {
       "date": "2025-07-25",
       "total_sales": 622680.93,
-      "transaction_count": 18686
+      "transaction_count": 19067
     },
     {
       "date": "2025-07-26",
       "total_sales": 682560.51,
-      "transaction_count": 20687
+      "transaction_count": 20647
     },
     {
       "date": "2025-07-27",
       "total_sales": 686348.88,
-      "transaction_count": 20340
+      "transaction_count": 20498
     },
     {
       "date": "2025-07-28",
       "total_sales": 510933.92,
-      "transaction_count": 15701
+      "transaction_count": 15660
     },
     {
       "date": "2025-07-29",
       "total_sales": 529783.66,
-      "transaction_count": 16223
+      "transaction_count": 16161
     },
     {
       "date": "2025-07-30",
       "total_sales": 564517.53,
-      "transaction_count": 17135
+      "transaction_count": 17236
     },
     {
       "date": "2025-07-31",
       "total_sales": 586335.97,
-      "transaction_count": 17595
+      "transaction_count": 17966
     },
     {
       "date": "2025-08-01",
       "total_sales": 700493.67,
-      "transaction_count": 21064
+      "transaction_count": 21001
     },
     {
       "date": "2025-08-02",
       "total_sales": 731215.35,
-      "transaction_count": 22303
+      "transaction_count": 22390
     },
     {
       "date": "2025-08-03",
       "total_sales": 733225.62,
-      "transaction_count": 22302
+      "transaction_count": 22185
     },
     {
       "date": "2025-08-04",
       "total_sales": 555004.91,
-      "transaction_count": 16764
+      "transaction_count": 17050
     },
     {
       "date": "2025-08-05",
       "total_sales": 569526.63,
-      "transaction_count": 17409
+      "transaction_count": 17556
     },
     {
       "date": "2025-08-06",
       "total_sales": 580854.1,
-      "transaction_count": 17639
+      "transaction_count": 17507
     },
     {
       "date": "2025-08-07",
       "total_sales": 602578.08,
-      "transaction_count": 18212
+      "transaction_count": 18220
     },
     {
       "date": "2025-08-08",
       "total_sales": 692219.17,
-      "transaction_count": 20731
+      "transaction_count": 20965
     },
     {
       "date": "2025-08-09",
       "total_sales": 722458.61,
-      "transaction_count": 21763
+      "transaction_count": 21816
     },
     {
       "date": "2025-08-10",
       "total_sales": 714565.92,
-      "transaction_count": 21853
+      "transaction_count": 21710
     },
     {
       "date": "2025-08-11",
       "total_sales": 527281.81,
-      "transaction_count": 16104
+      "transaction_count": 16040
     },
     {
       "date": "2025-08-12",
       "total_sales": 533140.72,
-      "transaction_count": 16183
+      "transaction_count": 16294
     },
     {
       "date": "2025-08-13",
       "total_sales": 570713.3,
-      "transaction_count": 17389
+      "transaction_count": 17424
     },
     {
       "date": "2025-08-14",
       "total_sales": 579536.32,
-      "transaction_count": 17456
+      "transaction_count": 17535
     },
     {
       "date": "2025-08-15",
       "total_sales": 662429.89,
-      "transaction_count": 20265
+      "transaction_count": 19966
     },
     {
       "date": "2025-08-16",
       "total_sales": 675322.84,
-      "transaction_count": 20535
+      "transaction_count": 20290
     },
     {
       "date": "2025-08-17",
       "total_sales": 681286.88,
-      "transaction_count": 20565
+      "transaction_count": 20347
     },
     {
       "date": "2025-08-18",
       "total_sales": 518385.75,
-      "transaction_count": 15863
+      "transaction_count": 15911
     },
     {
       "date": "2025-08-19",
       "total_sales": 539755.87,
-      "transaction_count": 16372
+      "transaction_count": 16354
     },
     {
       "date": "2025-08-20",
       "total_sales": 558471.49,
-      "transaction_count": 16881
+      "transaction_count": 17014
     },
     {
       "date": "2025-08-21",
       "total_sales": 588831.62,
-      "transaction_count": 17709
+      "transaction_count": 17767
     },
     {
       "date": "2025-08-22",
       "total_sales": 663758.36,
-      "transaction_count": 20126
+      "transaction_count": 19979
     },
     {
       "date": "2025-08-23",
       "total_sales": 690625.63,
-      "transaction_count": 21239
+      "transaction_count": 20799
     },
     {
       "date": "2025-08-24",
       "total_sales": 698834.22,
-      "transaction_count": 21195
+      "transaction_count": 21404
     },
     {
       "date": "2025-08-25",
       "total_sales": 515446.67,
-      "transaction_count": 15813
+      "transaction_count": 15305
     },
     {
       "date": "2025-08-26",
       "total_sales": 547348.3,
-      "transaction_count": 16744
+      "transaction_count": 16549
     },
     {
       "date": "2025-08-27",
       "total_sales": 570426.52,
-      "transaction_count": 17333
+      "transaction_count": 17623
     },
     {
       "date": "2025-08-28",
       "total_sales": 590177.24,
-      "transaction_count": 18016
+      "transaction_count": 17961
     },
     {
       "date": "2025-08-29",
       "total_sales": 663575.92,
-      "transaction_count": 20099
+      "transaction_count": 20072
     },
     {
       "date": "2025-08-30",
       "total_sales": 703355.38,
-      "transaction_count": 21431
+      "transaction_count": 21323
     },
     {
       "date": "2025-08-31",
       "total_sales": 706303.52,
-      "transaction_count": 21505
+      "transaction_count": 21146
     },
     {
       "date": "2025-09-01",
       "total_sales": 542768.98,
-      "transaction_count": 16532
+      "transaction_count": 16533
     },
     {
       "date": "2025-09-02",
       "total_sales": 567213.88,
-      "transaction_count": 17312
+      "transaction_count": 17311
     },
     {
       "date": "2025-09-03",
       "total_sales": 591683.59,
-      "transaction_count": 18052
+      "transaction_count": 17829
     },
     {
       "date": "2025-09-04",
       "total_sales": 603584.7,
-      "transaction_count": 18427
+      "transaction_count": 18445
     },
     {
       "date": "2025-09-05",
       "total_sales": 700861.23,
-      "transaction_count": 21025
+      "transaction_count": 21090
     },
     {
       "date": "2025-09-06",
       "total_sales": 714890.45,
-      "transaction_count": 21719
+      "transaction_count": 21735
     },
     {
       "date": "2025-09-07",
       "total_sales": 728331.23,
-      "transaction_count": 21921
+      "transaction_count": 22351
     },
     {
       "date": "2025-09-08",
       "total_sales": 547841.34,
-      "transaction_count": 16624
+      "transaction_count": 16481
     },
     {
       "date": "2025-09-09",
       "total_sales": 567460.02,
-      "transaction_count": 17404
+      "transaction_count": 17213
     },
     {
       "date": "2025-09-10",
       "total_sales": 587069.87,
-      "transaction_count": 17974
+      "transaction_count": 17665
     },
     {
       "date": "2025-09-11",
       "total_sales": 578371.38,
-      "transaction_count": 17486
+      "transaction_count": 17323
     },
     {
       "date": "2025-09-12",
       "total_sales": 670316.09,
-      "transaction_count": 20348
+      "transaction_count": 20589
     },
     {
       "date": "2025-09-13",
       "total_sales": 691039.76,
-      "transaction_count": 20958
+      "transaction_count": 20891
     },
     {
       "date": "2025-09-14",
       "total_sales": 704069.13,
-      "transaction_count": 21344
+      "transaction_count": 21103
     },
     {
       "date": "2025-09-15",
       "total_sales": 535103.39,
-      "transaction_count": 16547
+      "transaction_count": 16284
     },
     {
       "date": "2025-09-16",
       "total_sales": 546523.11,
-      "transaction_count": 16446
+      "transaction_count": 16785
     },
     {
       "date": "2025-09-17",
       "total_sales": 562397.08,
-      "transaction_count": 17058
+      "transaction_count": 16943
     },
     {
       "date": "2025-09-18",
       "total_sales": 576197.43,
-      "transaction_count": 17498
+      "transaction_count": 17268
     },
     {
       "date": "2025-09-19",
       "total_sales": 663960.31,
-      "transaction_count": 20083
+      "transaction_count": 20173
     },
     {
       "date": "2025-09-20",
       "total_sales": 688745.87,
-      "transaction_count": 20842
+      "transaction_count": 20984
     },
     {
       "date": "2025-09-21",
@@ -459,442 +1364,442 @@
     {
       "date": "2025-09-22",
       "total_sales": 529399.86,
-      "transaction_count": 16153
+      "transaction_count": 16206
     },
     {
       "date": "2025-09-23",
       "total_sales": 540315.43,
-      "transaction_count": 16418
+      "transaction_count": 16409
     },
     {
       "date": "2025-09-24",
       "total_sales": 565276.66,
-      "transaction_count": 17161
+      "transaction_count": 16964
     },
     {
       "date": "2025-09-25",
       "total_sales": 587585.31,
-      "transaction_count": 17670
+      "transaction_count": 17763
     },
     {
       "date": "2025-09-26",
       "total_sales": 673971.94,
-      "transaction_count": 20580
+      "transaction_count": 20570
     },
     {
       "date": "2025-09-27",
       "total_sales": 701476.2,
-      "transaction_count": 21136
+      "transaction_count": 21086
     },
     {
       "date": "2025-09-28",
       "total_sales": 705394.52,
-      "transaction_count": 21516
+      "transaction_count": 21255
     },
     {
       "date": "2025-09-29",
       "total_sales": 527684.72,
-      "transaction_count": 16339
+      "transaction_count": 16108
     },
     {
       "date": "2025-09-30",
       "total_sales": 546634.98,
-      "transaction_count": 16486
+      "transaction_count": 16708
     },
     {
       "date": "2025-10-01",
       "total_sales": 591061.25,
-      "transaction_count": 17845
+      "transaction_count": 17937
     },
     {
       "date": "2025-10-02",
       "total_sales": 601996.24,
-      "transaction_count": 18268
+      "transaction_count": 18466
     },
     {
       "date": "2025-10-03",
       "total_sales": 687822.1,
-      "transaction_count": 20919
+      "transaction_count": 20788
     },
     {
       "date": "2025-10-04",
-      "total_sales": 716013,
-      "transaction_count": 21392
+      "total_sales": 716013.0,
+      "transaction_count": 21637
     },
     {
       "date": "2025-10-05",
       "total_sales": 711043.26,
-      "transaction_count": 21569
+      "transaction_count": 21796
     },
     {
       "date": "2025-10-06",
       "total_sales": 542292.49,
-      "transaction_count": 16745
+      "transaction_count": 16568
     },
     {
       "date": "2025-10-07",
       "total_sales": 563925.94,
-      "transaction_count": 17221
+      "transaction_count": 17316
     },
     {
       "date": "2025-10-08",
       "total_sales": 581396.83,
-      "transaction_count": 17683
+      "transaction_count": 17549
     },
     {
       "date": "2025-10-09",
       "total_sales": 602031.38,
-      "transaction_count": 18392
+      "transaction_count": 18266
     },
     {
       "date": "2025-10-10",
       "total_sales": 689866.06,
-      "transaction_count": 21000
+      "transaction_count": 20739
     },
     {
       "date": "2025-10-11",
       "total_sales": 654326.45,
-      "transaction_count": 19791
+      "transaction_count": 19777
     },
     {
       "date": "2025-10-12",
       "total_sales": 652712.04,
-      "transaction_count": 19486
+      "transaction_count": 19666
     },
     {
       "date": "2025-10-13",
       "total_sales": 500808.17,
-      "transaction_count": 14994
+      "transaction_count": 15337
     },
     {
       "date": "2025-10-14",
       "total_sales": 519166.78,
-      "transaction_count": 15964
+      "transaction_count": 15755
     },
     {
       "date": "2025-10-15",
       "total_sales": 520910.36,
-      "transaction_count": 15740
+      "transaction_count": 15501
     },
     {
       "date": "2025-10-16",
       "total_sales": 546562.09,
-      "transaction_count": 16671
+      "transaction_count": 16514
     },
     {
       "date": "2025-10-17",
       "total_sales": 616322.93,
-      "transaction_count": 18663
+      "transaction_count": 18915
     },
     {
       "date": "2025-10-18",
       "total_sales": 668121.22,
-      "transaction_count": 20488
+      "transaction_count": 20209
     },
     {
       "date": "2025-10-19",
       "total_sales": 693380.97,
-      "transaction_count": 21099
+      "transaction_count": 20769
     },
     {
       "date": "2025-10-20",
       "total_sales": 521407.32,
-      "transaction_count": 15943
+      "transaction_count": 15928
     },
     {
       "date": "2025-10-21",
       "total_sales": 536509.8,
-      "transaction_count": 16397
+      "transaction_count": 16297
     },
     {
       "date": "2025-10-22",
       "total_sales": 553049.6,
-      "transaction_count": 16962
+      "transaction_count": 16750
     },
     {
       "date": "2025-10-23",
       "total_sales": 577041.15,
-      "transaction_count": 17454
+      "transaction_count": 17605
     },
     {
       "date": "2025-10-24",
       "total_sales": 661498.98,
-      "transaction_count": 20135
+      "transaction_count": 19777
     },
     {
       "date": "2025-10-25",
       "total_sales": 691601.57,
-      "transaction_count": 20777
+      "transaction_count": 20964
     },
     {
       "date": "2025-10-26",
       "total_sales": 692167.96,
-      "transaction_count": 20794
+      "transaction_count": 20577
     },
     {
       "date": "2025-10-27",
       "total_sales": 524659.47,
-      "transaction_count": 16003
+      "transaction_count": 15774
     },
     {
       "date": "2025-10-28",
       "total_sales": 536171.95,
-      "transaction_count": 16163
+      "transaction_count": 16257
     },
     {
       "date": "2025-10-29",
       "total_sales": 546088.09,
-      "transaction_count": 16884
+      "transaction_count": 16592
     },
     {
       "date": "2025-10-30",
       "total_sales": 568892.13,
-      "transaction_count": 17378
+      "transaction_count": 17404
     },
     {
       "date": "2025-10-31",
       "total_sales": 642852.38,
-      "transaction_count": 19564
+      "transaction_count": 19551
     },
     {
       "date": "2025-11-01",
       "total_sales": 753800.04,
-      "transaction_count": 22668
+      "transaction_count": 22785
     },
     {
       "date": "2025-11-02",
       "total_sales": 765304.4,
-      "transaction_count": 23762
+      "transaction_count": 23213
     },
     {
       "date": "2025-11-03",
       "total_sales": 576232.06,
-      "transaction_count": 17701
+      "transaction_count": 17497
     },
     {
       "date": "2025-11-04",
       "total_sales": 601512.13,
-      "transaction_count": 18193
+      "transaction_count": 18251
     },
     {
       "date": "2025-11-05",
       "total_sales": 618000.88,
-      "transaction_count": 18521
+      "transaction_count": 18765
     },
     {
       "date": "2025-11-06",
       "total_sales": 625244.45,
-      "transaction_count": 18966
+      "transaction_count": 19150
     },
     {
       "date": "2025-11-07",
       "total_sales": 729675.97,
-      "transaction_count": 22263
+      "transaction_count": 22249
     },
     {
       "date": "2025-11-08",
       "total_sales": 743454.56,
-      "transaction_count": 22487
+      "transaction_count": 22565
     },
     {
       "date": "2025-11-09",
       "total_sales": 758484.36,
-      "transaction_count": 22751
+      "transaction_count": 22998
     },
     {
       "date": "2025-11-10",
       "total_sales": 573483.86,
-      "transaction_count": 17347
+      "transaction_count": 17244
     },
     {
       "date": "2025-11-11",
       "total_sales": 519218.49,
-      "transaction_count": 15853
+      "transaction_count": 15666
     },
     {
       "date": "2025-11-12",
       "total_sales": 541991.88,
-      "transaction_count": 16310
+      "transaction_count": 16617
     },
     {
       "date": "2025-11-13",
       "total_sales": 555394.17,
-      "transaction_count": 16959
+      "transaction_count": 16949
     },
     {
       "date": "2025-11-14",
       "total_sales": 688774.55,
-      "transaction_count": 21014
+      "transaction_count": 20974
     },
     {
       "date": "2025-11-15",
-      "total_sales": 729666,
-      "transaction_count": 22033
+      "total_sales": 729666.0,
+      "transaction_count": 21827
     },
     {
       "date": "2025-11-16",
       "total_sales": 743148.49,
-      "transaction_count": 22831
+      "transaction_count": 22679
     },
     {
       "date": "2025-11-17",
       "total_sales": 559039.01,
-      "transaction_count": 16925
+      "transaction_count": 17040
     },
     {
       "date": "2025-11-18",
       "total_sales": 574438.9,
-      "transaction_count": 17472
+      "transaction_count": 17484
     },
     {
       "date": "2025-11-19",
       "total_sales": 582105.24,
-      "transaction_count": 17486
+      "transaction_count": 17476
     },
     {
       "date": "2025-11-20",
       "total_sales": 602458.58,
-      "transaction_count": 18585
+      "transaction_count": 18623
     },
     {
       "date": "2025-11-21",
       "total_sales": 638254.42,
-      "transaction_count": 19108
+      "transaction_count": 19146
     },
     {
       "date": "2025-11-22",
       "total_sales": 665321.18,
-      "transaction_count": 19983
+      "transaction_count": 19993
     },
     {
       "date": "2025-11-23",
       "total_sales": 673388.07,
-      "transaction_count": 20326
+      "transaction_count": 20345
     },
     {
       "date": "2025-11-24",
       "total_sales": 503277.92,
-      "transaction_count": 15398
+      "transaction_count": 15582
     },
     {
       "date": "2025-11-25",
       "total_sales": 523685.39,
-      "transaction_count": 15915
+      "transaction_count": 15868
     },
     {
       "date": "2025-11-26",
       "total_sales": 538021.11,
-      "transaction_count": 16466
+      "transaction_count": 16273
     },
     {
       "date": "2025-11-27",
       "total_sales": 550118.27,
-      "transaction_count": 16687
+      "transaction_count": 16775
     },
     {
       "date": "2025-11-28",
       "total_sales": 630057.7,
-      "transaction_count": 19147
+      "transaction_count": 18978
     },
     {
       "date": "2025-11-29",
-      "total_sales": 668838,
-      "transaction_count": 20244
+      "total_sales": 668838.0,
+      "transaction_count": 20396
     },
     {
       "date": "2025-11-30",
       "total_sales": 682995.09,
-      "transaction_count": 20436
+      "transaction_count": 20899
     },
     {
       "date": "2025-12-01",
       "total_sales": 621935.18,
-      "transaction_count": 18686
+      "transaction_count": 19046
     },
     {
       "date": "2025-12-02",
       "total_sales": 622000.89,
-      "transaction_count": 18998
+      "transaction_count": 19064
     },
     {
       "date": "2025-12-03",
       "total_sales": 646343.24,
-      "transaction_count": 19767
+      "transaction_count": 19856
     },
     {
       "date": "2025-12-04",
       "total_sales": 671801.95,
-      "transaction_count": 20799
+      "transaction_count": 20392
     },
     {
       "date": "2025-12-05",
       "total_sales": 763237.66,
-      "transaction_count": 23338
+      "transaction_count": 22720
     },
     {
       "date": "2025-12-06",
       "total_sales": 791974.39,
-      "transaction_count": 24057
+      "transaction_count": 23946
     },
     {
       "date": "2025-12-07",
       "total_sales": 800189.27,
-      "transaction_count": 24494
+      "transaction_count": 24356
     },
     {
       "date": "2025-12-08",
       "total_sales": 606453.9,
-      "transaction_count": 18574
+      "transaction_count": 18478
     },
     {
       "date": "2025-12-09",
       "total_sales": 613079.04,
-      "transaction_count": 18730
+      "transaction_count": 18466
     },
     {
       "date": "2025-12-10",
       "total_sales": 647236.3,
-      "transaction_count": 19906
+      "transaction_count": 19806
     },
     {
       "date": "2025-12-11",
       "total_sales": 653275.82,
-      "transaction_count": 19883
+      "transaction_count": 19766
     },
     {
       "date": "2025-12-12",
       "total_sales": 731306.59,
-      "transaction_count": 22312
+      "transaction_count": 22514
     },
     {
       "date": "2025-12-13",
       "total_sales": 758648.09,
-      "transaction_count": 22780
+      "transaction_count": 23157
     },
     {
       "date": "2025-12-14",
       "total_sales": 766921.82,
-      "transaction_count": 23363
+      "transaction_count": 22673
     },
     {
       "date": "2025-12-15",
       "total_sales": 577800.8,
-      "transaction_count": 17604
+      "transaction_count": 17546
     },
     {
       "date": "2025-12-16",
       "total_sales": 599608.01,
-      "transaction_count": 18271
+      "transaction_count": 18538
     },
     {
       "date": "2025-12-17",
       "total_sales": 624038.14,
-      "transaction_count": 19245
+      "transaction_count": 18921
     },
     {
       "date": "2025-12-18",
       "total_sales": 643302.06,
-      "transaction_count": 19449
+      "transaction_count": 19542
     },
     {
       "date": "2025-12-19",
@@ -904,62 +1809,62 @@
     {
       "date": "2025-12-20",
       "total_sales": 746541.5,
-      "transaction_count": 22629
+      "transaction_count": 22760
     },
     {
       "date": "2025-12-21",
       "total_sales": 745553.77,
-      "transaction_count": 22627
+      "transaction_count": 22233
     },
     {
       "date": "2025-12-22",
       "total_sales": 578115.09,
-      "transaction_count": 17631
+      "transaction_count": 17543
     },
     {
       "date": "2025-12-23",
       "total_sales": 590870.18,
-      "transaction_count": 17874
+      "transaction_count": 18384
     },
     {
       "date": "2025-12-24",
       "total_sales": 606929.32,
-      "transaction_count": 18624
+      "transaction_count": 18266
     },
     {
       "date": "2025-12-25",
       "total_sales": 620522.52,
-      "transaction_count": 18857
+      "transaction_count": 18491
     },
     {
       "date": "2025-12-26",
       "total_sales": 699740.19,
-      "transaction_count": 21067
+      "transaction_count": 21078
     },
     {
       "date": "2025-12-27",
       "total_sales": 734642.41,
-      "transaction_count": 21905
+      "transaction_count": 22492
     },
     {
       "date": "2025-12-28",
       "total_sales": 756044.78,
-      "transaction_count": 22969
+      "transaction_count": 22812
     },
     {
       "date": "2025-12-29",
       "total_sales": 587547.13,
-      "transaction_count": 17928
+      "transaction_count": 18211
     },
     {
       "date": "2025-12-30",
       "total_sales": 608497.18,
-      "transaction_count": 18713
+      "transaction_count": 18817
     },
     {
       "date": "2025-12-31",
       "total_sales": 633414.57,
-      "transaction_count": 19211
+      "transaction_count": 19340
     }
   ]
 }

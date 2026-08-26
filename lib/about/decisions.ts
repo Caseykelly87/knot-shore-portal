@@ -99,7 +99,7 @@ export const DECISIONS: DecisionCategory[] = [
         revisitWhen:
           "Real retail data with seasonality and promotion calendars would produce false-positive rates against the static bands well above the 0.10 contract. The z-score rule is the seed of an empirical-baseline approach but covers one metric; a full baselines phase would extend it across the metric set.",
         honestNote:
-          "ML-based detection here would have been engineering theater. The platform handles 8 stores and 184 days of synthetic data. The rule-based approach is more honest than ML would have been, because the question is whether the rules' parameters match the simulator's parameters, which is a transparent test. ML would have hidden the question behind training data.",
+          "ML-based detection here would have been engineering theater. The platform handles 8 stores and two years of synthetic data. The rule-based approach is more honest than ML would have been, because the question is whether the rules' parameters match the simulator's parameters, which is a transparent test. ML would have hidden the question behind training data.",
       },
       {
         title: "Detection contract thresholds",
@@ -169,15 +169,15 @@ export const DECISIONS: DecisionCategory[] = [
         problem:
           "Synthetic data has to support paired-year regeneration — the 2024 window must be byte-identical when regenerated. It also has to support partial regeneration: re-running a single date in the middle of the canonical window can't shift the surrounding dates. And the detection metrics need stable inputs across runs so the recall and false-positive contracts hold.",
         decision:
-          "The sim engine seeds each generated day with `global_seed + date.toordinal()` rather than advancing a single RNG across dates. Per-date RNGs (sales, anomalies, realism) seed from this base, with anomaly injection offsetting by +1,000,000 and realism by +999,999 to isolate their distributions. Same date and same seed produces byte-identical output regardless of generation order — backfilling 2024-07-01 produces the same data whether it was generated as part of a 2024 backfill, a 2025 anchor's T-365 paired generation, or a single-day regeneration.",
+          "The sim engine seeds each generated day with `global_seed + date.toordinal()` rather than advancing a single RNG across dates. Per-date RNGs (sales, anomalies, realism) seed from this base, with anomaly injection offsetting by +1,000,000 and realism by +2,000,000 to keep the streams separate. Same date and same seed produces byte-identical output regardless of generation order — backfilling 2024-07-01 produces the same data whether it was generated as part of a 2024 backfill, a 2025 anchor's T-365 paired generation, or a single-day regeneration.",
         rejected:
           "A single global RNG that walks forward in time — the obvious naive approach. Rejected because any single-date regeneration cascades through every following date; you can't fix a bug in 2025-08-15 without invalidating every date after it. Also rejected: hashing the date string for the seed. The `toordinal()` approach is cheaper, deterministic across Python versions, and produces a uniform integer space that the offset isolation pattern relies on.",
         cost:
-          "Slight overhead per date — a new RNG initialization per day. The offset constants (+1,000,000, +999,999) look like magic numbers and are.",
+          "Slight overhead per date — a new RNG initialization per day. The offset constants look like magic numbers, and the first pair chosen actually collided (see the honest note).",
         revisitWhen:
           "If anomaly injection ever needs cross-date state — for example, \"exactly one anomaly per week per store\" — this scheme can't represent it without redesign.",
         honestNote:
-          "I picked the offset constants without much thought. They're large enough that they can't collide with realistic seeds, but the actual rationale (orders of magnitude apart so distributions don't accidentally overlap) was post-hoc. They work; they're slightly embarrassing.",
+          "I picked the original offset constants — +1,000,000 and +999,999 — without much thought, and the rationale I wrote for them (\"orders of magnitude apart so distributions don't accidentally overlap\") was post-hoc and, it turned out, wrong. Offsets one apart while date ordinals also step by one meant the realism stream for any date reused the anomaly stream's seed from the day before — a real cross-stream collision, every consecutive day pair. A later review pass caught it and moved realism to +2,000,000. The actual constraint was never \"orders of magnitude\"; it's that the gap between offsets has to exceed the span of date ordinals in play.",
       },
       {
         title: "Mirror-don't-modify when adding new grains",
@@ -259,7 +259,7 @@ export const DECISIONS: DecisionCategory[] = [
         decision:
           "Every paginated endpoint enforces a 200-row maximum on the limit query parameter.",
         rationale:
-          "200 rows is large enough that most queries don't need to paginate (the typical store has 184 days of data; the typical store-day has 10 departments). When pagination IS needed, 200 rows is small enough to keep response payloads under 100KB. The cap is enforced via Pydantic validation; queries with limit > 200 return 422.",
+          "200 rows is large enough that a filtered query often fits one page (a single store-year is 365 rows, two pages; the typical store-day has 10 departments). When pagination IS needed, 200 rows is small enough to keep response payloads under 100KB. The cap is enforced via Pydantic validation; queries with limit > 200 return 422.",
         cost:
           "Capture scripts and bulk readers must paginate. The portal's exception fixture is captured across 5 pages of 200.",
         revisitWhen:
@@ -326,7 +326,7 @@ export const DECISIONS: DecisionCategory[] = [
         rejected:
           "React state with manual URL serialization — would have needed both-way sync logic. A state library like Jotai or Zustand — overkill for one page's filter state. Search params with a `useState` mirror — creates two sources of truth.",
         cost:
-          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 178 rows). The URL gets long when many filters are active.",
+          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 343 rows). The URL gets long when many filters are active.",
         revisitWhen:
           "When filter state becomes complex enough that URLs become hostile — 15+ params with serialized objects. At that point a state library plus a URL-sync layer makes sense.",
         honestNote:
@@ -337,7 +337,7 @@ export const DECISIONS: DecisionCategory[] = [
         problem:
           "Filter changes should feel instant. Round-tripping every filter change to the server makes the UI feel sluggish even on fast connections.",
         decision:
-          "The `/exceptions` page fetches all 178 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
+          "The `/exceptions` page fetches all 343 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
         rejected:
           "Server-side filtering with debounced fetches — would handle larger datasets but adds latency and complexity for a small table. Hybrid (paginate on server, filter on client within the page) — wastes work on both sides.",
         cost:

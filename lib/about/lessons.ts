@@ -111,7 +111,7 @@ export const LESSONS: LessonEntry[] = [
   {
     title: "The off-by-one in the canonical backfill default",
     whatHappened: [
-      "The sim engine's `backfill` command defaults to \"184 days ending 2025-12-31.\" Earlier README versions claimed this resolved to \"2025-07-02 through 2025-12-31.\" When the canonical fixtures regenerated, the actual start was 2025-07-01.",
+      "At the time, the sim engine's `backfill` command defaulted to \"184 days ending 2025-12-31\" (the default window has since grown to the two full years 2024–2025). Earlier README versions claimed the 184-day default resolved to \"2025-07-02 through 2025-12-31.\" When the canonical fixtures regenerated, the actual start was 2025-07-01.",
     ],
     howIHandledIt: [
       "Caught while documenting the regeneration workflow. Working backward from `end_date=2025-12-31` with 184 days: 31 + 31 + 30 + 31 + 30 + 31 = 184, inclusive. Start is 2025-07-01. The previous README was wrong by one day.",

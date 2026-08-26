@@ -10,7 +10,7 @@ export const metadata = {
 const ETL_FLOW_DIAGRAM = `
 graph LR
   subgraph Source
-    SE[Simulation engine output<br/>daily/MM/DD/YYYY/]
+    SE[Simulation engine output<br/>daily/YYYY/MM/DD/]
   end
 
   subgraph Adapter["src/sim_ingest.py"]
@@ -109,15 +109,16 @@ export default function EtlPage() {
         </p>
         <p>
           The grocery side is what feeds the dashboards in this portal. The canonical window is
-          184 days ending 2025-12-31 (start date 2025-07-01, working backward inclusive — a
-          detail that was wrong in the README for several iterations; see{" "}
+          the two full calendar years 2024-01-01 through 2025-12-31 — 731 days, since 2024 is a
+          leap year. The earlier half-year window&apos;s default was itself the subject of an
+          off-by-one documentation bug; see{" "}
           <Link
             href="/about/lessons#the-off-by-one-in-the-canonical-backfill-default"
             className="underline hover:text-foreground"
           >
             The off-by-one in the canonical backfill default
           </Link>
-          ).
+          .
         </p>
       </section>
 
@@ -167,32 +168,32 @@ export default function EtlPage() {
         <p>The canonical artifacts:</p>
         <ul className="list-disc list-inside text-sm space-y-1">
           <li>
-            <code className="bg-muted px-1 rounded">store_daily_metrics.parquet</code> — 2,944
-            rows. 8 stores × 368 days (2024 + 2025). Per store-day: total sales, transactions,
-            basket size, labor cost percentage.
+            <code className="bg-muted px-1 rounded">store_daily_metrics.parquet</code> — 5,848
+            rows. 8 stores × 731 days (the full calendar years 2024 and 2025). Per store-day:
+            total sales, transactions, basket size, labor cost percentage.
           </li>
           <li>
             <code className="bg-muted px-1 rounded">department_daily_metrics.parquet</code> —
-            29,414 rows. ~8 stores × 10 departments × 368 days, less zero-filtered cells. Per
+            58,424 rows. ~8 stores × 10 departments × 731 days, less zero-filtered cells. Per
             store-day-department: net sales, transactions, units, gross margin percentage.
           </li>
           <li>
-            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 178 rows. Each
+            <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code> — 343 rows. Each
             row is a flagged store-day with the rule that fired, the actual value, the expected
             band, and a severity level. The flags spread across several rule kinds that write to
             the same schema: the{" "}
             <code className="bg-muted px-1 rounded">department_reconciliation</code>{" "}
-            structural rule contributes 72 over the department grain (each store-day&apos;s
+            structural rule contributes 141 over the department grain (each store-day&apos;s
             department net_sales summed against the store total), the{" "}
             <code className="bg-muted px-1 rounded">department_coverage</code>{" "}
-            structural-integrity rule 52, the{" "}
+            structural-integrity rule 110, the{" "}
             <code className="bg-muted px-1 rounded">gross_margin_band</code> per-department margin
-            rule 24, the{" "}
-            <code className="bg-muted px-1 rounded">transactions_band</code> statistical rule 18
+            rule 48, the{" "}
+            <code className="bg-muted px-1 rounded">transactions_band</code> statistical rule 22
             over the store-day grain, the{" "}
             <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> rolling-baseline
-            rule 11, and{" "}
-            <code className="bg-muted px-1 rounded">yoy_comp</code> 1.
+            rule 20, and{" "}
+            <code className="bg-muted px-1 rounded">yoy_comp</code> 2.
           </li>
           <li>
             <code className="bg-muted px-1 rounded">dim_stores.parquet</code> — 8 rows of store
@@ -264,8 +265,9 @@ export default function EtlPage() {
         <h2 className="text-2xl font-semibold tracking-tight">Detection rules</h2>
         <p>
           Anomaly detection is heuristic, by design — five static-band rules over store-day
-          metrics, one structural-integrity rule over department-grain metrics, and one
-          rolling-baseline rule that learns a per-store expectation. All in{" "}
+          metrics, three department-grain rules (row-count coverage, per-department margin, and
+          cross-grain reconciliation against the store total), and one rolling-baseline rule
+          that learns a per-store expectation. All in{" "}
           <code className="bg-muted px-1 rounded">detect_rules.py</code> with thresholds
           declared in <code className="bg-muted px-1 rounded">rules.yaml</code>. Not ML. Not a
           fitted model. The CLI{" "}
@@ -274,9 +276,9 @@ export default function EtlPage() {
           <code className="bg-muted px-1 rounded">anomaly_flags.parquet</code>.
         </p>
         <p>
-          The five band rules: revenue band (±25% of profile center), labor-cost-pct band (±5
-          percentage points), avg-ticket band (±20%), transactions band (±25%), and yoy_comp
-          (year-over-year revenue ratio outside [0.85, 1.25]). Each store carries a{" "}
+          The five band rules: revenue band (±60% of the store&apos;s base daily revenue),
+          labor-cost-pct band (±5 percentage points), avg-ticket band (±20%), transactions band
+          (±45%), and yoy_comp (year-over-year revenue ratio outside [0.55, 1.40]). Each store carries a{" "}
           <code className="bg-muted px-1 rounded">trade_area_profile</code> — suburban-family,
           urban-dense, value-market — and bands are configured per profile. The yoy_comp rule
           fires only where a T-365 baseline exists; otherwise it&apos;s silently skipped. The
@@ -291,16 +293,16 @@ export default function EtlPage() {
           computes the 28-day trailing mean and standard deviation of total sales, then flags
           any day with |z| ≥ 2.5; severity buckets at 2.5–3 (info), 3–4 (warning), and ≥ 4
           (critical). It catches gradual-drift cases where a store&apos;s true expected revenue
-          has moved away from the static profile center but stays inside the ±25% static band —
+          has moved away from the static profile center but stays inside the wide static band —
           a class of misses the band rules can&apos;t see by construction. Cold-start dates with
           fewer than 14 days of history are skipped silently, the same way yoy_comp skips
-          missing T-365 baselines. On the canonical dataset the rule contributes 11 flags,
+          missing T-365 baselines. On the canonical dataset the rule contributes 20 flags,
           including the platform&apos;s first critical-severity row (store 4, 2024-09-24, |z| ≈
           4.02).
         </p>
         <p>
-          Heuristic is the right shape here. The data is synthetic and small: 8 stores, 184
-          days per year, two years of canonical. A fitted model would be measuring &quot;can a
+          Heuristic is the right shape here. The data is synthetic and small: 8 stores, two
+          full calendar years of canonical. A fitted model would be measuring &quot;can a
           learned classifier reproduce a learned distribution&quot; rather than &quot;can these
           specific rules catch these specific injections.&quot; Static bands keep the question
           transparent — every flag is auditable in YAML — and they meet the recall ≥ 0.35 and
@@ -321,9 +323,9 @@ export default function EtlPage() {
           The contract itself is verified by a separate evaluation script —{" "}
           <code className="bg-muted px-1 rounded">scripts/evaluate_detection.py</code> — which
           is the only file in the entire platform allowed to read the sim engine&apos;s
-          ground-truth log. The evaluation report is committed at{" "}
+          ground-truth log. The evaluation artifact is committed at{" "}
           <code className="bg-muted px-1 rounded">
-            data/processed/eval/detection_quality_report.md
+            data/processed/canonical/detection_quality.json
           </code>
           . The boundary between detection code and ground-truth code is a deliberate social
           contract; see{" "}
@@ -464,7 +466,7 @@ export default function EtlPage() {
       <section className="space-y-4" id="detection-roadmap">
         <h2 className="text-2xl font-semibold tracking-tight">Detection layer forward work</h2>
         <p>
-          The detection layer in its current shape — seven rules, a unified schema, eval-script
+          The detection layer in its current shape — nine rules, a unified schema, eval-script
           ground truth — is the working surface for the canonical window. Several extensions
           have been considered and deferred. Each is shaped here as what it would do, why it
           sits below the current line, and an honest sense of scope.
@@ -473,7 +475,7 @@ export default function EtlPage() {
           <li>
             <strong>Vectorize the static-band rules.</strong> The five band rules currently
             iterate with <code className="bg-muted px-1 rounded">for row in enriched.itertuples()</code>,
-            which is fine at canonical scale (2,944 store-day rows) but reads as iterative
+            which is fine at canonical scale (5,848 store-day rows) but reads as iterative
             against a code-base whose other hot paths are vectorized. A pandas/numpy rewrite —
             column-wise comparison against the per-profile band bounds, severity assignment via{" "}
             <code className="bg-muted px-1 rounded">np.select</code> — is roughly 80 lines and
