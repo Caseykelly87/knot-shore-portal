@@ -15,10 +15,10 @@ graph LR
   D --> E{realism<br/>enabled?}
   E -->|yes| F[realism.adjust<br/>Stage 2]
   E -->|no| G[Skip realism]
-  F --> H[anomalies.inject]
+  F --> H[anomalies.inject<br/>Stage 3]
   G --> H
-  H --> I[write_daily<br/>Stage 3]
-  I --> J[CSV files written<br/>daily/MM/DD/YYYY/]
+  H --> I[write_daily]
+  I --> J[CSV files written<br/>daily/YYYY/MM/DD/]
   C -.-> C
 `;
 
@@ -64,7 +64,7 @@ export default function SimEnginePage() {
         <h2 className="text-2xl font-semibold tracking-tight">Role in the platform</h2>
         <p>
           The sim engine sits at the upstream end of the data pipeline. Its output — a tree of CSV
-          files under <code className="bg-muted px-1 rounded">daily/MM/DD/YYYY/</code> — is the
+          files under <code className="bg-muted px-1 rounded">daily/YYYY/MM/DD/</code> — is the
           ETL repo&apos;s only input source for the grocery side of its pipeline. Everything
           downstream (canonical parquets, API responses, portal dashboards) traces back to what
           the sim engine wrote.
@@ -140,7 +140,7 @@ rng = np.random.default_rng(date_seed)`}</code>
           Per-date seeding sidesteps the cascade. Anomaly injection and the realism layer take
           the same shape with offset constants —{" "}
           <code className="bg-muted px-1 rounded">date_seed + 1_000_000</code> for injection,{" "}
-          <code className="bg-muted px-1 rounded">date_seed + 999_999</code> for realism — so
+          <code className="bg-muted px-1 rounded">date_seed + 2_000_000</code> for realism — so
           their distributions don&apos;t accidentally overlap with the baseline sales RNG.
           Backfilling 2024-07-01 produces byte-identical data whether it&apos;s part of a 2024
           backfill, a 2025 anchor&apos;s T-365 paired generation, or a single-day regeneration.
@@ -273,7 +273,7 @@ rng = np.random.default_rng(date_seed)`}</code>
           <li>
             <code className="bg-muted px-1 rounded">cmd_run</code> — daily incremental
             generation. Default behavior: generates 8 dates per invocation — the anchor date, the
-            6 trailing days, and the same calendar date one year prior (anchor minus 365 days).
+            6 trailing days, and the same calendar date one year prior.
             The t-365 mechanism is what enables natural paired-year accumulation when the command
             is invoked daily.
           </li>
@@ -283,7 +283,7 @@ rng = np.random.default_rng(date_seed)`}</code>
             <code className="bg-muted px-1 rounded">--start-date</code> or{" "}
             <code className="bg-muted px-1 rounded">--end-date</code> (mutually exclusive) and
             sized with <code className="bg-muted px-1 rounded">--days</code>; when neither edge is
-            given, the canonical 2025-07-01 through 2025-12-31 window is used.
+            given, the canonical 2024-01-01 through 2025-12-31 window is used.
           </li>
         </ul>
       </section>
@@ -323,8 +323,8 @@ rng = np.random.default_rng(date_seed)`}</code>
             injection with bounded rates and ground-truth labels
           </li>
           <li>
-            <code className="bg-muted px-1 rounded">output.py</code> — Stage 3 CSV writers,
-            directory layout (<code className="bg-muted px-1 rounded">daily/MM/DD/YYYY/</code>)
+            <code className="bg-muted px-1 rounded">output.py</code> — CSV writers,
+            directory layout (<code className="bg-muted px-1 rounded">daily/YYYY/MM/DD/</code>)
           </li>
           <li>
             <code className="bg-muted px-1 rounded">dimensions.py</code> — dim_stores,
@@ -436,7 +436,7 @@ rng = np.random.default_rng(date_seed)`}</code>
       <section className="space-y-4" id="testing">
         <h2 className="text-2xl font-semibold tracking-tight">Testing</h2>
         <p>
-          The sim engine has 142 tests. Coverage emphasizes determinism and the stage-pipeline
+          The sim engine&apos;s test coverage emphasizes determinism and the stage-pipeline
           contracts: a test that asserts byte-identity across two successive runs of the same
           seed is the most important property the suite verifies.
         </p>

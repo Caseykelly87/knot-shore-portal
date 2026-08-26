@@ -99,7 +99,7 @@ export const DECISIONS: DecisionCategory[] = [
         revisitWhen:
           "Real retail data with seasonality and promotion calendars would produce false-positive rates against the static bands well above the 0.10 contract. The z-score rule is the seed of an empirical-baseline approach but covers one metric; a full baselines phase would extend it across the metric set.",
         honestNote:
-          "ML-based detection here would have been engineering theater. The platform handles 8 stores and 184 days of synthetic data. The rule-based approach is more honest than ML would have been, because the question is whether the rules' parameters match the simulator's parameters, which is a transparent test. ML would have hidden the question behind training data.",
+          "ML-based detection here would have been engineering theater. The platform handles 8 stores and two years of synthetic data. The rule-based approach is more honest than ML would have been, because the question is whether the rules' parameters match the simulator's parameters, which is a transparent test. ML would have hidden the question behind training data.",
       },
       {
         title: "Detection contract thresholds",
@@ -259,7 +259,7 @@ export const DECISIONS: DecisionCategory[] = [
         decision:
           "Every paginated endpoint enforces a 200-row maximum on the limit query parameter.",
         rationale:
-          "200 rows is large enough that most queries don't need to paginate (the typical store has 184 days of data; the typical store-day has 10 departments). When pagination IS needed, 200 rows is small enough to keep response payloads under 100KB. The cap is enforced via Pydantic validation; queries with limit > 200 return 422.",
+          "200 rows is large enough that a filtered query often fits one page (a single store-year is 365 rows, two pages; the typical store-day has 10 departments). When pagination IS needed, 200 rows is small enough to keep response payloads under 100KB. The cap is enforced via Pydantic validation; queries with limit > 200 return 422.",
         cost:
           "Capture scripts and bulk readers must paginate. The portal's exception fixture is captured across 5 pages of 200.",
         revisitWhen:
@@ -326,7 +326,7 @@ export const DECISIONS: DecisionCategory[] = [
         rejected:
           "React state with manual URL serialization — would have needed both-way sync logic. A state library like Jotai or Zustand — overkill for one page's filter state. Search params with a `useState` mirror — creates two sources of truth.",
         cost:
-          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 178 rows). The URL gets long when many filters are active.",
+          "More code than `useState` would require. The hook (`use-exceptions-filters.ts`) is around 70 lines vs. 20 for local state. The page must be wrapped in `<Suspense>` because `useSearchParams` is a Next.js 14 client-only API. Every filter change re-renders the page (cheap because the filter logic is pure and the dataset is 343 rows). The URL gets long when many filters are active.",
         revisitWhen:
           "When filter state becomes complex enough that URLs become hostile — 15+ params with serialized objects. At that point a state library plus a URL-sync layer makes sense.",
         honestNote:
@@ -337,7 +337,7 @@ export const DECISIONS: DecisionCategory[] = [
         problem:
           "Filter changes should feel instant. Round-tripping every filter change to the server makes the UI feel sluggish even on fast connections.",
         decision:
-          "The `/exceptions` page fetches all 178 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
+          "The `/exceptions` page fetches all 343 anomalies on page load — paginated through the API's 200-row cap in online mode, one fixture in offline mode — then filters client-side via `applyFilters`. The dataset is small enough that re-filtering on every keystroke is imperceptible.",
         rejected:
           "Server-side filtering with debounced fetches — would handle larger datasets but adds latency and complexity for a small table. Hybrid (paginate on server, filter on client within the page) — wastes work on both sides.",
         cost:

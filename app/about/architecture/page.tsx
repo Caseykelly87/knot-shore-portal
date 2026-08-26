@@ -10,7 +10,7 @@ const PLATFORM_FLOW_DIAGRAM = `
 graph LR
   subgraph Sim["Simulation engine"]
     SE[knot-shore-grocery-simulation-engine]
-    SE_OUT[CSV files<br/>daily/MM/DD/YYYY/]
+    SE_OUT[CSV files<br/>daily/YYYY/MM/DD/]
     SE --> SE_OUT
   end
 
@@ -200,7 +200,7 @@ export default function ArchitecturePage() {
                 Python tool that produces deterministic synthetic retail data for the platform.
                 Generates store-level daily summaries and department-level daily sales, plus
                 injected anomalies with ground-truth labels. Output is a tree of CSV files under{" "}
-                <code className="bg-muted px-1 rounded">daily/MM/DD/YYYY/</code>.
+                <code className="bg-muted px-1 rounded">daily/YYYY/MM/DD/</code>.
                 <br />
                 <br />
                 Determinism is foundational: same seed and same date produces byte-identical
@@ -391,16 +391,16 @@ export default function ArchitecturePage() {
           The platform also maintains integrity canaries — single values that should hold across
           arbitrary changes. The dashboard&apos;s{" "}
           <code className="bg-muted px-1 rounded">total_sales</code> for the 2025 demo window is{" "}
-          <code className="bg-muted px-1 rounded">$115,253,718</code>. Store 1&apos;s drilldown
-          total is <code className="bg-muted px-1 rounded">$18,598,268</code>. The full canonical
-          contains 178 anomaly flags, no longer dominated by any single rule:{" "}
-          <code className="bg-muted px-1 rounded">department_reconciliation</code> contributes 72
+          <code className="bg-muted px-1 rounded">$222,402,534</code>. Store 1&apos;s drilldown
+          total is <code className="bg-muted px-1 rounded">$35,882,161</code>. The full canonical
+          contains 343 anomaly flags, no longer dominated by any single rule:{" "}
+          <code className="bg-muted px-1 rounded">department_reconciliation</code> contributes 141
           (each store-day&apos;s department net_sales summed against the store total),{" "}
-          <code className="bg-muted px-1 rounded">department_coverage</code> 52,{" "}
-          <code className="bg-muted px-1 rounded">gross_margin_band</code> 24,{" "}
-          <code className="bg-muted px-1 rounded">transactions_band</code> 18,{" "}
-          <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> 11, and{" "}
-          <code className="bg-muted px-1 rounded">yoy_comp</code> 1. If these change unexpectedly,
+          <code className="bg-muted px-1 rounded">department_coverage</code> 110,{" "}
+          <code className="bg-muted px-1 rounded">gross_margin_band</code> 48,{" "}
+          <code className="bg-muted px-1 rounded">transactions_band</code> 22,{" "}
+          <code className="bg-muted px-1 rounded">revenue_zscore_28d</code> 20, and{" "}
+          <code className="bg-muted px-1 rounded">yoy_comp</code> 2. If these change unexpectedly,
           something has drifted — the canaries are how the platform knows.
         </p>
       </section>
